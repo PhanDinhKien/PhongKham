@@ -1,0 +1,55 @@
+databaseChangeLog:
+- changeSet:
+    id: 1791719678544-1
+    author: phankien (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: usersPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+            name: active
+            type: bit
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+            name: email
+            type: varchar(100)
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+            name: name
+            type: nvarchar(250)
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            computed: false
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: users
+- changeSet:
+    id: 1791719678544-2
+    author: phankien (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: email
+        constraintName: UC_USERSEMAIL_COL
+        tableName: users
+
