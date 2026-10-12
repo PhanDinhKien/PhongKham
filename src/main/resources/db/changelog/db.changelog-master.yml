@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-users.yaml
+  - include:
+      file: db/changelog/changes/002-create-roles.yaml
+  - include:
+      file: db/changelog/changes/003-update-users-password.yaml
+  - include:
+      file: db/changelog/changes/004-create-permission.yaml
+  - include:
+      file: db/changelog/changes/005-create-user-role.yaml
+  - include:
+      file: db/changelog/changes/006-create-role-permissions.yaml
+  - include:
+      file: db/changelog/changes/007-create-refresh-tokens.yaml

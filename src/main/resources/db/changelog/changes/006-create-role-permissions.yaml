@@ -1,0 +1,60 @@
+databaseChangeLog:
+- changeSet:
+    id: 006-create-role-permissions
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: role_permissionsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: permission_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: role_id
+            type: uniqueidentifier
+        tableName: role_permissions
+- changeSet:
+    id: 006-qu-role-permissions-role-permission
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: role_id, permission_id
+        constraintName: qu_role_permissions_role_permission
+        tableName: role_permissions
+- changeSet:
+    id:  006-role-permissions-fk-permission
+    author: phankien
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: permission_id
+        baseTableName: role_permissions
+        constraintName: FKegdk29eiy7mdtefy5c7eirr6e
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 006-role-permissions-fk-role
+    author: phankien
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: role_id
+        baseTableName: role_permissions
+        constraintName: FKn5fotdgk8d1xvo8nav9uv3muc
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: roles
+        validate: true
+

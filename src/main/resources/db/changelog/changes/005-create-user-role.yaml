@@ -1,0 +1,60 @@
+databaseChangeLog:
+- changeSet:
+    id: 005-create-user-role
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_rolesPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: role_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: uniqueidentifier
+        tableName: user_roles
+- changeSet:
+    id: 005-user-roles-unique-user-role
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: user_id, role_id
+        constraintName: uq_user_roles_user_role
+        tableName: user_roles
+- changeSet:
+    id: 005-user-roles-fk-role
+    author: phankien
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: role_id
+        baseTableName: user_roles
+        constraintName: FKh8ciramu9cc9q3qcqiv4ue8a6
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: roles
+        validate: true
+- changeSet:
+    id: 005-user-roles-fk-user
+    author: phankien
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: user_roles
+        constraintName: FKhfh9dx7w3ubf1co1vdev94g3f
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+

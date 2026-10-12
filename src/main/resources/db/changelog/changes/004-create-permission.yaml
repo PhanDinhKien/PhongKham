@@ -1,0 +1,46 @@
+databaseChangeLog:
+- changeSet:
+    id: 004-create-permissions
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: permissionsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            name: code
+            type: varchar(200)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            name: description
+            type: nvarchar(255)
+        - column:
+            name: module
+            type: varchar(50)
+        - column:
+            name: name
+            type: nvarchar(255)
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: permissions
+- changeSet:
+    id: 004-permissions-unique-code
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: UC_PERMISSIONSCODE_COL
+        tableName: permissions
+

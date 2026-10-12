@@ -1,0 +1,52 @@
+databaseChangeLog:
+- changeSet:
+    id: 002-create-roles
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rolesPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: bit
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            name: description
+            type: nvarchar(250)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: roles
+- changeSet:
+    id: 002-roles-unique-code
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: UC_ROLESCODE_COL
+        tableName: roles
+

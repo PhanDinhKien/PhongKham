@@ -1,0 +1,76 @@
+databaseChangeLog:
+- changeSet:
+    id: 007-create-refresh-tokens
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: refresh_tokensPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: expires_at
+            type: datetime2
+        - column:
+            name: ip_address
+            type: varchar(45)
+        - column:
+            name: revoked_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: token_hash
+            type: varchar(255)
+        - column:
+            name: user_agent
+            type: nvarchar(500)
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: uniqueidentifier
+        tableName: refresh_tokens
+- changeSet:
+    id: 007-refresh-tokens-uq-token-hash
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: token_hash
+        constraintName: UC_REFRESH_TOKENSTOKEN_HASH_COL
+        tableName: refresh_tokens
+- changeSet:
+    id: 007-refresh-tokens-ix-user-id
+    author: phankien
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: user_id
+        indexName: ix_refresh_tokens_user_id
+        tableName: refresh_tokens
+- changeSet:
+    id: 007-refresh-tokens-fk-user
+    author: phankien
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: refresh_tokens
+        constraintName: fk_refresh_tokens_user
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+
