@@ -1,11 +1,15 @@
 spring:
   application:
     name: sale
+
+  # Nạp biến từ file .env (dùng chung với docker-compose), không bắt buộc phải có
+  config:
+    import: optional:file:.env[.properties]
     
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=SaleDB;encrypt=true;trustServerCertificate=true
     username: sa
-    password: ${DB_PASSWORD}
+    password: ${DB_PASSWORD:${MSSQL_SA_PASSWORD}}
    
   jpa:
     hibernate:
@@ -17,3 +21,12 @@ spring:
   
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+
+# Tài khoản admin được tạo sẵn khi khởi động (xem AdminSeeder)
+app:
+  seed:
+    admin:
+      enabled: ${ADMIN_SEED_ENABLED:true}
+      name: ${ADMIN_NAME:Administrator}
+      email: ${ADMIN_EMAIL:admin@phongkham.local}
+      password: ${ADMIN_PASSWORD:}
