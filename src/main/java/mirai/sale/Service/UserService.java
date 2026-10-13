@@ -4,14 +4,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import mirai.sale.Dto.*;
 import mirai.sale.Dto.user.CreateUserRequest;
+import mirai.sale.Dto.user.UpdateUserRequest;
 import mirai.sale.Entity.Role;
 import mirai.sale.Entity.User;
 import mirai.sale.Entity.UserRole;
 import mirai.sale.Exception.BadRequestException;
+import mirai.sale.Exception.NotFoundException;
 import mirai.sale.Repository.RoleRepository;
 import mirai.sale.Repository.UserRepository;
 import mirai.sale.Repository.UserRoleRepository;
@@ -69,19 +72,37 @@ public class UserService {
 
         return toProfileResponse(user, roles);
     }
+    
+    @Transactional
+    public UserProfileResponse update(UpdateUserRequest rq, UUID userId){
+       ensureEmailNotTakenByOthers(rq.email(), userId); 
+       
+       User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("Tài khoản không tồn tại")); 
+       user.setEmail(rq.email());
+       user.setName(rq.name());
+       user.setActive(rq.active());
+       List<Role> roles = findRolesByCodes(rq.roleCode()); 
+       return toProfileResponse(user, roles);
+    }
 
     // ========================================================================
     // Các hàm dùng lại được (gán role, đổi role... sẽ gọi lại những hàm này)
     // ========================================================================
 
-    /** Báo lỗi nếu email đã có tài khoản dùng. Email phải được chuẩn hóa trước. */
+    // Báo lỗi nếu email đã có tài khoản dùng. Email phải được chuẩn hóa trước. 
     private void ensureEmailNotTaken(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email đã được sử dụng");
         }
     }
-
-    /** Tìm role theo danh sách mã. Báo lỗi và liệt kê các mã không tồn tại. */
+    
+    private void ensureEmailNotTakenByOthers(String email, UUID id){
+        if(userRepository.existsByEmailAndIdNot(email, id)){
+          throw new BadRequestException("Email đã được sử dụng");
+        }
+    }
+    
+    // Tìm role theo danh sách mã. Báo lỗi và liệt kê các mã không tồn tại. 
     private List<Role> findRolesByCodes(Collection<String> codes) {
         List<Role> roles = roleRepository.findByCodeIn(codes);
 
@@ -99,7 +120,7 @@ public class UserService {
         return roles;
     }
 
-    /** Tạo Entity User mới (chưa lưu), mật khẩu đã được băm. */
+    // Tạo Entity User mới (chưa lưu), mật khẩu đã được băm. 
     private User buildNewUser(String name, String email, String rawPassword) {
         User user = new User();
         user.setName(name.trim());
@@ -109,7 +130,7 @@ public class UserService {
         return user;
     }
 
-    /** Gán danh sách role cho user. User phải được lưu trước (đã có id). */
+    // Gán danh sách role cho user. User phải được lưu trước (đã có id).
     private void assignRoles(User user, Collection<Role> roles) {
         List<UserRole> userRoles = roles.stream()
                 .map(role -> new UserRole(user, role))

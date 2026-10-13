@@ -1,11 +1,13 @@
 package mirai.sale.Controller;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 import mirai.sale.Dto.PageResponse;
 import mirai.sale.Dto.UserListItem;
 import mirai.sale.Dto.UserProfileResponse;
 import mirai.sale.Dto.UserSearchRequest;
 import mirai.sale.Dto.user.CreateUserRequest;
+import mirai.sale.Dto.user.UpdateUserRequest;
 import mirai.sale.Service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +31,11 @@ public class UserController {
     public UserProfileResponse insert(@Valid @RequestBody CreateUserRequest data) 
     {
         return userService.create(data); 
+    }
+    
+    @PutMapping("/{id}")
+    public UserProfileResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequest data) 
+    {
+        return userService.update(data, id); 
     }
 }
