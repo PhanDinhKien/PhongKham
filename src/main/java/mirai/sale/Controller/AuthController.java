@@ -26,8 +26,8 @@ public class AuthController {
         this.authService = authService;
     }
     
-     @PostMapping("/login")
+    @PostMapping("/login")
     public TokenResponse login(@RequestBody LoginRequest req, HttpServletRequest http) {
-        return authService.login(req.email(), req.passsword());
+        return authService.login(req.email(), req.password());
     }
 }

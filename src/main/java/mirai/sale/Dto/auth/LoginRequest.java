@@ -8,4 +8,4 @@ package mirai.sale.Dto.auth;
  *
  * @author macos
  */
-public record LoginRequest (String email, String passsword){}; 
+public record LoginRequest (String email, String password){}; 

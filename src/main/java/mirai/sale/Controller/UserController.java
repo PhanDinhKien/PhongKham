@@ -1,8 +1,11 @@
 package mirai.sale.Controller;
 
+import jakarta.validation.Valid;
 import mirai.sale.Dto.PageResponse;
 import mirai.sale.Dto.UserListItem;
+import mirai.sale.Dto.UserProfileResponse;
 import mirai.sale.Dto.UserSearchRequest;
+import mirai.sale.Dto.user.CreateUserRequest;
 import mirai.sale.Service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +23,11 @@ public class UserController {
     @GetMapping
     public PageResponse<UserListItem> search(UserSearchRequest req) {
         return userService.search(req);
+    }
+    
+    @PostMapping
+    public UserProfileResponse insert(@Valid @RequestBody CreateUserRequest data) 
+    {
+        return userService.create(data); 
     }
 }
