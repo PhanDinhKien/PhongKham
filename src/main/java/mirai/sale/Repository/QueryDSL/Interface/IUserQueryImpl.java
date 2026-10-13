@@ -9,7 +9,6 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import mirai.sale.Entity.User;
-import mirai.sale.Repository.QueryDSL.Interface.IUserQuery;
 import static mirai.sale.Entity.QUser.user;
 import static mirai.sale.Entity.QUserRole.userRole;
 
@@ -56,4 +55,5 @@ public class  IUserQueryImpl implements IUserQuery{
                 .exists();
     }
 
+    
 }

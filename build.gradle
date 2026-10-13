@@ -35,6 +35,13 @@ dependencies {
 	annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.7:jpa'
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
+        // thư viện phục vụ cho việc xác thực hệ thống
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+        runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+        
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

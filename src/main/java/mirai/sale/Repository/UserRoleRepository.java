@@ -4,11 +4,14 @@
  */
 package mirai.sale.Repository;
 
+import java.util.List;
 import java.util.UUID;
 import mirai.sale.Entity.Role;
 import mirai.sale.Entity.User;
 import mirai.sale.Entity.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -16,4 +19,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserRoleRepository extends JpaRepository<UserRole, UUID>  {
     boolean existsByUserAndRole(User user, Role role);
+    
+    @Query("SELECT ur.role.code FROM UserRole as ur WHERE ur.user = :user AND ur.role.active = true")
+    List<String> findRoleCodeByUser(@Param("user") User user);
 }
