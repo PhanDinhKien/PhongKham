@@ -40,6 +40,9 @@ public class RolePermission {
         this.role = role;
         this.permission = permission;
     }
+    
+    protected RolePermission() {
+    }
 
     public UUID getId() {
         return id;
