@@ -9,11 +9,6 @@ import mirai.sale.modules.auth.dto.LoginRequest;
 import mirai.sale.modules.auth.dto.TokenResponse;
 import mirai.sale.modules.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Map;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
