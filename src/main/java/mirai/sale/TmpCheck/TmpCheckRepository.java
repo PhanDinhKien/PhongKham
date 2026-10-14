@@ -1,12 +1,14 @@
 package mirai.sale.TmpCheck;
 
+import mirai.sale.modules.role.dto.RoleUserCount;
+import mirai.sale.modules.role.dto.UserRoleView;
+import mirai.sale.modules.role.entity.Permission;
+import mirai.sale.modules.role.entity.Role;
+import mirai.sale.modules.role.entity.RolePermission;
+import mirai.sale.modules.user.entity.User;
+import mirai.sale.modules.user.entity.UserRole;
 import java.util.List;
 import java.util.UUID;
-import mirai.sale.Dto.RoleUserCount;
-import mirai.sale.Dto.UserRoleView;
-import mirai.sale.Entity.Permission;
-import mirai.sale.Entity.Role;
-import mirai.sale.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +33,7 @@ public interface TmpCheckRepository extends JpaRepository<Permission, UUID> {
     boolean userHasPermission(@Param("email") String email, @Param("code") String code);
 
     @Query("""
-        SELECT new mirai.sale.Dto.RoleUserCount(r.code, r.name, COUNT(ur.id))
+        SELECT new mirai.sale.modules.role.dto.RoleUserCount(r.code, r.name, COUNT(ur.id))
         FROM Role r
         LEFT JOIN UserRole ur ON ur.role = r
         GROUP BY r.code, r.name
@@ -40,7 +42,7 @@ public interface TmpCheckRepository extends JpaRepository<Permission, UUID> {
     List<RoleUserCount> countUsersPerRole();
 
     @Query("""
-        SELECT new mirai.sale.Dto.UserRoleView(u.email, u.name, r.code, r.name)
+        SELECT new mirai.sale.modules.role.dto.UserRoleView(u.email, u.name, r.code, r.name)
         FROM UserRole ur
         JOIN ur.user u
         JOIN ur.role r

@@ -76,7 +76,7 @@ liquibase {
 			url 'jdbc:sqlserver://localhost:1433;databaseName=SaleDB;encrypt=true;trustServerCertificate=true'
 			username 'sa'
 			password System.getenv('DB_PASSWORD')
-			referenceUrl 'hibernate:spring:mirai.sale.Entity?dialect=org.hibernate.dialect.SQLServerDialect'
+			referenceUrl 'hibernate:spring:mirai.sale.modules?dialect=org.hibernate.dialect.SQLServerDialect'
 			author 'phankien'
 		}
 	}
