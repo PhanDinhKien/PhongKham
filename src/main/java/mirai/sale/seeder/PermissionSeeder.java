@@ -50,6 +50,8 @@ public class PermissionSeeder implements ApplicationRunner {
       
     }
     
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PermissionSeeder.class);
+
     private List<Permission> insertPermission() {
        
        Map<String, Permission> mapByKey = this.permissionRepository.findAll().stream().collect(Collectors.toMap(Permission::getCode, Function.identity())); 
@@ -63,7 +65,6 @@ public class PermissionSeeder implements ApplicationRunner {
           if(p == null){
              p = new Permission(); 
              p.setCode(code.name());
-
              mapByKey.put(code.name(), p);
           }
           else if(Objects.equals(p.getName(), code.getLabel()) && Objects.equals(p.getModule(), code.getModule())){
@@ -76,24 +77,29 @@ public class PermissionSeeder implements ApplicationRunner {
        }
        
         if (!changed.isEmpty()) {
-            permissionRepository.saveAll(changed);
+            List<Permission> saved = permissionRepository.saveAll(changed);
+            for (Permission s : saved) {
+                mapByKey.put(s.getCode(), s);
+            }
+            log.info("Đã đồng bộ {} quyền hạn vào cơ sở dữ liệu.", changed.size());
         }
         return List.copyOf(mapByKey.values());
     } 
     
-    private void updatePermissionRoleAdmin( List<Permission> listPermissions){
+    private void updatePermissionRoleAdmin(List<Permission> listPermissions){
        
-        Role role  = roleRepository.findByCode(ADMIN_ROLE_CODE).orElse(null); 
+        Role role = roleRepository.findByCode(ADMIN_ROLE_CODE).orElse(null); 
         
         if(role != null) {
            Set<UUID> ids = rolePermissionRepository.findPermissionIdByRole(role); 
            
-           List<RolePermission> permissions =  listPermissions.stream()
-                   .filter(p -> !ids.contains(p.getId()))
+           List<RolePermission> permissions = listPermissions.stream()
+                   .filter(p -> p.getId() != null && !ids.contains(p.getId()))
                    .map(mapper -> new RolePermission(role, mapper)).toList(); 
            
            if(!permissions.isEmpty()){
-             rolePermissionRepository.saveAll(permissions); 
+             rolePermissionRepository.saveAll(permissions);
+             log.info("Đã tự động gán {} quyền hạn mới cho vai trò ADMIN.", permissions.size());
            }
         }
     

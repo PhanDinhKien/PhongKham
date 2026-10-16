@@ -830,7 +830,8 @@ body {
     transition: all 0.25s ease;
 }
 
-.modal-backdrop.show {
+.modal-backdrop.show,
+.modal-backdrop.active {
     opacity: 1;
     visibility: visible;
 }
@@ -848,7 +849,8 @@ body {
     margin: 16px;
 }
 
-.modal-backdrop.show .modal-dialog {
+.modal-backdrop.show .modal-dialog,
+.modal-backdrop.active .modal-dialog {
     transform: translateY(0) scale(1);
 }
 
@@ -1513,3 +1515,137 @@ body {
     color: #475569;
     border: 1px solid #e2e8f0;
 }
+
+/* ==============================================================
+   PHÂN HỆ BỆNH NHÂN (PATIENT MODULE SPECIFIC STYLES)
+   ============================================================== */
+.patient-code-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-copy-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: var(--slate-600);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s ease;
+    padding: 0;
+}
+
+.btn-copy-code:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: var(--primary-green);
+    transform: scale(1.05);
+}
+
+.btn-copy-code:active {
+    transform: scale(0.95);
+}
+
+.btn-copy-code.copied {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: var(--primary-green);
+}
+
+/* Giới tính badge */
+.gender-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gender-badge.gender-nam {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.gender-badge.gender-nu {
+    background-color: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+}
+
+.gender-badge.gender-khac {
+    background-color: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Năm sinh / Tuổi */
+.birth-year-text {
+    font-weight: 600;
+    color: var(--slate-800);
+}
+
+.age-badge {
+    font-size: 11px;
+    color: var(--slate-600);
+    margin-left: 4px;
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.phone-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--slate-700);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.phone-link:hover {
+    color: var(--primary-green);
+    text-decoration: underline;
+}
+
+.patient-note-cell {
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #b45309;
+    background: #fffbeb;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #fef3c7;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.btn-generate-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-green);
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-generate-code:hover {
+    background: #d1fae5;
+}
+

@@ -1,0 +1,78 @@
+databaseChangeLog:
+- changeSet:
+    id: 011-create-patients
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: patientsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: patient_code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: full_name
+            type: nvarchar(255)
+        - column:
+            name: birth_year
+            type: int
+        - column:
+            constraints:
+              nullable: false
+            name: gender
+            type: varchar(20)
+        - column:
+            name: phone
+            type: varchar(20)
+        - column:
+            name: address
+            type: nvarchar(500)
+        - column:
+            name: note
+            type: nvarchar(1000)
+        - column:
+            constraints:
+              nullable: false
+            name: is_deleted
+            type: bit
+            defaultValueBoolean: false
+        - column:
+            name: deleted_at
+            type: datetime2
+        - column:
+            name: deleted_by
+            type: nvarchar(100)
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            name: updated_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: patients
+- changeSet:
+    id: 011-patients-unique-code
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: patient_code
+        constraintName: UC_PATIENTS_CODE
+        tableName: patients

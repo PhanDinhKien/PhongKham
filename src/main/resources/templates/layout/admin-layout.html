@@ -43,7 +43,20 @@
                     </div>
                 </div>
 
-                <!-- 2. Thiết lập chung -->
+                <!-- 2. Quản lý khám bệnh -->
+                <div class="nav-group">
+                    <div class="nav-item-parent">
+                        <i class="ph ph-heartbeat"></i>
+                        <span>Quản lý khám bệnh</span>
+                    </div>
+                    <div class="nav-sub-list">
+                        <a th:href="@{/admin/patients}" class="nav-sub-item" th:classappend="${activeItem == 'nguoi-benh'} ? 'active' : ''">
+                            Hồ sơ người bệnh
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Thiết lập chung -->
                 <div class="nav-group">
                     <div class="nav-item-parent">
                         <i class="ph ph-faders"></i>

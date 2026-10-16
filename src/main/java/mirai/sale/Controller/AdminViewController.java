@@ -48,4 +48,12 @@ public class AdminViewController {
     public String showLocationsPage() {
         return "admin/locations";
     }
+
+    /**
+     * Hiển thị màn hình Quản lý người bệnh
+     */
+    @GetMapping({"/admin/patients", "/admin/benh-nhan"})
+    public String showPatientsPage() {
+        return "admin/patients";
+    }
 }
