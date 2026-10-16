@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mirai Healthcare Admin</title>
+</head>
+<body>
+
+    <!-- ==============================================================
+         FRAGMENT: SIDEBAR BÊN TRÁI DÙNG CHUNG CHO TẤT CẢ MÀN HÌNH QUẢN TRỊ
+         ============================================================== -->
+    <aside class="admin-sidebar" th:fragment="sidebar(activeGroup, activeItem)">
+        
+        <!-- Nhóm trên: Logo + Menu chính -->
+        <div>
+            <!-- Header Logo Thương hiệu -->
+            <div class="sidebar-header">
+                <div class="brand-icon-box">
+                    <i class="ph-fill ph-first-aid"></i>
+                </div>
+                <div class="brand-title-wrap">
+                    <span class="brand-title-main">MIRAI</span>
+                    <span class="brand-title-sub">Healthcare Systems</span>
+                </div>
+            </div>
+
+            <!-- Danh sách các phân hệ tính năng -->
+            <nav class="sidebar-nav">
+                
+                <!-- 1. Quản trị hệ thống -->
+                <div class="nav-group">
+                    <div class="nav-item-parent">
+                        <i class="ph ph-gear"></i>
+                        <span>Quản trị hệ thống</span>
+                    </div>
+                    <div class="nav-sub-list">
+                        <a th:href="@{/admin/users}" class="nav-sub-item" th:classappend="${activeItem == 'tai-khoan'} ? 'active' : ''">
+                            Tài khoản
+                        </a>
+                        <a th:href="@{/admin/roles}" class="nav-sub-item" th:classappend="${activeItem == 'vai-tro'} ? 'active' : ''">
+                            Vai trò & Quyền
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Thiết lập chung -->
+                <div class="nav-group">
+                    <div class="nav-item-parent">
+                        <i class="ph ph-faders"></i>
+                        <span>Thiết lập chung</span>
+                    </div>
+                    <div class="nav-sub-list">
+                        <a th:href="@{/admin/locations}" class="nav-sub-item" th:classappend="${activeItem == 'dia-diem'} ? 'active' : ''">
+                            Địa điểm khám
+                        </a>
+                        <a th:href="@{/admin/services}" class="nav-sub-item" th:classappend="${activeItem == 'danh-muc-dich-vu'} ? 'active' : ''">
+                            Danh mục dịch vụ
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+
+        <!-- Nhóm dưới: Nhật ký hoạt động & Đăng xuất -->
+        <div class="sidebar-footer">
+            <a th:href="@{/admin/logs}" class="footer-nav-item" th:classappend="${activeGroup == 'logs'} ? 'active' : ''">
+                <i class="ph ph-clock-counter-clockwise"></i>
+                <span>Nhật ký hoạt động</span>
+            </a>
+            <a th:href="@{/login?logout}" class="footer-nav-item">
+                <i class="ph ph-sign-out"></i>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+
+    </aside>
+
+</body>
+</html>

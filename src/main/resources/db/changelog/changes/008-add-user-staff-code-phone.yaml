@@ -1,0 +1,14 @@
+databaseChangeLog:
+- changeSet:
+    id: 008-add-user-staff-code-phone
+    author: phankien
+    changes:
+    - addColumn:
+        tableName: users
+        columns:
+        - column:
+            name: staff_code
+            type: nvarchar(50)
+        - column:
+            name: phone
+            type: varchar(20)

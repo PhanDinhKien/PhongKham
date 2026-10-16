@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,8 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Chạy với mọi request: đọc JWT trong header Authorization,
- * hợp lệ thì báo cho Spring Security biết ai đang gọi API.
+ * Chạy với mọi request: đọc JWT trong header Authorization hoặc Cookie accessToken,
+ * hợp lệ thì báo cho Spring Security biết ai đang gọi API/truy cập trang.
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -29,18 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = extractToken(request);
 
-        if (header != null && header.startsWith("Bearer ")) {
+        if (token != null) {
             try {
-                // 1. Bỏ chữ "Bearer " để lấy token, kiểm tra chữ ký và hạn dùng
-                Claims claims = jwtService.parse(header.substring(7));
+                // 1. Kiểm tra chữ ký và hạn dùng của token
+                Claims claims = jwtService.parse(token);
 
                 // 2. Đọc danh sách role trong token, đổi ADMIN → ROLE_ADMIN
                 List<?> roles = claims.get("roles", List.class);
-                List<SimpleGrantedAuthority> authorities = roles.stream()
-                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-                        .toList();
+                List<SimpleGrantedAuthority> authorities = roles != null
+                        ? roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).toList()
+                        : List.of();
 
                 // 3. Ghi thông tin người dùng vào SecurityContext
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -55,5 +56,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 4. Cho request đi tiếp tới Controller
         chain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        // Ưu tiên đọc từ Header Authorization
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+
+        // Nếu không có trong header, đọc từ Cookie accessToken
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }

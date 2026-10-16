@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | Mirai Healthcare</title>
+    <meta name="description" content="Đăng nhập hệ thống quản lý phòng khám Mirai Healthcare">
+    
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Thư viện Phosphor Icons (Sử dụng 100% icon từ Phosphor Icons, không sinh SVG thủ công) -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" th:href="@{/css/login.css}" href="/css/login.css">
+</head>
+<body>
+    <!-- Lớp nền hành lang phòng khám làm mờ (Overlay + Blur) -->
+    <div class="bg-hospital"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Khung Card Đăng nhập căn giữa theo mẫu Figma -->
+    <div class="login-card-container">
+        <div class="login-card">
+            
+            <!-- Logo Mirai Healthcare với Phosphor Icon -->
+            <div class="brand-logo">
+                <i class="ph-fill ph-heart logo-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-name">M I R A I</span>
+                    <span class="brand-tagline">HEALTHCARE</span>
+                </div>
+            </div>
+
+            <!-- Tiêu đề màu xanh đậm chuẩn thiết kế -->
+            <h1 class="login-title">Chào mừng trở lại!</h1>
+
+            <!-- Thông báo lỗi từ Model nếu có -->
+            <div class="alert alert-error" th:if="${errorMessage}">
+                <i class="ph-bold ph-warning-circle alert-icon"></i>
+                <span th:text="${errorMessage}">Tên đăng nhập hoặc mật khẩu không chính xác</span>
+            </div>
+
+            <!-- Thông báo thành công từ Model nếu có -->
+            <div class="alert alert-success" th:if="${successMessage}">
+                <i class="ph-bold ph-check-circle alert-icon"></i>
+                <span th:text="${successMessage}">Đăng nhập thành công!</span>
+            </div>
+
+            <!-- Thông báo thông tin từ Model nếu có -->
+            <div class="alert alert-info" th:if="${infoMessage}">
+                <i class="ph-bold ph-info alert-icon"></i>
+                <span th:text="${infoMessage}">Đã đăng xuất khỏi hệ thống.</span>
+            </div>
+
+            <!-- Form đăng nhập MVC -->
+            <form id="loginForm" th:action="@{/login}" th:object="${loginForm}" method="post" class="login-form">
+                
+                <!-- Tên đăng nhập -->
+                <div class="form-group" th:classappend="${#fields != null and #fields.hasErrors('email')} ? 'has-error' : ''">
+                    <label for="email" class="form-label">Tên đăng nhập</label>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        th:field="*{email}" 
+                        class="form-input" 
+                        placeholder="Nhập mã nhân viên hoặc email" 
+                        required 
+                        autocomplete="username"
+                    />
+                    <div class="field-error" th:if="${#fields != null and #fields.hasErrors('email')}" th:errors="*{email}">
+                        Vui lòng nhập tên đăng nhập hoặc email
+                    </div>
+                </div>
+
+                <!-- Mật khẩu -->
+                <div class="form-group" th:classappend="${#fields != null and #fields.hasErrors('password')} ? 'has-error' : ''">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            th:field="*{password}" 
+                            class="form-input" 
+                            placeholder="••••••••" 
+                            required 
+                            autocomplete="current-password"
+                        />
+                        <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" title="Hiện hoặc ẩn mật khẩu" aria-label="Hiện hoặc ẩn mật khẩu">
+                            <i class="ph ph-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="field-error" th:if="${#fields != null and #fields.hasErrors('password')}" th:errors="*{password}">
+                        Vui lòng nhập mật khẩu
+                    </div>
+                </div>
+
+                <!-- Ghi nhớ đăng nhập -->
+                <div class="checkbox-row">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="rememberMe" th:field="*{rememberMe}">
+                        <span class="checkbox-box"></span>
+                        <span class="checkbox-label">Ghi nhớ đăng nhập</span>
+                    </label>
+                </div>
+
+                <!-- Nút Đăng nhập -->
+                <button type="submit" id="btnSubmit" class="btn-login">
+                    <span class="btn-text">Đăng nhập</span>
+                    <i class="ph-bold ph-spinner spinner hidden" id="btnSpinner"></i>
+                </button>
+            </form>
+
+            <!-- Gợi ý tài khoản mẫu để test nhanh -->
+            <div class="demo-hint">
+                <span class="demo-label">Tài khoản mẫu: </span>
+                <button type="button" id="btnQuickDemo" class="btn-demo-link">admin@phongkham.local</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script tương tác phía Client -->
+    <script>
+        // Bật/tắt hiện mật khẩu sử dụng Phosphor Icons
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const pwdInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (toggleBtn && pwdInput && eyeIcon) {
+            toggleBtn.addEventListener('click', function () {
+                const isPassword = pwdInput.getAttribute('type') === 'password';
+                pwdInput.setAttribute('type', isPassword ? 'text' : 'password');
+                
+                if (isPassword) {
+                    eyeIcon.className = 'ph ph-eye-slash';
+                } else {
+                    eyeIcon.className = 'ph ph-eye';
+                }
+            });
+        }
+
+        // Tự động điền tài khoản demo khi bấm vào link gợi ý
+        const btnQuickDemo = document.getElementById('btnQuickDemo');
+        const emailInput = document.getElementById('email');
+        if (btnQuickDemo && emailInput) {
+            btnQuickDemo.addEventListener('click', function () {
+                emailInput.value = 'admin@phongkham.local';
+                pwdInput.focus();
+            });
+        }
+
+        // Hiệu ứng xoay icon loading khi gửi form
+        const form = document.getElementById('loginForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const spinner = document.getElementById('btnSpinner');
+        const btnText = document.querySelector('.btn-text');
+
+        if (form) {
+            form.addEventListener('submit', function () {
+                if (emailInput.value && pwdInput.value) {
+                    btnSubmit.classList.add('loading');
+                    btnSubmit.style.pointerEvents = 'none';
+                    btnText.textContent = 'Đang đăng nhập...';
+                    if (spinner) spinner.classList.remove('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

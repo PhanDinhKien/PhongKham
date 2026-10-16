@@ -22,6 +22,9 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
 
+  thymeleaf:
+    cache: false
+
 # Tài khoản admin được tạo sẵn khi khởi động (xem AdminSeeder)
 app:
   seed:

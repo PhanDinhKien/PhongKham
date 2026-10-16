@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="htmlTitle">Chỉnh sửa vai trò & phân quyền | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('quan-tri', 'vai-tro')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-link">Quản trị hệ thống</span>
+                <span class="breadcrumb-separator">›</span>
+                <a th:href="@{/admin/roles}" class="breadcrumb-link">Vai trò & Quyền</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current" id="breadcrumbAction">Chỉnh sửa</span>
+            </div>
+
+            <!-- Nút quay lại & Tiêu đề trang & Nút hành động -->
+            <div>
+                <a th:href="@{/admin/roles}" class="btn-back-link">
+                    <i class="ph ph-arrow-left"></i>
+                    <span>Quay lại danh sách vai trò</span>
+                </a>
+
+                <div class="page-header-row" style="margin-top: 4px;">
+                    <div>
+                        <h1 class="page-title" id="pageTitle">Chỉnh sửa vai trò & phân quyền</h1>
+                        <span class="page-subtitle" id="pageSubtitle">Thiết lập thông tin và cấu hình các quyền hạn truy cập của vai trò</span>
+                    </div>
+                    
+                    <div class="page-header-actions">
+                        <button type="button" class="btn-modal-cancel" onclick="window.location.href='/admin/roles'">
+                            Hủy bỏ
+                        </button>
+                        <button type="submit" form="roleEditForm" class="btn-add-account" id="btnSubmitRole">
+                            <i class="ph-bold ph-floppy-disk"></i>
+                            <span id="btnSubmitText">Lưu thay đổi</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form xử lý chỉnh sửa / tạo mới vai trò -->
+            <form id="roleEditForm">
+                <input type="hidden" id="roleId" value="">
+
+                <div class="edit-screen-layout">
+                    
+                    <!-- THẺ 1: THÔNG TIN VAI TRÒ -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            <div class="section-card-title">
+                                <i class="ph-bold ph-identification-badge"></i>
+                                <span>1. Thông tin chung vai trò</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row-2col">
+                            <!-- Tên vai trò * -->
+                            <div class="form-group">
+                                <label class="form-label" for="roleName">Tên vai trò <span class="required-star">*</span></label>
+                                <input type="text" id="roleName" class="form-control" placeholder="Nhập tên vai trò (ví dụ: Bác sĩ kết luận)" required>
+                            </div>
+
+                            <!-- Mã vai trò * -->
+                            <div class="form-group">
+                                <label class="form-label" for="roleCode">Mã vai trò <span class="required-star">*</span></label>
+                                <input type="text" id="roleCode" class="form-control" placeholder="BAC_SI_KET_LUAN" required style="font-family: monospace; text-transform: uppercase;">
+                                <small id="roleCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 4px;">
+                                    Mã vai trò là định danh cố định không thể sửa sau khi khởi tạo.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Mô tả vai trò -->
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label class="form-label" for="roleDescription">Mô tả chức năng & nhiệm vụ</label>
+                            <input type="text" id="roleDescription" class="form-control" placeholder="Mô tả phạm vi quyền hạn và trách nhiệm của vai trò trong phòng khám...">
+                        </div>
+
+                        <!-- Switch Trạng thái Hoạt động -->
+                        <div class="form-group" style="margin-top: 14px; margin-bottom: 0;">
+                            <label class="switch-label-wrap">
+                                <input type="checkbox" id="roleActive" class="switch-input" checked>
+                                <span class="switch-slider"></span>
+                                <span class="switch-text" id="activeStatusLabel">Vai trò đang được kích hoạt và cho phép gán cho tài khoản</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- THẺ 2: MA TRẬN PHÂN QUYỀN HỆ THỐNG -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            <div class="section-card-title">
+                                <i class="ph-bold ph-shield-check"></i>
+                                <span>2. Ma trận phân quyền hệ thống</span>
+                            </div>
+                            <div>
+                                <span class="perm-count-pill" style="font-size: 13px; padding: 5px 14px;">
+                                    <i class="ph-bold ph-check"></i>
+                                    <span>Đã chọn <strong id="selectedPermCount">0</strong> / <strong id="totalPermCount">0</strong> quyền</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Thanh công cụ lọc quyền và thao tác nhanh -->
+                        <div class="perm-matrix-toolbar">
+                            <div class="perm-search-box">
+                                <i class="ph ph-magnifying-glass"></i>
+                                <input type="text" id="permSearchInput" placeholder="Tìm kiếm theo tên quyền hoặc mã quyền...">
+                            </div>
+
+                            <div class="perm-quick-actions">
+                                <button type="button" class="btn-perm-action" id="btnSelectAllPerms">
+                                    <i class="ph ph-check-square"></i>
+                                    <span>Chọn tất cả quyền</span>
+                                </button>
+                                <button type="button" class="btn-perm-action" id="btnDeselectAllPerms">
+                                    <i class="ph ph-square"></i>
+                                    <span>Bỏ chọn tất cả</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Lưới hiển thị các nhóm quyền hạn theo Module -->
+                        <div class="perm-matrix-grid" id="permMatrixContainer">
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--slate-400);">
+                                Đang tải ma trận quyền hạn...
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </main>
+    </div>
+
+    <!-- Khung thông báo Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==============================================================
+         JAVASCRIPT XỬ LÝ MÀN HÌNH CHỈNH SỬA VAI TRÒ
+         ============================================================== -->
+    <script>
+        // State
+        let isEditMode = false;
+        let roleId = null;
+        let allPermissions = [];
+        let selectedPermissionCodes = new Set();
+
+        // DOM Elements
+        const htmlTitle = document.getElementById('htmlTitle');
+        const breadcrumbAction = document.getElementById('breadcrumbAction');
+        const pageTitle = document.getElementById('pageTitle');
+        const pageSubtitle = document.getElementById('pageSubtitle');
+        const btnSubmitText = document.getElementById('btnSubmitText');
+        const roleEditForm = document.getElementById('roleEditForm');
+        const roleIdInput = document.getElementById('roleId');
+        const roleNameInput = document.getElementById('roleName');
+        const roleCodeInput = document.getElementById('roleCode');
+        const roleCodeHelp = document.getElementById('roleCodeHelp');
+        const roleDescriptionInput = document.getElementById('roleDescription');
+        const roleActiveCheckbox = document.getElementById('roleActive');
+        const activeStatusLabel = document.getElementById('activeStatusLabel');
+        const permMatrixContainer = document.getElementById('permMatrixContainer');
+        const permSearchInput = document.getElementById('permSearchInput');
+        const selectedPermCount = document.getElementById('selectedPermCount');
+        const totalPermCount = document.getElementById('totalPermCount');
+        const btnSelectAllPerms = document.getElementById('btnSelectAllPerms');
+        const btnDeselectAllPerms = document.getElementById('btnDeselectAllPerms');
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', async () => {
+            parseUrlMode();
+            setupEventListeners();
+            await loadPermissions();
+            if (isEditMode) {
+                await loadRoleDetail(roleId);
+            } else {
+                renderPermissionMatrix();
+            }
+        });
+
+        // Phân tích URL xác định chế độ Thêm mới hay Chỉnh sửa
+        function parseUrlMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryId = urlParams.get('id');
+
+            // Hỗ trợ cả /admin/roles/{id}/edit và /admin/roles/edit?id=...
+            const pathParts = window.location.pathname.split('/').filter(Boolean);
+            let pathId = null;
+            if (pathParts.length >= 3 && pathParts[1] === 'roles' && pathParts[3] === 'edit') {
+                pathId = pathParts[2];
+            }
+
+            roleId = queryId || pathId;
+            isEditMode = !!roleId;
+
+            if (isEditMode) {
+                roleIdInput.value = roleId;
+                htmlTitle.textContent = 'Chỉnh sửa vai trò & phân quyền | Mirai Healthcare';
+                breadcrumbAction.textContent = 'Chỉnh sửa vai trò';
+                pageTitle.textContent = 'Chỉnh sửa vai trò & phân quyền';
+                pageSubtitle.textContent = 'Cấu hình thông tin vai trò và danh sách các quyền hạn truy cập tương ứng';
+                btnSubmitText.textContent = 'Lưu thay đổi';
+                roleCodeInput.readOnly = true;
+                roleCodeHelp.style.display = 'block';
+            } else {
+                roleIdInput.value = '';
+                htmlTitle.textContent = 'Thêm vai trò mới | Mirai Healthcare';
+                breadcrumbAction.textContent = 'Thêm vai trò mới';
+                pageTitle.textContent = 'Thêm vai trò mới';
+                pageSubtitle.textContent = 'Khởi tạo vai trò mới và phân quyền hạn chức năng trong hệ thống';
+                btnSubmitText.textContent = 'Tạo vai trò';
+                roleCodeInput.readOnly = false;
+                roleCodeHelp.style.display = 'none';
+            }
+        }
+
+        function setupEventListeners() {
+            roleEditForm.addEventListener('submit', handleFormSubmit);
+
+            roleActiveCheckbox.addEventListener('change', (e) => {
+                activeStatusLabel.textContent = e.target.checked
+                    ? 'Vai trò đang được kích hoạt và cho phép gán cho tài khoản'
+                    : 'Vai trò đang bị khóa và không thể gán cho tài khoản';
+            });
+
+            btnSelectAllPerms.addEventListener('click', () => {
+                allPermissions.forEach(p => selectedPermissionCodes.add(p.code));
+                updateAllCheckboxesFromState();
+            });
+
+            btnDeselectAllPerms.addEventListener('click', () => {
+                selectedPermissionCodes.clear();
+                updateAllCheckboxesFromState();
+            });
+
+            permSearchInput.addEventListener('input', () => {
+                renderPermissionMatrix(permSearchInput.value.trim().toLowerCase());
+            });
+        }
+
+        // Tải danh mục quyền hạn
+        async function loadPermissions() {
+            try {
+                const response = await fetch('/api/roles/permissions');
+                if (response.ok) {
+                    allPermissions = await response.json();
+                    totalPermCount.textContent = allPermissions.length;
+                }
+            } catch (err) {
+                console.error('Lỗi khi tải danh sách quyền:', err);
+            }
+        }
+
+        // Tải chi tiết vai trò khi ở chế độ chỉnh sửa
+        async function loadRoleDetail(id) {
+            try {
+                const response = await fetch(`/api/roles/${id}`);
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (!response.ok) throw new Error('Không thể tải thông tin vai trò');
+                const role = await response.json();
+
+                roleNameInput.value = role.name || '';
+                roleCodeInput.value = role.code || '';
+                roleDescriptionInput.value = role.description || '';
+                roleActiveCheckbox.checked = role.active;
+                activeStatusLabel.textContent = role.active
+                    ? 'Vai trò đang được kích hoạt và cho phép gán cho tài khoản'
+                    : 'Vai trò đang bị khóa và không thể gán cho tài khoản';
+
+                if (role.code === 'ADMIN') {
+                    roleActiveCheckbox.disabled = true;
+                }
+
+                selectedPermissionCodes = new Set(role.permissionCodes || []);
+                renderPermissionMatrix();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, true);
+            }
+        }
+
+        // Render ma trận quyền hạn dạng Card cho từng Phân hệ
+        function renderPermissionMatrix(filterKeyword = '') {
+            const moduleLabels = {
+                'USER': { name: 'Quản lý Người dùng & Tài khoản', icon: 'ph-users' },
+                'ROLE': { name: 'Quản lý Vai trò & Phân quyền', icon: 'ph-shield-check' },
+                'SERVICE': { name: 'Danh mục Dịch vụ y tế', icon: 'ph-first-aid' },
+                'PATIENT': { name: 'Hồ sơ Bệnh nhân', icon: 'ph-identification-card' },
+                'APPOINTMENT': { name: 'Lịch hẹn khám bệnh', icon: 'ph-calendar-check' },
+                'RECORD': { name: 'Kết luận khám & Bệnh án', icon: 'ph-clipboard-text' }
+            };
+
+            // Lọc theo từ khóa tìm kiếm nếu có
+            const filtered = allPermissions.filter(p => {
+                if (!filterKeyword) return true;
+                return (p.name && p.name.toLowerCase().includes(filterKeyword)) ||
+                       (p.code && p.code.toLowerCase().includes(filterKeyword)) ||
+                       (p.module && p.module.toLowerCase().includes(filterKeyword));
+            });
+
+            // Gom nhóm theo Module
+            const grouped = {};
+            filtered.forEach(p => {
+                const mod = p.module || 'KHAC';
+                if (!grouped[mod]) grouped[mod] = [];
+                grouped[mod].push(p);
+            });
+
+            if (Object.keys(grouped).length === 0) {
+                permMatrixContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--slate-400);">
+                        Không tìm thấy quyền hạn nào khớp với từ khóa tìm kiếm
+                    </div>
+                `;
+                selectedPermCount.textContent = selectedPermissionCodes.size;
+                return;
+            }
+
+            let html = '';
+            for (const [mod, perms] of Object.entries(grouped)) {
+                const modInfo = moduleLabels[mod] || { name: `Phân hệ ${mod}`, icon: 'ph-folder' };
+                const allModuleCodes = perms.map(p => p.code);
+                const isAllModuleChecked = allModuleCodes.every(code => selectedPermissionCodes.has(code));
+
+                html += `
+                    <div class="perm-card-box">
+                        <div class="perm-card-header">
+                            <div class="perm-card-header-title">
+                                <i class="ph-bold ${modInfo.icon}"></i>
+                                <span>${escapeHtml(modInfo.name)}</span>
+                            </div>
+                            <label style="font-size: 12.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+                                <input type="checkbox" class="check-module-all" data-module="${escapeHtml(mod)}" ${isAllModuleChecked ? 'checked' : ''} onchange="toggleModuleAll('${escapeHtml(mod)}', this.checked)">
+                                <span style="color: var(--slate-600); font-weight: 500;">Chọn cả nhóm</span>
+                            </label>
+                        </div>
+
+                        <div class="perm-card-body">
+                            ${perms.map(p => {
+                                const isChecked = selectedPermissionCodes.has(p.code);
+                                return `
+                                    <label class="perm-item-row ${isChecked ? 'checked' : ''}" id="perm_row_${p.code}">
+                                        <input type="checkbox" value="${escapeHtml(p.code)}" data-module="${escapeHtml(mod)}" ${isChecked ? 'checked' : ''} onchange="toggleSinglePermission('${escapeHtml(p.code)}', this.checked)">
+                                        <div class="perm-item-details">
+                                            <div class="perm-item-name">
+                                                <span>${escapeHtml(p.name)}</span>
+                                                <span class="perm-item-code">${escapeHtml(p.code)}</span>
+                                            </div>
+                                            ${p.description ? `<span class="perm-item-desc">${escapeHtml(p.description)}</span>` : ''}
+                                        </div>
+                                    </label>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            permMatrixContainer.innerHTML = html;
+            selectedPermCount.textContent = selectedPermissionCodes.size;
+        }
+
+        function toggleSinglePermission(code, isChecked) {
+            if (isChecked) {
+                selectedPermissionCodes.add(code);
+            } else {
+                selectedPermissionCodes.delete(code);
+            }
+
+            const row = document.getElementById(`perm_row_${code}`);
+            if (row) {
+                if (isChecked) row.classList.add('checked');
+                else row.classList.remove('checked');
+            }
+
+            updateSelectedCount();
+        }
+
+        function toggleModuleAll(mod, isChecked) {
+            const modulePerms = allPermissions.filter(p => (p.module || 'KHAC') === mod);
+            modulePerms.forEach(p => {
+                if (isChecked) {
+                    selectedPermissionCodes.add(p.code);
+                } else {
+                    selectedPermissionCodes.delete(p.code);
+                }
+                const row = document.getElementById(`perm_row_${p.code}`);
+                if (row) {
+                    const cb = row.querySelector('input[type="checkbox"]');
+                    if (cb) cb.checked = isChecked;
+                    if (isChecked) row.classList.add('checked');
+                    else row.classList.remove('checked');
+                }
+            });
+
+            updateSelectedCount();
+        }
+
+        function updateAllCheckboxesFromState() {
+            renderPermissionMatrix(permSearchInput.value.trim().toLowerCase());
+        }
+
+        function updateSelectedCount() {
+            selectedPermCount.textContent = selectedPermissionCodes.size;
+
+            // Kiểm tra và cập nhật các checkbox "Chọn cả nhóm"
+            const moduleCheckAlls = permMatrixContainer.querySelectorAll('.check-module-all');
+            moduleCheckAlls.forEach(headerCb => {
+                const mod = headerCb.getAttribute('data-module');
+                const modulePerms = allPermissions.filter(p => (p.module || 'KHAC') === mod);
+                const allChecked = modulePerms.length > 0 && modulePerms.every(p => selectedPermissionCodes.has(p.code));
+                headerCb.checked = allChecked;
+            });
+        }
+
+        // Xử lý gửi Form Lưu vai trò
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const name = roleNameInput.value.trim();
+            const code = roleCodeInput.value.trim().toUpperCase();
+            const description = roleDescriptionInput.value.trim();
+            const active = roleActiveCheckbox.checked;
+            const permissionCodes = Array.from(selectedPermissionCodes);
+
+            const payload = isEditMode
+                ? { name, description: description || null, active, permissionCodes }
+                : { code, name, description: description || null, active, permissionCodes };
+
+            try {
+                const url = isEditMode ? `/api/roles/${roleId}` : '/api/roles';
+                const method = isEditMode ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || (isEditMode ? 'Cập nhật vai trò thất bại' : 'Thêm vai trò thất bại'));
+                }
+
+                showToast(isEditMode ? 'Đã cập nhật vai trò & phân quyền thành công!' : 'Đã tạo vai trò mới thành công!');
+                
+                // Quay lại trang danh sách sau 1 giây
+                setTimeout(() => {
+                    window.location.href = '/admin/roles';
+                }, 1000);
+
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'toast-error' : ''}`;
+            toast.innerHTML = `
+                <i class="ph ${isError ? 'ph-warning-circle' : 'ph-check-circle'}" style="font-size: 20px; color: ${isError ? '#dc2626' : 'var(--primary-green)'};"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

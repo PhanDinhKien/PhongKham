@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục dịch vụ y tế | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('thiet-lap', 'danh-muc-dich-vu')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-link">Thiết lập chung</span>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Danh mục dịch vụ</span>
+            </div>
+
+            <!-- Tiêu đề trang & Nút thêm dịch vụ -->
+            <div class="page-header-row">
+                <div>
+                    <h1 class="page-title">Danh mục dịch vụ y tế</h1>
+                    <span class="page-subtitle">Quản lý danh sách dịch vụ xét nghiệm, chẩn đoán hình ảnh, khám bệnh và đơn giá</span>
+                </div>
+                
+                <div class="page-header-actions">
+                    <button type="button" class="btn-add-account" id="btnOpenAddModal">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm dịch vụ</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc -->
+            <div class="filter-toolbar">
+                
+                <!-- Ô tìm kiếm mã dịch vụ, tên dịch vụ -->
+                <div class="search-box">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo mã dịch vụ hoặc tên dịch vụ...">
+                </div>
+
+                <!-- Dropdown lọc theo loại dịch vụ -->
+                <div class="filter-select-wrap">
+                    <select id="typeFilter" class="filter-select">
+                        <option value="">Tất cả loại dịch vụ</option>
+                    </select>
+                    <i class="ph ph-caret-down"></i>
+                </div>
+
+                <!-- Dropdown lọc theo trạng thái -->
+                <div class="filter-select-wrap">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true">Đang áp dụng</option>
+                        <option value="false">Tạm dừng</option>
+                    </select>
+                    <i class="ph ph-caret-down"></i>
+                </div>
+
+                <!-- Nút Xóa bộ lọc -->
+                <button type="button" id="btnClearFilter" class="btn-clear-filter">
+                    <i class="ph ph-funnel"></i>
+                    <span>Xóa bộ lọc</span>
+                </button>
+            </div>
+
+            <!-- Bảng dữ liệu danh mục dịch vụ -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; white-space: nowrap;">STT</th>
+                                <th style="width: 130px; white-space: nowrap;">Mã dịch vụ</th>
+                                <th style="width: 260px; white-space: nowrap;">Tên dịch vụ</th>
+                                <th style="width: 170px; white-space: nowrap;">Loại dịch vụ</th>
+                                <th style="width: 140px; text-align: right; white-space: nowrap;">Đơn giá</th>
+                                <th style="min-width: 200px; white-space: nowrap;">Mô tả</th>
+                                <th style="width: 160px; white-space: nowrap;">Người cập nhật</th>
+                                <th style="width: 130px; white-space: nowrap;">Trạng thái</th>
+                                <th style="width: 140px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="serviceTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    Đang tải dữ liệu dịch vụ...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang (Pagination Bar bên góc phải) -->
+                <div class="pagination-bar">
+                    <div class="pagination-info" id="paginationInfo">
+                        Đang xem 0 - 0 trong 0
+                    </div>
+
+                    <div class="pagination-actions">
+                        <div class="pagination-controls" id="paginationControls">
+                            <!-- Nút trang được sinh động bởi JS -->
+                        </div>
+
+                        <div class="page-size-wrap">
+                            <select id="pageSizeSelect" class="page-size-select">
+                                <option value="10">10 / trang</option>
+                                <option value="20" selected>20 / trang</option>
+                                <option value="50">50 / trang</option>
+                                <option value="100">100 / trang</option>
+                            </select>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: THÊM / CẬP NHẬT DỊCH VỤ Y TẾ
+         ============================================================== -->
+    <div class="modal-backdrop" id="serviceModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Thêm dịch vụ mới</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <form id="serviceForm">
+                <input type="hidden" id="serviceId" value="">
+                
+                <div class="modal-body">
+                    
+                    <!-- Row 2 cột: Mã dịch vụ * & Tên dịch vụ * -->
+                    <div class="form-row-2col">
+                        <div class="form-group">
+                            <label class="form-label" for="serviceCode">Mã dịch vụ <span class="required-star">*</span></label>
+                            <input type="text" id="serviceCode" class="form-control" placeholder="XN_001, CDHA_001..." required style="font-family: monospace; text-transform: uppercase;">
+                            <small id="serviceCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 3px;">
+                                Mã dịch vụ cố định và không thể thay đổi sau khi tạo.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="serviceName">Tên dịch vụ <span class="required-star">*</span></label>
+                            <input type="text" id="serviceName" class="form-control" placeholder="Nhập tên dịch vụ y tế" required>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 cột: Loại dịch vụ * & Đơn giá (VNĐ) * -->
+                    <div class="form-row-2col">
+                        <div class="form-group">
+                            <label class="form-label" for="serviceType">Loại dịch vụ <span class="required-star">*</span></label>
+                            <select id="serviceType" class="form-control" required>
+                                <option value="">-- Chọn loại dịch vụ --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="servicePrice">Đơn giá (VNĐ) <span class="required-star">*</span></label>
+                            <input type="number" id="servicePrice" class="form-control" placeholder="150000" min="0" step="1000" required>
+                            <small id="pricePreviewText" style="color: var(--primary-green); font-size: 12px; font-weight: 600; margin-top: 3px; display: block;">
+                                0 đ
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Mô tả dịch vụ -->
+                    <div class="form-group">
+                        <label class="form-label" for="serviceDescription">Mô tả dịch vụ</label>
+                        <textarea id="serviceDescription" class="form-control" rows="2" placeholder="Nhập mô tả chuyên môn, quy trình hoặc lưu ý thực hiện..."></textarea>
+                    </div>
+
+                    <!-- Switch Trạng thái Áp dụng -->
+                    <div class="form-group" style="margin-top: 10px; margin-bottom: 6px;">
+                        <label class="switch-label-wrap">
+                            <input type="checkbox" id="serviceActive" class="switch-input" checked>
+                            <span class="switch-slider"></span>
+                            <span class="switch-text" id="activeStatusLabel">Đang áp dụng</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelModal">Hủy</button>
+                    <button type="submit" class="btn-modal-submit" id="btnSaveService">Lưu dịch vụ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: XÁC NHẬN XÓA MỀM DỊCH VỤ
+         ============================================================== -->
+    <div class="modal-backdrop" id="deleteConfirmModal">
+        <div class="modal-dialog" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa dịch vụ</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
+                    Bạn có chắc chắn muốn xóa dịch vụ <strong id="deleteServiceName" style="color: var(--slate-900);"></strong> (Mã: <code id="deleteServiceCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
+                </p>
+                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
+                    <i class="ph ph-info" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
+                    Dịch vụ sẽ được chuyển sang trạng thái <strong>xóa mềm</strong> và ngừng xuất hiện trong danh mục chỉ định khám mới. Lịch sử khám cũ của bệnh nhân vẫn được bảo toàn.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khung thông báo Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==============================================================
+         JAVASCRIPT XỬ LÝ NGHIỆP VỤ QUẢN LÝ DỊCH VỤ
+         ============================================================== -->
+    <script>
+        // State
+        let currentPage = 0;
+        let pageSize = 20;
+        let totalItems = 0;
+        let serviceTypes = [];
+        let deleteTargetId = null;
+        let searchTimeout = null;
+
+        // DOM Elements
+        const serviceTableBody = document.getElementById('serviceTableBody');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationControls = document.getElementById('paginationControls');
+        const pageSizeSelect = document.getElementById('pageSizeSelect');
+        const searchInput = document.getElementById('searchInput');
+        const typeFilter = document.getElementById('typeFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const btnClearFilter = document.getElementById('btnClearFilter');
+
+        // Modal Elements
+        const serviceModal = document.getElementById('serviceModal');
+        const btnOpenAddModal = document.getElementById('btnOpenAddModal');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const btnCancelModal = document.getElementById('btnCancelModal');
+        const serviceForm = document.getElementById('serviceForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const serviceIdInput = document.getElementById('serviceId');
+        const serviceCodeInput = document.getElementById('serviceCode');
+        const serviceCodeHelp = document.getElementById('serviceCodeHelp');
+        const serviceNameInput = document.getElementById('serviceName');
+        const serviceTypeSelect = document.getElementById('serviceType');
+        const servicePriceInput = document.getElementById('servicePrice');
+        const pricePreviewText = document.getElementById('pricePreviewText');
+        const serviceDescriptionInput = document.getElementById('serviceDescription');
+        const serviceActiveCheckbox = document.getElementById('serviceActive');
+        const activeStatusLabel = document.getElementById('activeStatusLabel');
+
+        // Delete Modal Elements
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        const deleteServiceName = document.getElementById('deleteServiceName');
+        const deleteServiceCode = document.getElementById('deleteServiceCode');
+        const btnCloseDeleteModal = document.getElementById('btnCloseDeleteModal');
+        const btnCancelDeleteModal = document.getElementById('btnCancelDeleteModal');
+        const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+        // Khởi động
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadServiceTypes();
+            loadServices();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            btnOpenAddModal.addEventListener('click', openAddModal);
+            btnCloseModal.addEventListener('click', closeServiceModal);
+            btnCancelModal.addEventListener('click', closeServiceModal);
+
+            btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+            btnCancelDeleteModal.addEventListener('click', closeDeleteModal);
+            btnConfirmDelete.addEventListener('click', executeDelete);
+
+            serviceForm.addEventListener('submit', handleFormSubmit);
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 0;
+                    loadServices();
+                }, 350);
+            });
+
+            typeFilter.addEventListener('change', () => {
+                currentPage = 0;
+                loadServices();
+            });
+
+            statusFilter.addEventListener('change', () => {
+                currentPage = 0;
+                loadServices();
+            });
+
+            btnClearFilter.addEventListener('click', () => {
+                searchInput.value = '';
+                typeFilter.value = '';
+                statusFilter.value = '';
+                currentPage = 0;
+                loadServices();
+            });
+
+            pageSizeSelect.addEventListener('change', (e) => {
+                pageSize = parseInt(e.target.value);
+                currentPage = 0;
+                loadServices();
+            });
+
+            serviceActiveCheckbox.addEventListener('change', (e) => {
+                activeStatusLabel.textContent = e.target.checked ? 'Đang áp dụng' : 'Tạm dừng';
+            });
+
+            servicePriceInput.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value) || 0;
+                pricePreviewText.textContent = formatCurrency(val);
+            });
+        }
+
+        // Tải danh mục loại dịch vụ
+        async function loadServiceTypes() {
+            try {
+                const res = await fetch('/api/services/types');
+                if (res.ok) {
+                    serviceTypes = await res.json();
+                    
+                    // Điền vào Filter dropdown
+                    let filterOptions = '<option value="">Tất cả loại dịch vụ</option>';
+                    serviceTypes.forEach(t => {
+                        filterOptions += `<option value="${escapeHtml(t.code)}">${escapeHtml(t.label)}</option>`;
+                    });
+                    typeFilter.innerHTML = filterOptions;
+
+                    // Điền vào Modal select
+                    let modalOptions = '<option value="">-- Chọn loại dịch vụ --</option>';
+                    serviceTypes.forEach(t => {
+                        modalOptions += `<option value="${escapeHtml(t.code)}">${escapeHtml(t.label)}</option>`;
+                    });
+                    serviceTypeSelect.innerHTML = modalOptions;
+                }
+            } catch (err) {
+                console.error('Không thể tải loại dịch vụ:', err);
+            }
+        }
+
+        // Tải danh sách dịch vụ
+        async function loadServices() {
+            const keyword = searchInput.value.trim();
+            const serviceType = typeFilter.value;
+            const activeVal = statusFilter.value;
+
+            const params = new URLSearchParams({
+                page: currentPage,
+                size: pageSize
+            });
+
+            if (keyword) params.append('keyword', keyword);
+            if (serviceType) params.append('serviceType', serviceType);
+            if (activeVal !== '') params.append('active', activeVal);
+
+            try {
+                const response = await fetch(`/api/services/search?${params.toString()}`);
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải danh sách dịch vụ');
+                }
+                const data = await response.json();
+                renderTable(data.items || [], data.page, data.size, data.total);
+            } catch (err) {
+                serviceTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px; color: #dc2626;">
+                            Có lỗi khi tải dữ liệu: ${err.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Render bảng dữ liệu dịch vụ
+        function renderTable(services, page, size, total) {
+            totalItems = total;
+            currentPage = page;
+
+            if (!services || services.length === 0) {
+                serviceTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                            Không tìm thấy dịch vụ nào phù hợp
+                        </td>
+                    </tr>
+                `;
+                paginationInfo.textContent = 'Đang xem 0 - 0 trong 0';
+                paginationControls.innerHTML = '';
+                return;
+            }
+
+            const startIndex = page * size + 1;
+            const endIndex = Math.min((page + 1) * size, total);
+            paginationInfo.textContent = `Đang xem ${startIndex} - ${endIndex} trong ${total}`;
+
+            let html = '';
+            services.forEach((s, index) => {
+                const stt = String(page * size + index + 1).padStart(2, '0');
+                const desc = s.description || '-';
+
+                // Badge loại dịch vụ
+                let typeBadgeClass = 'type-khac';
+                let typeIcon = 'ph-folder';
+                if (s.serviceType === 'XET_NGHIEM') {
+                    typeBadgeClass = 'type-xet-nghiem';
+                    typeIcon = 'ph-flask';
+                } else if (s.serviceType === 'CHAN_DOAN_HINH_ANH') {
+                    typeBadgeClass = 'type-cdha';
+                    typeIcon = 'ph-camera';
+                } else if (s.serviceType === 'KHAM_BENH') {
+                    typeBadgeClass = 'type-kham-benh';
+                    typeIcon = 'ph-first-aid';
+                } else if (s.serviceType === 'THU_THUAT') {
+                    typeBadgeClass = 'type-thu-thuat';
+                    typeIcon = 'ph-scissors';
+                }
+
+                // Trạng thái pill (trên cùng 1 dòng)
+                const statusHtml = s.active 
+                    ? `<span class="status-pill active">Đang áp dụng</span>`
+                    : `<span class="status-pill inactive">Tạm dừng</span>`;
+
+                html += `
+                    <tr>
+                        <td style="color: var(--slate-500); font-size: 13px;">${stt}</td>
+                        <td style="white-space: nowrap;">
+                            <span class="code-badge">${escapeHtml(s.code)}</span>
+                        </td>
+                        <td>
+                            <strong class="service-name">${escapeHtml(s.name)}</strong>
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <span class="type-badge ${typeBadgeClass}">
+                                <i class="ph ${typeIcon}"></i>
+                                <span>${escapeHtml(s.serviceTypeLabel || s.serviceType)}</span>
+                            </span>
+                        </td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <span class="price-pill">${escapeHtml(s.formattedPrice)}</span>
+                        </td>
+                        <td style="color: var(--slate-600); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(desc)}">
+                            ${escapeHtml(desc)}
+                        </td>
+                        <td style="color: var(--slate-600); font-size: 12.5px; white-space: nowrap;">
+                            <div>${escapeHtml(s.updatedBy)}</div>
+                            <div style="font-size: 11px; color: var(--slate-400);">${formatDate(s.updatedAt)}</div>
+                        </td>
+                        <td style="white-space: nowrap;">${statusHtml}</td>
+                        <td style="text-align: right; padding-right: 16px; white-space: nowrap;">
+                            <div class="action-btn-group" style="justify-content: flex-end;">
+                                <button type="button" class="btn-action-icon" title="Chỉnh sửa dịch vụ" onclick="openEditModal('${s.id}')">
+                                    <i class="ph ph-pencil-simple"></i>
+                                </button>
+                                <button type="button" class="btn-action-icon text-warning" title="${s.active ? 'Tạm dừng dịch vụ' : 'Kích hoạt dịch vụ'}" onclick="toggleStatus('${s.id}')">
+                                    <i class="ph ${s.active ? 'ph-lock' : 'ph-lock-open'}"></i>
+                                </button>
+                                <button type="button" class="btn-action-icon text-danger" title="Xóa mềm dịch vụ" onclick="openDeleteModal('${s.id}', '${escapeHtml(s.name)}', '${escapeHtml(s.code)}')">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            serviceTableBody.innerHTML = html;
+            renderPagination(page, size, total);
+        }
+
+        // Render phân trang góc phải
+        function renderPagination(page, size, total) {
+            const totalPages = Math.ceil(total / size) || 1;
+            let html = '';
+
+            html += `
+                <button type="button" class="page-btn ${page === 0 ? 'disabled' : ''}" 
+                        onclick="goToPage(${page - 1})" ${page === 0 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-left"></i>
+                </button>
+            `;
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === 0 || i === totalPages - 1 || (i >= page - 1 && i <= page + 1)) {
+                    html += `
+                        <button type="button" class="page-btn ${i === page ? 'active' : ''}" 
+                                onclick="goToPage(${i})">
+                            ${i + 1}
+                        </button>
+                    `;
+                } else if (i === page - 2 || i === page + 2) {
+                    html += `<span class="page-ellipsis">...</span>`;
+                }
+            }
+
+            html += `
+                <button type="button" class="page-btn ${page >= totalPages - 1 ? 'disabled' : ''}" 
+                        onclick="goToPage(${page + 1})" ${page >= totalPages - 1 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-right"></i>
+                </button>
+            `;
+
+            paginationControls.innerHTML = html;
+        }
+
+        function goToPage(targetPage) {
+            if (targetPage < 0) return;
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            if (targetPage >= totalPages) return;
+            currentPage = targetPage;
+            loadServices();
+        }
+
+        // Mở Modal Thêm mới
+        function openAddModal() {
+            modalTitle.textContent = 'Thêm dịch vụ mới';
+            serviceIdInput.value = '';
+            serviceForm.reset();
+            serviceCodeInput.readOnly = false;
+            serviceCodeHelp.style.display = 'none';
+            serviceActiveCheckbox.checked = true;
+            activeStatusLabel.textContent = 'Đang áp dụng';
+            pricePreviewText.textContent = '0 đ';
+
+            serviceModal.classList.add('show');
+            serviceCodeInput.focus();
+        }
+
+        // Mở Modal Sửa
+        async function openEditModal(id) {
+            try {
+                const response = await fetch(`/api/services/${id}`);
+                if (!response.ok) throw new Error('Không thể tải thông tin dịch vụ');
+                const s = await response.json();
+
+                modalTitle.textContent = 'Cập nhật dịch vụ y tế';
+                serviceIdInput.value = s.id;
+                serviceCodeInput.value = s.code || '';
+                serviceCodeInput.readOnly = true;
+                serviceCodeHelp.style.display = 'block';
+                serviceNameInput.value = s.name || '';
+                serviceTypeSelect.value = s.serviceType || '';
+                servicePriceInput.value = s.price || 0;
+                pricePreviewText.textContent = s.formattedPrice || '0 đ';
+                serviceDescriptionInput.value = s.description || '';
+                serviceActiveCheckbox.checked = s.active;
+                activeStatusLabel.textContent = s.active ? 'Đang áp dụng' : 'Tạm dừng';
+
+                serviceModal.classList.add('show');
+                serviceNameInput.focus();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, true);
+            }
+        }
+
+        function closeServiceModal() {
+            serviceModal.classList.remove('show');
+        }
+
+        // Submit form
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const id = serviceIdInput.value;
+            const code = serviceCodeInput.value.trim().toUpperCase();
+            const name = serviceNameInput.value.trim();
+            const serviceType = serviceTypeSelect.value;
+            const price = parseFloat(servicePriceInput.value) || 0;
+            const description = serviceDescriptionInput.value.trim();
+            const active = serviceActiveCheckbox.checked;
+
+            if (!serviceType) {
+                showToast('Vui lòng chọn loại dịch vụ', true);
+                return;
+            }
+
+            const isEdit = !!id;
+            const payload = isEdit
+                ? { name, price, serviceType, active, description: description || null }
+                : { code, name, price, serviceType, active, description: description || null };
+
+            try {
+                const url = isEdit ? `/api/services/${id}` : '/api/services';
+                const method = isEdit ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || (isEdit ? 'Cập nhật thất bại' : 'Thêm dịch vụ thất bại'));
+                }
+
+                showToast(isEdit ? 'Đã cập nhật dịch vụ thành công!' : 'Đã thêm dịch vụ mới thành công!');
+                closeServiceModal();
+                loadServices();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // Toggle trạng thái
+        async function toggleStatus(id) {
+            try {
+                const response = await fetch(`/api/services/${id}/toggle-status`, {
+                    method: 'PATCH'
+                });
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Không thể đổi trạng thái dịch vụ');
+                }
+                const updated = await response.json();
+                showToast(`Đã chuyển dịch vụ "${updated.name}" sang trạng thái: ${updated.active ? 'Đang áp dụng' : 'Tạm dừng'}!`);
+                loadServices();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, true);
+            }
+        }
+
+        // Modal xác nhận xóa mềm
+        function openDeleteModal(id, name, code) {
+            deleteTargetId = id;
+            deleteServiceName.textContent = name;
+            deleteServiceCode.textContent = code;
+            deleteConfirmModal.classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            deleteConfirmModal.classList.remove('show');
+            deleteTargetId = null;
+        }
+
+        // Thực hiện xóa mềm
+        async function executeDelete() {
+            if (!deleteTargetId) return;
+
+            try {
+                const response = await fetch(`/api/services/${deleteTargetId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Xóa dịch vụ thất bại');
+                }
+
+                showToast('Đã xóa mềm dịch vụ thành công!');
+                closeDeleteModal();
+                loadServices();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // Toast notification
+        function showToast(message, isError = false) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'toast-error' : ''}`;
+            toast.innerHTML = `
+                <i class="ph ${isError ? 'ph-warning-circle' : 'ph-check-circle'}" style="font-size: 20px; color: ${isError ? '#dc2626' : 'var(--primary-green)'};"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('vi-VN').format(val) + ' đ';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

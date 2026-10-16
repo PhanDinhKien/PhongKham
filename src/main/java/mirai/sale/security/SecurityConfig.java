@@ -21,9 +21,21 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/refresh",
-                                 "/api/auth/logout", "/api/auth/logout-all", "/error").permitAll()
-                .requestMatchers("/api/users/**").hasRole("ADMIN")
+                .requestMatchers(
+                    "/",
+                    "/login",
+                    "/admin/**",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/favicon.ico",
+                    "/api/auth/login",
+                    "/api/auth/refresh",
+                    "/api/auth/logout",
+                    "/api/auth/logout-all",
+                    "/error"
+                ).permitAll()
+                .requestMatchers("/api/users/**", "/api/roles/**", "/api/services/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);

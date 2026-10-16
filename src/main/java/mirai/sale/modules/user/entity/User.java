@@ -24,6 +24,13 @@ public class User {
     
     @Column(name = "email" , length = 100, nullable = false, unique = true)
     private String email; 
+
+    @Nationalized
+    @Column(name = "staff_code", length = 50, nullable = true)
+    private String staffCode;
+
+    @Column(name = "phone", length = 20, nullable = true)
+    private String phone;
     
     @Column(nullable = false)
     private boolean active = true;
@@ -125,6 +132,22 @@ public class User {
         return this.passwordHash; 
     }
     
+    public String getStaffCode() {
+        return staffCode;
+    }
+
+    public void setStaffCode(String staffCode) {
+        this.staffCode = staffCode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public User(){
         
     }
