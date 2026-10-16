@@ -56,4 +56,12 @@ public class AdminViewController {
     public String showPatientsPage() {
         return "admin/patients";
     }
+
+    /**
+     * Hiển thị màn hình Quản lý hợp đồng
+     */
+    @GetMapping({"/admin/contracts", "/admin/hop-dong"})
+    public String showContractsPage() {
+        return "admin/contracts";
+    }
 }

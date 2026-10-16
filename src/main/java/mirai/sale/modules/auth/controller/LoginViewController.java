@@ -33,15 +33,40 @@ public class LoginViewController {
     @GetMapping("/login")
     public String showLoginPage(
             @RequestParam(value = "logout", required = false) String logout,
+            jakarta.servlet.http.HttpServletRequest request,
+            HttpServletResponse response,
             Model model
     ) {
+        if (logout != null) {
+            String refreshToken = extractCookie(request, "refreshToken");
+            if (refreshToken != null) {
+                authService.revokeRefreshToken(refreshToken);
+            }
+            clearAuthCookies(response);
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+            model.addAttribute("infoMessage", "Bạn đã đăng xuất khỏi hệ thống thành công.");
+        }
         if (!model.containsAttribute("loginForm")) {
             model.addAttribute("loginForm", new LoginForm());
         }
-        if (logout != null) {
-            model.addAttribute("infoMessage", "Bạn đã đăng xuất khỏi hệ thống thành công.");
-        }
         return "login";
+    }
+
+    /**
+     * Endpoint đăng xuất hệ thống
+     */
+    @GetMapping("/logout")
+    public String handleLogout(
+            jakarta.servlet.http.HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String refreshToken = extractCookie(request, "refreshToken");
+        if (refreshToken != null) {
+            authService.revokeRefreshToken(refreshToken);
+        }
+        clearAuthCookies(response);
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        return "redirect:/login?logout";
     }
 
     /**
@@ -63,12 +88,19 @@ public class LoginViewController {
             // Gọi tầng Service xử lý nghiệp vụ xác thực
             TokenResponse tokenResponse = authService.login(form.getEmail(), form.getPassword());
 
-            // Lưu JWT accessToken vào cookie để hỗ trợ các request MVC / Web sau này
+            // 1. Lưu JWT accessToken vào cookie (thời hạn 15 phút)
             Cookie tokenCookie = new Cookie("accessToken", tokenResponse.accessToken());
             tokenCookie.setPath("/");
             tokenCookie.setHttpOnly(true);
             tokenCookie.setMaxAge((int) tokenResponse.expiresIn());
             response.addCookie(tokenCookie);
+
+            // 2. Lưu refreshToken vào cookie (thời hạn 7 ngày)
+            Cookie refreshCookie = new Cookie("refreshToken", tokenResponse.refreshToken());
+            refreshCookie.setPath("/");
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setMaxAge((int) authService.getRefreshTokenSeconds());
+            response.addCookie(refreshCookie);
 
             // Đăng nhập thành công -> Điều hướng vào màn hình trang chủ quản trị
             return "redirect:/admin/dashboard";
@@ -79,5 +111,31 @@ public class LoginViewController {
             model.addAttribute("errorMessage", "Đăng nhập thất bại: " + ex.getMessage());
             return "login";
         }
+    }
+
+    private void clearAuthCookies(HttpServletResponse response) {
+        Cookie tokenCookie = new Cookie("accessToken", "");
+        tokenCookie.setPath("/");
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setMaxAge(0);
+        response.addCookie(tokenCookie);
+
+        Cookie refreshCookie = new Cookie("refreshToken", "");
+        refreshCookie.setPath("/");
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setMaxAge(0);
+        response.addCookie(refreshCookie);
+    }
+
+    private String extractCookie(jakarta.servlet.http.HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (cookieName.equals(c.getName())) {
+                    return c.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

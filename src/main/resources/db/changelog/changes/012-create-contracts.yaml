@@ -1,0 +1,78 @@
+databaseChangeLog:
+- changeSet:
+    id: 012-create-contracts
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: contractsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: contract_code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: contract_name
+            type: nvarchar(255)
+        - column:
+            constraints:
+              nullable: false
+            name: company_code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: company_name
+            type: nvarchar(255)
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: varchar(30)
+            defaultValue: HIEU_LUC
+        - column:
+            constraints:
+              nullable: false
+            name: is_deleted
+            type: bit
+            defaultValueBoolean: false
+        - column:
+            name: deleted_at
+            type: datetime2
+        - column:
+            name: deleted_by
+            type: nvarchar(100)
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            name: updated_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: contracts
+
+- changeSet:
+    id: 012-contracts-unique-code
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: contract_code
+        constraintName: UC_CONTRACTS_CODE
+        tableName: contracts

@@ -56,7 +56,20 @@
                     </div>
                 </div>
 
-                <!-- 3. Thiết lập chung -->
+                <!-- 3. Kinh doanh & Hợp đồng -->
+                <div class="nav-group">
+                    <div class="nav-item-parent">
+                        <i class="ph ph-briefcase"></i>
+                        <span>Kinh doanh & Hợp đồng</span>
+                    </div>
+                    <div class="nav-sub-list">
+                        <a th:href="@{/admin/contracts}" class="nav-sub-item" th:classappend="${activeItem == 'hop-dong'} ? 'active' : ''">
+                            Quản lý hợp đồng
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Thiết lập chung -->
                 <div class="nav-group">
                     <div class="nav-item-parent">
                         <i class="ph ph-faders"></i>

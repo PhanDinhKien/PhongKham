@@ -31,7 +31,13 @@ public enum PermissionCode {
     PATIENT_VIEW("PATIENT", "Xem hồ sơ người bệnh"),
     PATIENT_CREATE("PATIENT", "Tạo hồ sơ người bệnh"),
     PATIENT_UPDATE("PATIENT", "Sửa hồ sơ người bệnh"),
-    PATIENT_DELETE("PATIENT", "Xoá hồ sơ người bệnh");
+    PATIENT_DELETE("PATIENT", "Xoá hồ sơ người bệnh"),
+
+    // Quản lý hợp đồng
+    CONTRACT_VIEW("CONTRACT", "Xem hợp đồng"),
+    CONTRACT_CREATE("CONTRACT", "Tạo hợp đồng"),
+    CONTRACT_UPDATE("CONTRACT", "Sửa hợp đồng"),
+    CONTRACT_DELETE("CONTRACT", "Xoá hợp đồng");
     private final String module;
     private final String label;
 

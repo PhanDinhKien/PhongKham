@@ -1649,3 +1649,53 @@ body {
     background: #d1fae5;
 }
 
+/* ==============================================================
+   PHÂN HỆ HỢP ĐỒNG (CONTRACT MODULE SPECIFIC STYLES)
+   ============================================================== */
+.company-code-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    font-size: 11.5px;
+    font-family: monospace;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.contract-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.contract-status-badge.status-hieu-luc {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.contract-status-badge.status-chua-hieu-luc {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.contract-status-badge.status-het-hieu-luc {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+.contract-status-badge.status-da-huy {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}

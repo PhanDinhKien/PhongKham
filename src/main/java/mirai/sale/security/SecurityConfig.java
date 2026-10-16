@@ -16,7 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtService jwtService,
+            org.springframework.beans.factory.ObjectProvider<mirai.sale.modules.auth.service.AuthService> authServiceProvider
+    ) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -24,6 +28,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/",
                     "/login",
+                    "/logout",
                     "/admin/**",
                     "/css/**",
                     "/js/**",
@@ -35,10 +40,10 @@ public class SecurityConfig {
                     "/api/auth/logout-all",
                     "/error"
                 ).permitAll()
-                .requestMatchers("/api/users/**", "/api/roles/**", "/api/services/**", "/api/locations/**", "/api/patients/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/**", "/api/roles/**", "/api/services/**", "/api/locations/**", "/api/patients/**", "/api/contracts/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-            .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthenticationFilter(jwtService, authServiceProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

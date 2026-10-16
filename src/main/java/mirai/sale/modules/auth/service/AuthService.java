@@ -115,4 +115,59 @@ public class AuthService {
         return new TokenResponse(accessToken, rawRefreshToken, "Bearer", jwtService.getAccessTokenSeconds());
        
     }
+
+    /**
+     * Cấp lại accessToken và refreshToken mới khi nhận được refreshToken hợp lệ
+     */
+    @Transactional
+    public TokenResponse refresh(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
+            throw new AuthException("Refresh token không hợp lệ hoặc thiếu");
+        }
+
+        String tokenHash = hash(rawRefreshToken);
+        RefreshToken token = refreshTokenRepository.findByTokenHash(tokenHash)
+                .orElseThrow(() -> new AuthException("Refresh token không tồn tại hoặc đã hết hiệu lực"));
+
+        if (!token.isActive()) {
+            throw new AuthException("Refresh token đã hết hạn hoặc đã bị thu hồi");
+        }
+
+        User user = token.getUser();
+        if (user == null || !Boolean.TRUE.equals(user.getActive())) {
+            throw new AuthException("Tài khoản người dùng đã bị khóa hoặc không tồn tại");
+        }
+
+        // Thu hồi token cũ (Refresh token rotation)
+        token.revoke();
+        refreshTokenRepository.save(token);
+
+        // Cấp phát cặp token mới
+        return issueTokens(user);
+    }
+
+    /**
+     * Thu hồi refresh token khi đăng xuất
+     */
+    @Transactional
+    public void revokeRefreshToken(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
+            return;
+        }
+        try {
+            String tokenHash = hash(rawRefreshToken);
+            refreshTokenRepository.findByTokenHash(tokenHash).ifPresent(token -> {
+                token.revoke();
+                refreshTokenRepository.save(token);
+            });
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Thời gian sống của refresh token tính theo giây
+     */
+    public long getRefreshTokenSeconds() {
+        return refreshTokenDays * 24 * 60 * 60;
+    }
 }
