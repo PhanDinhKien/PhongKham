@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính sách giảm giá | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+
+    <style>
+        /* Tùy chỉnh phong cách Chính sách giảm giá */
+        .discount-code-cell {
+            color: #059669;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .discount-code-cell:hover {
+            color: #047857;
+            text-decoration: underline;
+        }
+
+        .filter-toolbar-grid {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .filter-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-box i.prefix-icon {
+            position: absolute;
+            left: 12px;
+            color: #94a3b8;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .filter-box input, .filter-box select {
+            height: 40px;
+            padding: 0 14px 0 36px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13.5px;
+            color: #1e293b;
+            background-color: #fff;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .filter-box select {
+            padding-left: 14px;
+            padding-right: 32px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .filter-box i.suffix-icon {
+            position: absolute;
+            right: 12px;
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .filter-box input:focus, .filter-box select:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .date-range-box {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 12px;
+            height: 40px;
+            gap: 6px;
+        }
+        .date-range-box i {
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        .date-range-box input {
+            border: none;
+            outline: none;
+            font-size: 13px;
+            color: #1e293b;
+            width: 120px;
+            background: transparent;
+        }
+
+        /* Toggle Switch */
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 24px;
+            vertical-align: middle;
+        }
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider-round {
+            background-color: #059669;
+        }
+        input:checked + .slider-round:before {
+            transform: translateX(18px);
+        }
+
+        /* Value CK badge */
+        .ck-value-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-weight: 600;
+            border-radius: 6px;
+            background-color: #f0fdf4;
+            color: #15803d;
+            font-size: 13px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .contract-count-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-left: 4px;
+            font-weight: 500;
+        }
+
+        .btn-add-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(4, 120, 87, 0.25);
+            transition: all 0.2s ease;
+        }
+        .btn-add-primary:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .action-icon-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .action-icon-btn:hover {
+            color: #0f172a;
+            background-color: #f1f5f9;
+        }
+        .action-icon-btn.delete-btn:hover {
+            color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        /* Confirmation Modal */
+        .custom-modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+        .custom-modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .confirm-card {
+            background: white;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 440px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+            text-align: center;
+        }
+        .custom-modal-backdrop.show .confirm-card {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('thiet-lap', 'chinh-sach-giam-gia')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-link">Thiết lập chung</span>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Chính sách giảm giá</span>
+            </div>
+
+            <!-- Tiêu đề trang & Nút thêm mới -->
+            <div class="page-header-row">
+                <div>
+                    <h1 class="page-title">Chính sách giảm giá</h1>
+                    <span class="page-subtitle">Quản lý các chính sách chiết khấu theo bậc số lượng dịch vụ áp dụng cho hợp đồng</span>
+                </div>
+                
+                <div class="page-header-actions">
+                    <a th:href="@{/admin/discounts/create}" class="btn-add-primary" id="btnCreatePolicy">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm mới</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc (Image 1) -->
+            <div class="filter-toolbar-grid">
+                
+                <!-- Tìm mã hoặc tên chính sách -->
+                <div class="filter-box" style="flex: 1 1 240px; min-width: 200px;">
+                    <i class="ph ph-magnifying-glass prefix-icon"></i>
+                    <input type="text" id="keywordFilter" placeholder="Tìm mã hoặc tên combo dịch vụ" style="width: 100%;">
+                </div>
+
+                <!-- Tìm tên công ty / hợp đồng -->
+                <div class="filter-box" style="flex: 1 1 200px; min-width: 180px;">
+                    <i class="ph ph-buildings prefix-icon"></i>
+                    <input type="text" id="companyFilter" placeholder="Tìm tên công ty / HĐ" style="width: 100%;">
+                </div>
+
+                <!-- Dropdown Hình thức giảm giá -->
+                <div class="filter-box" style="min-width: 160px;">
+                    <select id="discountTypeFilter" style="width: 100%;">
+                        <option value="">Hình thức giảm giá</option>
+                        <option value="PERCENT">Phần trăm</option>
+                        <option value="AMOUNT">Số tiền</option>
+                    </select>
+                    <i class="ph ph-caret-down suffix-icon"></i>
+                </div>
+
+                <!-- Dropdown Trạng thái -->
+                <div class="filter-box" style="min-width: 150px;">
+                    <select id="activeFilter" style="width: 100%;">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true">Đang áp dụng</option>
+                        <option value="false">Ngừng áp dụng</option>
+                    </select>
+                    <i class="ph ph-caret-down suffix-icon"></i>
+                </div>
+
+                <!-- Khung chọn ngày tháng -->
+                <div class="date-range-box">
+                    <i class="ph ph-calendar"></i>
+                    <input type="date" id="fromDateFilter" title="Từ ngày">
+                    <span style="color: #94a3b8;">-</span>
+                    <input type="date" id="toDateFilter" title="Đến ngày">
+                </div>
+
+                <!-- Nút Xóa bộ lọc -->
+                <button type="button" id="btnClearFilter" class="btn-clear-filter">
+                    <i class="ph ph-funnel"></i>
+                    <span>Xóa bộ lọc</span>
+                </button>
+            </div>
+
+            <!-- Bảng dữ liệu danh sách chính sách giảm giá -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th style="width: 140px;">Mã chính sách</th>
+                                <th style="min-width: 220px;">Tên chính sách</th>
+                                <th style="width: 150px;">Loại áp dụng</th>
+                                <th style="width: 140px;">Hình thức giảm giá</th>
+                                <th style="width: 130px;">Giá trị CK</th>
+                                <th style="width: 190px;">Thời gian áp dụng</th>
+                                <th style="width: 130px; text-align: center;">Trạng thái áp dụng</th>
+                                <!-- Cột Ưu tiên đã được loại bỏ theo yêu cầu của người dùng -->
+                                <th style="width: 100px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="discountTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">
+                                    <i class="ph ph-spinner ph-spin" style="font-size: 28px; margin-bottom: 8px; display: inline-block;"></i>
+                                    <div>Đang tải danh sách chính sách giảm giá...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang -->
+                <div class="pagination-bar" id="paginationBar">
+                    <div class="pagination-info" id="paginationInfo">
+                        Đang xem 0 - 0 trong 0
+                    </div>
+                    <div class="pagination-controls">
+                        <div class="pagination-pages" id="paginationPages">
+                            <!-- Nút phân trang render bằng JS -->
+                        </div>
+                        <div class="page-size-wrap">
+                            <select id="pageSizeSelect" class="page-size-select">
+                                <option value="10">10 / trang</option>
+                                <option value="20" selected>20 / trang</option>
+                                <option value="50">50 / trang</option>
+                            </select>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Xác nhận Xóa chính sách -->
+    <div id="deleteModal" class="custom-modal-backdrop">
+        <div class="confirm-card">
+            <div style="width: 54px; height: 54px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444; font-size: 26px;">
+                <i class="ph ph-trash"></i>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Xác nhận xóa chính sách?</h3>
+            <p id="deleteModalMsg" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Bạn có chắc chắn muốn xóa chính sách giảm giá này không? Thao tác này không thể hoàn tác.</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" id="btnCancelDelete" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; color: #475569; cursor: pointer;">Hủy</button>
+                <button type="button" id="btnConfirmDelete" style="padding: 10px 22px; border: none; background: #ef4444; border-radius: 8px; font-weight: 600; color: white; cursor: pointer;">Xóa chính sách</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <script>
+        // State
+        let currentPage = 0;
+        let pageSize = 20;
+        let totalPages = 0;
+        let deleteTargetId = null;
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? '#059669' : (type === 'error' ? '#dc2626' : '#2563eb');
+            const icon = type === 'success' ? 'ph-check-circle' : (type === 'error' ? 'ph-warning-circle' : 'ph-info');
+            toast.style.cssText = `
+                background: ${bg};
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+                min-width: 260px;
+            `;
+            toast.innerHTML = `<i class="ph-bold ${icon}" style="font-size: 20px;"></i> <span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Format Date
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const [y, m, d] = dateStr.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        // Format Date Range
+        function formatDateRange(start, end) {
+            if (!start && !end) return 'Vô thời hạn';
+            if (start && !end) return `Từ ${formatDate(start)}`;
+            if (!start && end) return `Đến ${formatDate(end)}`;
+            return `${formatDate(start)} - ${formatDate(end)}`;
+        }
+
+        // Fetch & Render Policies
+        async function fetchPolicies(page = 0) {
+            currentPage = page;
+            const keyword = document.getElementById('keywordFilter').value.trim();
+            const companyOrContract = document.getElementById('companyFilter').value.trim();
+            const discountType = document.getElementById('discountTypeFilter').value;
+            const active = document.getElementById('activeFilter').value;
+            const fromDate = document.getElementById('fromDateFilter').value;
+            const toDate = document.getElementById('toDateFilter').value;
+
+            let url = `/api/discounts/search?page=${currentPage}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            if (companyOrContract) url += `&companyOrContract=${encodeURIComponent(companyOrContract)}`;
+            if (discountType) url += `&discountType=${encodeURIComponent(discountType)}`;
+            if (active !== '') url += `&active=${encodeURIComponent(active)}`;
+            if (fromDate) url += `&fromDate=${encodeURIComponent(fromDate)}`;
+            if (toDate) url += `&toDate=${encodeURIComponent(toDate)}`;
+
+            const tbody = document.getElementById('discountTableBody');
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Không thể tải dữ liệu');
+                const data = await res.json();
+                
+                renderTable(data);
+                renderPagination(data);
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 40px; color: #ef4444;">
+                            <i class="ph ph-warning" style="font-size: 28px; margin-bottom: 8px; display: inline-block;"></i>
+                            <div>Đã có lỗi xảy ra khi tải dữ liệu chính sách giảm giá.</div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('discountTableBody');
+            const items = data.content || [];
+
+            if (items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 50px 20px; color: #94a3b8;">
+                            <i class="ph ph-tag" style="font-size: 36px; margin-bottom: 8px; display: inline-block; color: #cbd5e1;"></i>
+                            <div style="font-size: 15px; font-weight: 500; color: #64748b;">Không tìm thấy chính sách giảm giá nào</div>
+                            <div style="font-size: 13px; margin-top: 4px;">Hãy thử điều chỉnh bộ lọc hoặc bấm "Thêm mới" để tạo chính sách.</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            items.forEach((item, index) => {
+                const stt = currentPage * pageSize + index + 1;
+                const contractsCount = item.contracts ? item.contracts.length : 0;
+                let applyTypeHtml = 'Hợp đồng';
+                if (contractsCount > 0) {
+                    const contractTitle = item.contracts.map(c => `• ${c.companyName} (${c.contractCode})`).join('\n');
+                    applyTypeHtml += ` <span class="contract-count-tag" title="${contractTitle}">${contractsCount} HĐ</span>`;
+                }
+
+                html += `
+                    <tr>
+                        <td style="text-align: center; color: #64748b;">${stt}</td>
+                        <td>
+                            <a href="/admin/discounts/${item.id}/edit" class="discount-code-cell" title="Nhấn để chỉnh sửa">${item.code || '-'}</a>
+                        </td>
+                        <td style="font-weight: 600; color: #1e293b;">
+                            <div>${item.name || '-'}</div>
+                            ${item.contractNames ? `<div style="font-size: 12px; color: #64748b; font-weight: 400; margin-top: 2px;">Áp dụng: ${item.contractNames}</div>` : ''}
+                        </td>
+                        <td>${applyTypeHtml}</td>
+                        <td>${item.discountTypeLabel || (item.discountType === 'PERCENT' ? 'Phần trăm' : 'Số tiền')}</td>
+                        <td>
+                            <span class="ck-value-badge">${item.tierSummary || '0'}</span>
+                        </td>
+                        <td style="color: #475569; font-size: 13px;">${formatDateRange(item.startDate, item.endDate)}</td>
+                        <td style="text-align: center;">
+                            <label class="switch-toggle" title="${item.active ? 'Đang áp dụng (Nhấn để tắt)' : 'Ngừng áp dụng (Nhấn để bật)'}">
+                                <input type="checkbox" ${item.active ? 'checked' : ''} onchange="togglePolicyActive('${item.id}', this)">
+                                <span class="slider-round"></span>
+                            </label>
+                        </td>
+                        <td style="text-align: right; padding-right: 20px; white-space: nowrap;">
+                            <a href="/admin/discounts/${item.id}/edit" class="action-icon-btn" title="Chỉnh sửa">
+                                <i class="ph ph-pencil-simple"></i>
+                            </a>
+                            <button type="button" class="action-icon-btn delete-btn" title="Xóa chính sách" onclick="openDeleteModal('${item.id}', '${item.code}')">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function renderPagination(data) {
+            totalPages = data.totalPages || 0;
+            const totalElements = data.totalElements || 0;
+            const startItem = totalElements === 0 ? 0 : currentPage * pageSize + 1;
+            const endItem = Math.min((currentPage + 1) * pageSize, totalElements);
+
+            document.getElementById('paginationInfo').innerText = `Đang xem ${startItem} - ${endItem} trong ${totalElements}`;
+
+            const pagesContainer = document.getElementById('paginationPages');
+            if (totalPages <= 1) {
+                pagesContainer.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button type="button" class="page-nav-btn ${currentPage === 0 ? 'disabled' : ''}" 
+                    onclick="fetchPolicies(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-left"></i>
+                </button>
+            `;
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === 0 || i === totalPages - 1 || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+                        <button type="button" class="page-num-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="fetchPolicies(${i})">
+                            ${i + 1}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="page-dots">...</span>`;
+                }
+            }
+
+            html += `
+                <button type="button" class="page-nav-btn ${currentPage >= totalPages - 1 ? 'disabled' : ''}" 
+                    onclick="fetchPolicies(${currentPage + 1})" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-right"></i>
+                </button>
+            `;
+
+            pagesContainer.innerHTML = html;
+        }
+
+        // Toggle Status
+        async function togglePolicyActive(id, checkbox) {
+            try {
+                const res = await fetch(`/api/discounts/${id}/toggle-status`, { method: 'PATCH' });
+                if (!res.ok) throw new Error('Không thể cập nhật trạng thái');
+                const result = await res.json();
+                checkbox.checked = result.active;
+                showToast(result.active ? 'Đã kích hoạt chính sách giảm giá' : 'Đã tạm dừng chính sách giảm giá', 'success');
+            } catch (err) {
+                console.error(err);
+                checkbox.checked = !checkbox.checked;
+                showToast('Lỗi cập nhật trạng thái chính sách', 'error');
+            }
+        }
+
+        // Delete Modal Handlers
+        function openDeleteModal(id, code) {
+            deleteTargetId = id;
+            document.getElementById('deleteModalMsg').innerText = `Bạn có chắc chắn muốn xóa chính sách giảm giá "${code}" không? Thao tác này không thể hoàn tác.`;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        document.getElementById('btnCancelDelete').addEventListener('click', () => {
+            document.getElementById('deleteModal').classList.remove('show');
+            deleteTargetId = null;
+        });
+
+        document.getElementById('btnConfirmDelete').addEventListener('click', async () => {
+            if (!deleteTargetId) return;
+            try {
+                const res = await fetch(`/api/discounts/${deleteTargetId}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Không thể xóa chính sách');
+                document.getElementById('deleteModal').classList.remove('show');
+                showToast('Đã xóa chính sách giảm giá thành công', 'success');
+                fetchPolicies(currentPage);
+            } catch (err) {
+                console.error(err);
+                showToast('Không thể xóa chính sách giảm giá', 'error');
+            }
+        });
+
+        // Search & Filter event listeners
+        let filterTimeout;
+        function debounceFilter() {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(() => {
+                fetchPolicies(0);
+            }, 300);
+        }
+
+        document.getElementById('keywordFilter').addEventListener('input', debounceFilter);
+        document.getElementById('companyFilter').addEventListener('input', debounceFilter);
+        document.getElementById('discountTypeFilter').addEventListener('change', () => fetchPolicies(0));
+        document.getElementById('activeFilter').addEventListener('change', () => fetchPolicies(0));
+        document.getElementById('fromDateFilter').addEventListener('change', () => fetchPolicies(0));
+        document.getElementById('toDateFilter').addEventListener('change', () => fetchPolicies(0));
+        document.getElementById('pageSizeSelect').addEventListener('change', function() {
+            pageSize = parseInt(this.value, 10);
+            fetchPolicies(0);
+        });
+
+        document.getElementById('btnClearFilter').addEventListener('click', () => {
+            document.getElementById('keywordFilter').value = '';
+            document.getElementById('companyFilter').value = '';
+            document.getElementById('discountTypeFilter').value = '';
+            document.getElementById('activeFilter').value = '';
+            document.getElementById('fromDateFilter').value = '';
+            document.getElementById('toDateFilter').value = '';
+            fetchPolicies(0);
+        });
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPolicies(0);
+        });
+    </script>
+</body>
+</html>

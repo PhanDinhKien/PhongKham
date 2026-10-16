@@ -72,4 +72,20 @@ public class AdminViewController {
     public String showContractDetailPage() {
         return "admin/contract-detail";
     }
+
+    /**
+     * Hiển thị màn hình Quản lý chính sách giảm giá
+     */
+    @GetMapping({"/admin/discounts", "/admin/chinh-sach-giam-gia"})
+    public String showDiscountsPage() {
+        return "admin/discounts";
+    }
+
+    /**
+     * Hiển thị màn hình Thêm mới / Cập nhật chính sách giảm giá
+     */
+    @GetMapping({"/admin/discounts/create", "/admin/discounts/new", "/admin/discounts/{id}/edit"})
+    public String showDiscountFormPage() {
+        return "admin/discount-form";
+    }
 }

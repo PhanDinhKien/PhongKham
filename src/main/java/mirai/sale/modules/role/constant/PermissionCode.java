@@ -37,7 +37,13 @@ public enum PermissionCode {
     CONTRACT_VIEW("CONTRACT", "Xem hợp đồng"),
     CONTRACT_CREATE("CONTRACT", "Tạo hợp đồng"),
     CONTRACT_UPDATE("CONTRACT", "Sửa hợp đồng"),
-    CONTRACT_DELETE("CONTRACT", "Xoá hợp đồng");
+    CONTRACT_DELETE("CONTRACT", "Xoá hợp đồng"),
+
+    // Chính sách giảm giá
+    DISCOUNT_VIEW("DISCOUNT", "Xem chính sách giảm giá"),
+    DISCOUNT_CREATE("DISCOUNT", "Tạo chính sách giảm giá"),
+    DISCOUNT_UPDATE("DISCOUNT", "Sửa chính sách giảm giá"),
+    DISCOUNT_DELETE("DISCOUNT", "Xoá chính sách giảm giá");
     private final String module;
     private final String label;
 

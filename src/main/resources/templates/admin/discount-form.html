@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiết lập chính sách giảm giá | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+
+    <style>
+        /* Card Layout */
+        .form-section-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .section-header-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-label .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .form-input, .form-select {
+            height: 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .form-input:disabled, .form-input[readonly] {
+            background-color: #f8fafc;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* Radio Options */
+        .radio-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            height: 42px;
+        }
+
+        .radio-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+        }
+
+        .radio-item input[type="radio"] {
+            accent-color: #059669;
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+        }
+
+        /* Unified Button System */
+        .btn-action-md {
+            height: 40px;
+            padding: 0 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-action-primary {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(4, 120, 87, 0.25);
+        }
+        .btn-action-primary:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            box-shadow: 0 4px 10px rgba(4, 120, 87, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-action-secondary {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+        .btn-action-secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-action-outline {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+        .btn-action-outline:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        /* Multi-contract selector */
+        .multi-contract-box {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 12px;
+            min-height: 44px;
+            background: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .multi-contract-box:hover {
+            border-color: #94a3b8;
+        }
+        .multi-contract-box:focus-within {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .contract-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .contract-chip .remove-chip-btn {
+            cursor: pointer;
+            color: #16a34a;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: color 0.15s;
+        }
+        .contract-chip .remove-chip-btn:hover {
+            color: #dc2626;
+        }
+
+        .btn-trigger-picker {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px dashed #6ee7b7;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-left: auto;
+        }
+        .btn-trigger-picker:hover {
+            background: #d1fae5;
+            border-color: #059669;
+        }
+
+        /* Tier Table Styling */
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tier-table th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #64748b;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tier-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .tier-num-badge {
+            width: 30px;
+            height: 30px;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .tier-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .tier-input-wrap input {
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0 12px;
+            font-size: 13.5px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .tier-input-wrap input:focus {
+            border-color: #059669;
+        }
+
+        .tier-addon {
+            position: absolute;
+            right: 12px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .tier-delete-btn {
+            width: 34px;
+            height: 34px;
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tier-delete-btn:hover {
+            background-color: #fee2e2;
+        }
+
+        .btn-add-tier {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #f0fdf4;
+            border: 1px dashed #86efac;
+            color: #16a34a;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-add-tier:hover {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #15803d;
+        }
+
+        .tier-helper-note {
+            font-size: 12.5px;
+            color: #64748b;
+            margin-top: 6px;
+            display: inline-block;
+            margin-left: 12px;
+        }
+
+        /* Toggle switch */
+        .switch-toggle-lg {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+        }
+        .switch-toggle-lg input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-round-lg {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 26px;
+        }
+        .slider-round-lg:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }
+        input:checked + .slider-round-lg {
+            background-color: #059669;
+        }
+        input:checked + .slider-round-lg:before {
+            transform: translateX(20px);
+        }
+
+        /* Bottom Fixed / Sticky Footer */
+        .form-footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 14px;
+            margin-top: 10px;
+            margin-bottom: 60px;
+        }
+
+        /* Contract selection modal */
+        .contract-modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+        .contract-modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .contract-modal-card {
+            background: white;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 780px;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .contract-modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .contract-modal-body {
+            padding: 16px 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .contract-modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        .contract-row-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: #ffffff;
+            margin-bottom: 8px;
+        }
+        .contract-row-item:hover {
+            border-color: #059669;
+            background: #f0fdf4;
+        }
+        .contract-row-item.selected {
+            background: #f0fdf4;
+            border-color: #059669;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('thiet-lap', 'chinh-sach-giam-gia')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <a th:href="@{/admin/discounts}" class="breadcrumb-link">Thiết lập chung</a>
+                <span class="breadcrumb-separator">›</span>
+                <a th:href="@{/admin/discounts}" class="breadcrumb-link">Chính sách giảm giá</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current" id="breadcrumbPageTitle">Thêm chính sách giảm giá</span>
+            </div>
+
+            <!-- Tiêu đề trang -->
+            <div class="page-header-row" style="margin-bottom: 24px;">
+                <div>
+                    <h1 class="page-title" id="pageMainHeading">Thêm chính sách giảm giá</h1>
+                    <span class="page-subtitle">Thiết lập các điều kiện chiết khấu dịch vụ theo bậc số lượng áp dụng cho một hoặc nhiều hợp đồng</span>
+                </div>
+            </div>
+
+            <form id="policyForm" onsubmit="handleFormSubmit(event)">
+                
+                <!-- CARD 1: THÔNG TIN CHUNG -->
+                <div class="form-section-card">
+                    <div class="section-header-title">
+                        <i class="ph-bold ph-info" style="color: #059669; font-size: 16px;"></i>
+                        <span>Thông tin chung</span>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <!-- Mã chính sách giảm giá -->
+                        <div class="form-group">
+                            <label class="form-label" for="policyCode">Mã chính sách giảm giá</label>
+                            <input type="text" id="policyCode" class="form-input" placeholder="Tự sinh — CK-023">
+                            <span style="font-size: 12px; color: #64748b;">Hệ thống sẽ tự sinh nếu để trống</span>
+                        </div>
+
+                        <!-- Tên chính sách giảm giá -->
+                        <div class="form-group">
+                            <label class="form-label" for="policyName">Tên chính sách giảm giá <span class="required">*</span></label>
+                            <input type="text" id="policyName" class="form-input" placeholder="Ví dụ: Ưu đãi Dịch vụ làm thêm - Edufit 2026" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: PHẠM VI ÁP DỤNG -->
+                <div class="form-section-card">
+                    <div class="section-header-title">
+                        <i class="ph-bold ph-crosshair" style="color: #059669; font-size: 16px;"></i>
+                        <span>Phạm vi áp dụng</span>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <!-- Loại áp dụng -->
+                        <div class="form-group">
+                            <label class="form-label">Loại áp dụng <span class="required">*</span></label>
+                            <div class="radio-pills-row">
+                                <label class="radio-item">
+                                    <input type="radio" name="applyType" value="HOP_DONG" checked>
+                                    <span>Hợp đồng</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Hợp đồng áp dụng (Gán 1 hoặc nhiều hợp đồng) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                Hợp đồng áp dụng <span class="required">*</span>
+                                <span style="font-size: 12px; font-weight: normal; color: #64748b;">(Một chính sách có thể gán 1 hoặc nhiều HĐ)</span>
+                            </label>
+                            
+                            <div class="multi-contract-box" id="contractPickerBox" onclick="openContractModal()">
+                                <div id="selectedContractChips" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                                <span id="contractPickerPlaceholder" style="color: #94a3b8; font-size: 13.5px; padding-left: 4px;">Chưa chọn hợp đồng nào. Nhấn để chọn...</span>
+                                <button type="button" class="btn-trigger-picker" onclick="event.stopPropagation(); openContractModal();">
+                                    <i class="ph-bold ph-plus"></i>
+                                    <span>Chọn hợp đồng</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: MỨC CHIẾT KHẤU & HIỆU LỰC -->
+                <div class="form-section-card">
+                    <div class="section-header-title">
+                        <i class="ph-bold ph-percent" style="color: #059669; font-size: 16px;"></i>
+                        <span>Mức chiết khấu & Hiệu lực</span>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                        <!-- Cách xác định mức chiết khấu (Bỏ mức cố định, chỉ dùng theo bậc số lượng) -->
+                        <div class="form-group">
+                            <label class="form-label">Cách xác định mức chiết khấu <span class="required">*</span></label>
+                            <div class="radio-pills-row">
+                                <label class="radio-item">
+                                    <input type="radio" name="calcMethod" value="TIER" checked disabled>
+                                    <span style="font-weight: 600; color: #047857;">Theo bậc số lượng dịch vụ</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Hình thức chiết khấu: Phần trăm / Số tiền -->
+                        <div class="form-group">
+                            <label class="form-label" for="discountType">Hình thức chiết khấu <span class="required">*</span></label>
+                            <select id="discountType" class="form-select" onchange="handleDiscountTypeChange()">
+                                <option value="PERCENT" selected>Phần trăm (%)</option>
+                                <option value="AMOUNT">Số tiền (VNĐ)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Bảng bậc chiết khấu -->
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label class="form-label">Bảng bậc chiết khấu <span class="required">*</span></label>
+                        
+                        <table class="tier-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px; text-align: center;">Bậc</th>
+                                    <th style="width: 250px;">Từ số lượng</th>
+                                    <th style="width: 250px;">Đến số lượng</th>
+                                    <th>Mức chiết khấu</th>
+                                    <th style="width: 60px; text-align: center;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tierTableBody">
+                                <!-- Rendered dynamically by JS -->
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <button type="button" class="btn-add-tier" onclick="addNewTierRow()">
+                                <i class="ph-bold ph-plus"></i>
+                                <span>Thêm bậc</span>
+                            </button>
+                            <span class="tier-helper-note">Các bậc phải liền mạch, không chồng lấn. Bậc cuối để trống ô "đến" = không giới hạn.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                        <!-- Phạm vi áp dụng mức bậc -->
+                        <div class="form-group">
+                            <label class="form-label" for="tierScope">Phạm vi áp dụng mức bậc <span class="required">*</span></label>
+                            <select id="tierScope" class="form-select">
+                                <option value="MAX_TIER_ALL" selected>Áp dụng bậc lớn nhất cho toàn bộ dịch vụ</option>
+                                <option value="PROGRESSIVE">Tính lũy tiến theo từng bậc</option>
+                            </select>
+                        </div>
+
+                        <!-- Chiết khấu tối đa / dịch vụ -->
+                        <div class="form-group">
+                            <label class="form-label" for="maxDiscount">Chiết khấu tối đa / dịch vụ</label>
+                            <input type="number" id="maxDiscount" class="form-input" placeholder="Không giới hạn" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                        <!-- Từ ngày -->
+                        <div class="form-group">
+                            <label class="form-label" for="startDate">Từ ngày <span class="required">*</span></label>
+                            <input type="date" id="startDate" class="form-input" required>
+                        </div>
+
+                        <!-- Đến ngày -->
+                        <div class="form-group">
+                            <label class="form-label" for="endDate">Đến ngày</label>
+                            <input type="date" id="endDate" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Bỏ phần độ ưu tiên theo yêu cầu người dùng, chỉ còn Áp dụng -->
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label class="form-label">Áp dụng</label>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                            <label class="switch-toggle-lg">
+                                <input type="checkbox" id="policyActive" checked onchange="updateActiveLabel(this.checked)">
+                                <span class="slider-round-lg"></span>
+                            </label>
+                            <span id="activeStatusText" style="font-weight: 600; color: #059669; font-size: 14px;">Bật</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer buttons: Hủy & Lưu đồng đều -->
+                <div class="form-footer-actions">
+                    <a th:href="@{/admin/discounts}" class="btn-action-md btn-action-secondary">
+                        <i class="ph ph-x"></i>
+                        <span>Hủy</span>
+                    </a>
+                    <button type="submit" class="btn-action-md btn-action-primary" id="btnSubmitForm">
+                        <i class="ph-bold ph-floppy-disk"></i>
+                        <span id="btnSubmitText">Lưu</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </main>
+    </div>
+
+    <!-- Modal Chọn Danh sách Hợp đồng (Gán 1 hoặc nhiều hợp đồng) -->
+    <div id="contractModal" class="contract-modal-backdrop">
+        <div class="contract-modal-card">
+            <div class="contract-modal-header">
+                <div>
+                    <h3 style="font-size: 17.5px; font-weight: 700; color: #0f172a; margin: 0;">Chọn hợp đồng áp dụng</h3>
+                    <div style="font-size: 13px; color: #64748b; margin-top: 2px;">Tích chọn một hoặc nhiều hợp đồng sẽ được hưởng chính sách này</div>
+                </div>
+                <button type="button" class="tier-delete-btn" onclick="closeContractModal()">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Toolbar trong modal: Search & Buttons đồng đều -->
+            <div style="padding: 14px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center; background: #f8fafc;">
+                <div style="position: relative; flex: 1; display: flex; align-items: center;">
+                    <i class="ph ph-magnifying-glass" style="position: absolute; left: 12px; color: #94a3b8; font-size: 16px;"></i>
+                    <input type="text" id="contractSearchInput" placeholder="Tìm theo mã HĐ, tên công ty hoặc tên hợp đồng..." 
+                        style="width: 100%; height: 40px; padding: 0 14px 0 36px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background: #fff;">
+                </div>
+                <button type="button" class="btn-action-md btn-action-outline" onclick="selectAllContracts(true)">
+                    <i class="ph-bold ph-check-square"></i>
+                    <span>Chọn tất cả</span>
+                </button>
+                <button type="button" class="btn-action-md btn-action-outline" onclick="selectAllContracts(false)">
+                    <i class="ph ph-square"></i>
+                    <span>Bỏ chọn</span>
+                </button>
+            </div>
+
+            <!-- List contracts -->
+            <div class="contract-modal-body" id="contractListContainer">
+                <div style="text-align: center; padding: 40px; color: #64748b;">
+                    <i class="ph ph-spinner ph-spin" style="font-size: 26px; margin-bottom: 8px; display: inline-block;"></i>
+                    <div>Đang tải danh sách hợp đồng...</div>
+                </div>
+            </div>
+
+            <div class="contract-modal-footer">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 13.5px; color: #475569;">Trạng thái lựa chọn:</span>
+                    <span id="modalSelectedCount" style="font-size: 13.5px; font-weight: 700; color: #059669;">Đã chọn 0 hợp đồng</span>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn-action-md btn-action-secondary" onclick="closeContractModal()">
+                        <i class="ph ph-x"></i>
+                        <span>Đóng</span>
+                    </button>
+                    <button type="button" class="btn-action-md btn-action-primary" onclick="confirmContractSelection()">
+                        <i class="ph-bold ph-check"></i>
+                        <span>Xác nhận</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <script>
+        // Check if editing
+        const pathParts = window.location.pathname.split('/');
+        let editId = null;
+        if (pathParts.includes('edit')) {
+            const editIdx = pathParts.indexOf('edit');
+            if (editIdx > 0) editId = pathParts[editIdx - 1];
+        }
+
+        // State
+        let allContracts = [];
+        let selectedContractIds = new Set();
+        let currentTiers = [
+            { tierNumber: 1, fromQuantity: 1, toQuantity: 3, discountValue: 10 },
+            { tierNumber: 2, fromQuantity: 4, toQuantity: null, discountValue: 20 }
+        ];
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? '#059669' : (type === 'error' ? '#dc2626' : '#2563eb');
+            const icon = type === 'success' ? 'ph-check-circle' : (type === 'error' ? 'ph-warning-circle' : 'ph-info');
+            toast.style.cssText = `
+                background: ${bg};
+                color: white;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                min-width: 260px;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.innerHTML = `<i class="ph-bold ${icon}" style="font-size: 20px;"></i> <span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateActiveLabel(checked) {
+            const label = document.getElementById('activeStatusText');
+            label.innerText = checked ? 'Bật' : 'Tắt';
+            label.style.color = checked ? '#059669' : '#64748b';
+        }
+
+        // Tiers Table Management
+        function renderTierTable() {
+            const tbody = document.getElementById('tierTableBody');
+            const isPercent = document.getElementById('discountType').value === 'PERCENT';
+            const unitLabel = isPercent ? '%' : 'đ';
+
+            let html = '';
+            currentTiers.forEach((tier, idx) => {
+                const tierNum = idx + 1;
+                tier.tierNumber = tierNum;
+                const isLast = idx === currentTiers.length - 1;
+                const canDelete = currentTiers.length > 1;
+
+                html += `
+                    <tr>
+                        <td style="text-align: center;">
+                            <span class="tier-num-badge">${tierNum}</span>
+                        </td>
+                        <td>
+                            <div class="tier-input-wrap">
+                                <input type="number" min="1" value="${tier.fromQuantity}" 
+                                    onchange="updateTierValue(${idx}, 'fromQuantity', this.value)" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tier-input-wrap">
+                                <input type="number" min="1" value="${tier.toQuantity !== null && tier.toQuantity !== undefined ? tier.toQuantity : ''}" 
+                                    placeholder="${isLast ? 'trở lên' : ''}"
+                                    onchange="updateTierValue(${idx}, 'toQuantity', this.value)">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tier-input-wrap">
+                                <input type="number" step="${isPercent ? '0.1' : '1000'}" min="0" value="${tier.discountValue}" 
+                                    onchange="updateTierValue(${idx}, 'discountValue', this.value)" required>
+                                <span class="tier-addon">${unitLabel}</span>
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            ${canDelete ? `
+                                <button type="button" class="tier-delete-btn" title="Xóa bậc" onclick="removeTierRow(${idx})">
+                                    <i class="ph-bold ph-x"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function updateTierValue(idx, field, value) {
+            if (field === 'fromQuantity') {
+                currentTiers[idx].fromQuantity = parseInt(value, 10) || 1;
+            } else if (field === 'toQuantity') {
+                currentTiers[idx].toQuantity = value !== '' ? parseInt(value, 10) : null;
+            } else if (field === 'discountValue') {
+                currentTiers[idx].discountValue = parseFloat(value) || 0;
+            }
+        }
+
+        function addNewTierRow() {
+            const lastTier = currentTiers[currentTiers.length - 1];
+            let nextFrom = 1;
+            if (lastTier) {
+                if (lastTier.toQuantity) {
+                    nextFrom = lastTier.toQuantity + 1;
+                } else {
+                    lastTier.toQuantity = lastTier.fromQuantity + 2;
+                    nextFrom = lastTier.toQuantity + 1;
+                }
+            }
+            currentTiers.push({
+                tierNumber: currentTiers.length + 1,
+                fromQuantity: nextFrom,
+                toQuantity: null,
+                discountValue: lastTier ? lastTier.discountValue : 10
+            });
+            renderTierTable();
+        }
+
+        function removeTierRow(idx) {
+            if (currentTiers.length <= 1) return;
+            currentTiers.splice(idx, 1);
+            currentTiers.forEach((t, i) => t.tierNumber = i + 1);
+            renderTierTable();
+        }
+
+        function handleDiscountTypeChange() {
+            renderTierTable();
+        }
+
+        // Multi-contract selector modal & chips
+        async function loadContracts() {
+            try {
+                const res = await fetch('/api/contracts/search?page=0&size=200');
+                if (res.ok) {
+                    const data = await res.json();
+                    allContracts = data.items || data.content || [];
+                }
+            } catch (err) {
+                console.error('Error fetching contracts:', err);
+            }
+        }
+
+        function renderSelectedContractChips() {
+            const container = document.getElementById('selectedContractChips');
+            const placeholder = document.getElementById('contractPickerPlaceholder');
+            container.innerHTML = '';
+
+            if (selectedContractIds.size === 0) {
+                placeholder.style.display = 'inline';
+                return;
+            }
+
+            placeholder.style.display = 'none';
+            selectedContractIds.forEach(id => {
+                const c = allContracts.find(item => item.id === id);
+                if (c) {
+                    const chip = document.createElement('div');
+                    chip.className = 'contract-chip';
+                    chip.innerHTML = `
+                        <span>${c.companyName} — ${c.contractCode}</span>
+                        <span class="remove-chip-btn" onclick="event.stopPropagation(); removeContractChip('${c.id}')" title="Bỏ chọn">
+                            <i class="ph-bold ph-x"></i>
+                        </span>
+                    `;
+                    container.appendChild(chip);
+                }
+            });
+        }
+
+        function removeContractChip(id) {
+            selectedContractIds.delete(id);
+            renderSelectedContractChips();
+        }
+
+        function openContractModal() {
+            renderContractList();
+            document.getElementById('contractModal').classList.add('show');
+        }
+
+        function closeContractModal() {
+            document.getElementById('contractModal').classList.remove('show');
+        }
+
+        function renderContractList() {
+            const container = document.getElementById('contractListContainer');
+            const search = document.getElementById('contractSearchInput').value.toLowerCase().trim();
+
+            const filtered = allContracts.filter(c => {
+                if (!search) return true;
+                return (c.contractCode && c.contractCode.toLowerCase().includes(search)) ||
+                       (c.contractName && c.contractName.toLowerCase().includes(search)) ||
+                       (c.companyName && c.companyName.toLowerCase().includes(search));
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        <i class="ph ph-magnifying-glass" style="font-size: 32px; margin-bottom: 6px; display: inline-block;"></i>
+                        <div style="font-size: 14px; font-weight: 500;">Không tìm thấy hợp đồng nào phù hợp</div>
+                    </div>
+                `;
+                updateModalCount();
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(c => {
+                const isSelected = selectedContractIds.has(c.id);
+                html += `
+                    <div class="contract-row-item ${isSelected ? 'selected' : ''}" onclick="toggleContractRow('${c.id}')">
+                        <input type="checkbox" value="${c.id}" ${isSelected ? 'checked' : ''} 
+                            onclick="event.stopPropagation(); toggleContractInModal('${c.id}', this.checked)"
+                            style="accent-color: #059669; width: 18px; height: 18px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="background: #ecfdf5; color: #047857; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; border: 1px solid #a7f3d0;">
+                                    ${c.contractCode}
+                                </span>
+                                <span style="font-weight: 700; font-size: 14px; color: #1e293b;">${c.companyName}</span>
+                            </div>
+                            <div style="font-size: 13px; color: #64748b; margin-top: 3px;">${c.contractName}</div>
+                        </div>
+                        <div>
+                            <span style="font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 12px; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0;">
+                                Hiệu lực
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            updateModalCount();
+        }
+
+        function toggleContractRow(id) {
+            if (selectedContractIds.has(id)) {
+                selectedContractIds.delete(id);
+            } else {
+                selectedContractIds.add(id);
+            }
+            renderContractList();
+        }
+
+        function toggleContractInModal(id, checked) {
+            if (checked) {
+                selectedContractIds.add(id);
+            } else {
+                selectedContractIds.delete(id);
+            }
+            renderContractList();
+        }
+
+        function selectAllContracts(selectAll) {
+            allContracts.forEach(c => {
+                if (selectAll) selectedContractIds.add(c.id);
+                else selectedContractIds.delete(c.id);
+            });
+            renderContractList();
+        }
+
+        function updateModalCount() {
+            document.getElementById('modalSelectedCount').innerText = `Đã chọn ${selectedContractIds.size} / ${allContracts.length} hợp đồng`;
+        }
+
+        function confirmContractSelection() {
+            renderSelectedContractChips();
+            closeContractModal();
+        }
+
+        document.getElementById('contractSearchInput').addEventListener('input', () => {
+            renderContractList();
+        });
+
+        // Initialize Form
+        async function initPage() {
+            await loadContracts();
+
+            // Set default dates: 01/01 current year to 31/12 current year
+            const currentYear = new Date().getFullYear();
+            document.getElementById('startDate').value = `${currentYear}-01-01`;
+            document.getElementById('endDate').value = `${currentYear}-12-31`;
+
+            if (editId) {
+                // Sửa chính sách
+                document.getElementById('breadcrumbPageTitle').innerText = 'Cập nhật chính sách giảm giá';
+                document.getElementById('pageMainHeading').innerText = 'Cập nhật chính sách giảm giá';
+                document.getElementById('btnSubmitText').innerText = 'Lưu thay đổi';
+                document.title = 'Cập nhật chính sách giảm giá | Mirai Healthcare';
+
+                await loadPolicyForEdit(editId);
+            } else {
+                // Thêm mới chính sách - lấy mã gợi ý
+                renderTierTable();
+                try {
+                    const res = await fetch('/api/discounts/next-code');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.nextCode) {
+                            document.getElementById('policyCode').value = data.nextCode;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Cannot fetch next code', e);
+                }
+            }
+        }
+
+        async function loadPolicyForEdit(id) {
+            try {
+                const res = await fetch(`/api/discounts/${id}`);
+                if (!res.ok) throw new Error('Không thể tải thông tin chính sách');
+                const data = await res.json();
+
+                document.getElementById('policyCode').value = data.code || '';
+                document.getElementById('policyCode').disabled = true;
+                document.getElementById('policyName').value = data.name || '';
+                document.getElementById('discountType').value = data.discountType || 'PERCENT';
+                document.getElementById('tierScope').value = data.tierScope || 'MAX_TIER_ALL';
+                if (data.maxDiscountPerService !== null && data.maxDiscountPerService !== undefined) {
+                    document.getElementById('maxDiscount').value = data.maxDiscountPerService;
+                }
+                document.getElementById('startDate').value = data.startDate || '';
+                document.getElementById('endDate').value = data.endDate || '';
+                document.getElementById('policyActive').checked = data.active;
+                updateActiveLabel(data.active);
+
+                // Contracts
+                selectedContractIds.clear();
+                if (data.contracts && data.contracts.length > 0) {
+                    data.contracts.forEach(c => selectedContractIds.add(c.contractId));
+                }
+                renderSelectedContractChips();
+
+                // Tiers
+                if (data.tiers && data.tiers.length > 0) {
+                    currentTiers = data.tiers.map(t => ({
+                        tierNumber: t.tierNumber,
+                        fromQuantity: t.fromQuantity,
+                        toQuantity: t.toQuantity,
+                        discountValue: t.discountValue
+                    }));
+                }
+                renderTierTable();
+
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi khi tải thông tin chính sách giảm giá', 'error');
+            }
+        }
+
+        // Form Submit
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('policyName').value.trim();
+            if (!name) {
+                showToast('Vui lòng nhập tên chính sách giảm giá', 'error');
+                return;
+            }
+
+            if (selectedContractIds.size === 0) {
+                showToast('Vui lòng chọn ít nhất một hợp đồng áp dụng', 'error');
+                openContractModal();
+                return;
+            }
+
+            const code = document.getElementById('policyCode').value.trim();
+            const discountType = document.getElementById('discountType').value;
+            const tierScope = document.getElementById('tierScope').value;
+            const maxDiscount = document.getElementById('maxDiscount').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const active = document.getElementById('policyActive').checked;
+
+            if (!startDate) {
+                showToast('Vui lòng chọn ngày bắt đầu hiệu lực', 'error');
+                return;
+            }
+
+            // Thu thập chính xác giá trị các bậc chiết khấu từ bảng
+            const rows = document.querySelectorAll('#tierTableBody tr');
+            const tiers = [];
+            rows.forEach((row, idx) => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs.length >= 3) {
+                    const fromVal = parseInt(inputs[0].value, 10) || 1;
+                    const toVal = inputs[1].value !== '' ? parseInt(inputs[1].value, 10) : null;
+                    const discVal = parseFloat(inputs[2].value) || 0;
+                    tiers.push({
+                        tierNumber: idx + 1,
+                        fromQuantity: fromVal,
+                        toQuantity: toVal,
+                        discountValue: discVal
+                    });
+                }
+            });
+            if (tiers.length > 0) {
+                currentTiers = tiers;
+            }
+
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="ph ph-spinner ph-spin"></i> <span>Đang lưu...</span>`;
+
+            const payload = {
+                code: code || null,
+                name: name,
+                discountType: discountType,
+                tierScope: tierScope,
+                maxDiscountPerService: maxDiscount ? parseFloat(maxDiscount) : null,
+                startDate: startDate,
+                endDate: endDate || null,
+                active: active,
+                contractIds: Array.from(selectedContractIds),
+                tiers: currentTiers
+            };
+
+            try {
+                let url = '/api/discounts';
+                let method = 'POST';
+                if (editId) {
+                    url = `/api/discounts/${editId}`;
+                    method = 'PUT';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Lỗi khi lưu chính sách giảm giá');
+                }
+
+                showToast(editId ? 'Cập nhật chính sách thành công!' : 'Tạo mới chính sách thành công!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/admin/discounts';
+                }, 700);
+
+            } catch (err) {
+                console.error(err);
+                showToast(err.message || 'Có lỗi xảy ra khi lưu chính sách', 'error');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `<i class="ph-bold ph-floppy-disk"></i> <span>Lưu</span>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
