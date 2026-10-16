@@ -64,4 +64,12 @@ public class AdminViewController {
     public String showContractsPage() {
         return "admin/contracts";
     }
+
+    /**
+     * Hiển thị màn hình Chi tiết hợp đồng
+     */
+    @GetMapping("/admin/contracts/{id}")
+    public String showContractDetailPage() {
+        return "admin/contract-detail";
+    }
 }

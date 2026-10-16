@@ -1,0 +1,192 @@
+databaseChangeLog:
+- changeSet:
+    id: 013-create-contract-details
+    author: phankien
+    changes:
+    # 1. Bảng liên kết Hợp đồng - Bệnh nhân (Hồ sơ khám trong hợp đồng)
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: contractPatientsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: contract_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: patient_id
+            type: uniqueidentifier
+        - column:
+            name: record_code
+            type: varchar(50)
+        - column:
+            name: doctor_name
+            type: nvarchar(100)
+        - column:
+            name: exam_date
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: varchar(30)
+            defaultValue: MOI
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: contract_patients
+
+    # 2. Bảng liên kết Hợp đồng - Địa điểm khám (N:N)
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: contractLocationsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: contract_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: location_id
+            type: uniqueidentifier
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        tableName: contract_locations
+
+    # 3. Bảng Gói khám (1 hợp đồng có nhiều gói khám)
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: examPackagesPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: contract_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: package_code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: package_name
+            type: nvarchar(255)
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: varchar(30)
+            defaultValue: HIEU_LUC
+        - column:
+            constraints:
+              nullable: false
+            name: is_deleted
+            type: bit
+            defaultValueBoolean: false
+        - column:
+            name: deleted_at
+            type: datetime2
+        - column:
+            name: deleted_by
+            type: nvarchar(100)
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            name: updated_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: exam_packages
+
+    # 4. Bảng liên kết Gói khám - Dịch vụ (N:N: 1 gói có nhiều dịch vụ, 1 dịch vụ ở nhiều gói)
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: packageServicesPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: package_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: service_id
+            type: uniqueidentifier
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        tableName: package_services
+
+- changeSet:
+    id: 013-contract-details-constraints
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: contract_id, location_id
+        constraintName: UC_CONTRACT_LOCATIONS
+        tableName: contract_locations
+    - addUniqueConstraint:
+        columnNames: contract_id, package_code
+        constraintName: UC_CONTRACT_PACKAGE_CODE
+        tableName: exam_packages
+    - addUniqueConstraint:
+        columnNames: package_id, service_id
+        constraintName: UC_PACKAGE_SERVICES
+        tableName: package_services

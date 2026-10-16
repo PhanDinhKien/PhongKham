@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Hợp đồng | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+
+    <style>
+        /* ==============================================================
+           CHI TIẾT HỢP ĐỒNG - SPECIFIC STYLES
+           ============================================================== */
+        .contract-header-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+        }
+
+        .contract-info-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px 40px;
+        }
+
+        @media (max-width: 900px) {
+            .contract-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-row {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            width: 130px;
+            flex-shrink: 0;
+            color: var(--slate-500);
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--slate-800);
+            font-size: 14px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .info-value.secondary {
+            font-weight: 500;
+            color: var(--slate-600);
+        }
+
+        .contract-footer-note {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--slate-200);
+            font-size: 12.5px;
+            color: var(--slate-500);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contract-footer-note .dot {
+            color: var(--slate-400);
+            font-size: 16px;
+        }
+
+        /* -------------------------------------------------------------
+           TABS NAVIGATION (Khớp thiết kế ảnh)
+           ----------------------------------------------------------- */
+        .contract-tabs-nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            border-bottom: 2px solid var(--slate-200);
+            margin-bottom: 24px;
+            padding-left: 4px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            outline: none;
+            padding: 12px 4px 14px 4px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--slate-500);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.15s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--slate-800);
+        }
+
+        .tab-btn.active {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #059669;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-badge {
+            background-color: #e2e8f0;
+            color: var(--slate-600);
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn.active .tab-badge {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* -------------------------------------------------------------
+           STATUS BADGES TRONG HỒ SƠ KHÁM (Khớp ảnh)
+           ----------------------------------------------------------- */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pill::before {
+            content: '•';
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .status-pill.moi {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-pill.cho_duyet {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-pill.dang_duyet {
+            background-color: #ffe4e6;
+            color: #e11d48;
+        }
+
+        .status-pill.da_duyet {
+            background-color: #ccfbf1;
+            color: #0d9488;
+        }
+
+        .sync-label {
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        .sync-label.da_dong_bo {
+            color: #059669;
+        }
+
+        .sync-label.chua_dong_bo {
+            color: var(--slate-400);
+        }
+
+        .sync-label.loi_dong_bo {
+            color: #e11d48;
+        }
+
+        .record-code-highlight {
+            color: #059669;
+            font-weight: 700;
+            font-family: inherit;
+        }
+
+        .patient-name-bold {
+            font-weight: 700;
+            color: var(--slate-900);
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        /* -------------------------------------------------------------
+           BẢNG 2 CẤP CHO GÓI DỊCH VỤ (HIERARCHICAL TABLE)
+           ----------------------------------------------------------- */
+        .pkg-master-row {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .pkg-master-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .pkg-master-row.expanded {
+            background-color: #f0fdf4 !important;
+        }
+
+        .toggle-expand-btn {
+            background: none;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--slate-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-expand-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--slate-900);
+        }
+
+        .toggle-expand-btn.rotated {
+            transform: rotate(90deg);
+            color: #059669;
+        }
+
+        .pkg-child-row {
+            display: none;
+            background-color: #fafbfc;
+        }
+
+        .pkg-child-row.open {
+            display: table-row;
+        }
+
+        .pkg-child-container {
+            padding: 16px 20px 20px 48px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .pkg-child-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .pkg-child-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--slate-700);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .child-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--slate-200);
+        }
+
+        .child-data-table th {
+            background-color: #f1f5f9;
+            color: var(--slate-600);
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .child-data-table td {
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--slate-700);
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .child-data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* -------------------------------------------------------------
+           NÚT HÀNH ĐỘNG CHÍNH (PRIMARY ACTIONS TRÊN TOOLBAR & HEADER)
+           ----------------------------------------------------------- */
+        .btn-primary-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 38px;
+            padding: 0 18px;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(4, 120, 87, 0.25);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary-action:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.35);
+            color: #ffffff;
+        }
+
+        .btn-primary-action:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(4, 120, 87, 0.2);
+        }
+
+        .btn-primary-action i {
+            font-size: 16px;
+        }
+
+        /* -------------------------------------------------------------
+           NÚT TRONG BẢNG CON (GÁN DỊCH VỤ VÀO GÓI KHÁM)
+           ----------------------------------------------------------- */
+        .btn-sm-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #10b981;
+            background: #ecfdf5;
+            color: #047857;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 2px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn-sm-action:hover {
+            background: #059669;
+            color: #ffffff;
+            border-color: #059669;
+            box-shadow: 0 3px 8px rgba(5, 150, 105, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm-action:active {
+            transform: translateY(0);
+        }
+
+        .btn-sm-delete {
+            color: #e11d48;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-sm-delete:hover {
+            background-color: #ffe4e6;
+            color: #be123c;
+        }
+
+        /* -------------------------------------------------------------
+           NÚT TRONG MODAL (HỦY, LƯU, GÁN, THÊM VÀO HỢP ĐỒNG)
+           ----------------------------------------------------------- */
+        .modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--slate-50);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .btn-modal-cancel,
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 38px;
+            padding: 0 18px;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
+            color: #475569;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-modal-cancel:hover,
+        .btn-cancel:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-cancel:active,
+        .btn-cancel:active {
+            transform: translateY(0);
+        }
+
+        /* -------------------------------------------------------------
+           BẢNG CHỌN DỊCH VỤ TRONG MODAL GÁN DỊCH VỤ
+           ----------------------------------------------------------- */
+        .service-modal-row {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .service-modal-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .service-modal-row.is-selected {
+            background-color: #f0fdf4 !important;
+        }
+
+        .service-checkbox {
+            cursor: pointer;
+            width: 17px;
+            height: 17px;
+            accent-color: #059669;
+        }
+
+        .btn-modal-submit,
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 38px;
+            padding: 0 22px;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(4, 120, 87, 0.25);
+        }
+
+        .btn-modal-submit:hover,
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.35);
+        }
+
+        .btn-modal-submit:active,
+        .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(4, 120, 87, 0.2);
+        }
+
+        .btn-modal-danger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 38px;
+            padding: 0 20px;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-modal-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+        }
+
+        .badge-count {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: #ffffff;
+            border: 1px solid var(--slate-300);
+            color: var(--slate-700);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-back:hover {
+            background-color: var(--slate-100);
+            border-color: var(--slate-400);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('kinh-doanh', 'hop-dong')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <a th:href="@{/admin/contracts}" class="breadcrumb-link">Hợp đồng KSK</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <span class="breadcrumb-current">Chi tiết hợp đồng</span>
+                </div>
+                <a th:href="@{/admin/contracts}" class="btn-back">
+                    <i class="ph ph-arrow-left"></i>
+                    <span>Danh sách hợp đồng</span>
+                </a>
+            </div>
+
+            <!-- Tiêu đề trang (Khớp giao diện) -->
+            <div class="page-header-row" style="margin-bottom: 20px;">
+                <div>
+                    <h1 class="page-title" style="font-size: 26px; font-weight: 800; color: #0f172a;">
+                        Chi tiết hợp đồng <span id="headerContractCode" style="color: #047857;">...</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 KHUNG THÔNG TIN HỢP ĐỒNG (SUMMARY CARD KHỚP ẢNH)
+                 ============================================================== -->
+            <div class="contract-header-card">
+                <div class="contract-info-grid">
+                    <!-- Cột trái -->
+                    <div>
+                        <div class="info-row">
+                            <span class="info-label">Tên hợp đồng</span>
+                            <span class="info-value" id="cardContractName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Tên công ty</span>
+                            <span class="info-value" id="cardCompanyName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Số hợp đồng</span>
+                            <span class="info-value" id="cardContractNumber">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải -->
+                    <div>
+                        <div class="info-row">
+                            <span class="info-label">Mã hợp đồng</span>
+                            <span class="info-value" id="cardContractCode">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Mã công ty</span>
+                            <span class="info-value secondary" id="cardCompanyCode">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Ngày hiệu lực</span>
+                            <span class="info-value secondary" id="cardEffectiveDate">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contract-footer-note">
+                    <span class="dot">•</span>
+                    <span>Đồng bộ lần cuối: <strong id="cardSyncTime">-</strong></span>
+                    <span style="margin: 0 10px; color: var(--slate-300);">|</span>
+                    <span>Trạng thái: <span id="cardStatusBadge">-</span></span>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 TABS ĐIỀU HƯỚNG (3 TABS KHỚP YÊU CẦU: BỎ TAB DỊCH VỤ LẺ)
+                 ============================================================== -->
+            <div class="contract-tabs-nav">
+                <button type="button" class="tab-btn active" data-tab="tab-patients" id="btnTabPatients">
+                    <span>DS hồ sơ khám</span>
+                    <span class="tab-badge" id="badgePatientCount">0</span>
+                </button>
+                <button type="button" class="tab-btn" data-tab="tab-locations" id="btnTabLocations">
+                    <span>Địa điểm</span>
+                    <span class="tab-badge" id="badgeLocationCount">0</span>
+                </button>
+                <button type="button" class="tab-btn" data-tab="tab-packages" id="btnTabPackages">
+                    <span>Gói dịch vụ</span>
+                    <span class="tab-badge" id="badgePackageCount">0</span>
+                </button>
+            </div>
+
+            <!-- ==============================================================
+                 NỘI DUNG TAB 1: DS HỒ SƠ KHÁM
+                 ============================================================== -->
+            <div class="tab-pane active" id="tab-patients">
+                <!-- Thanh công cụ lọc & tìm kiếm hồ sơ -->
+                <div class="filter-toolbar" style="margin-bottom: 16px;">
+                    <div class="search-box">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="patientSearchInput" class="search-input" placeholder="Tìm theo mã NB, mã hồ sơ, tên bệnh nhân, bác sĩ...">
+                    </div>
+
+                    <div class="filter-select-wrap">
+                        <select id="patientStatusFilter" class="filter-select">
+                            <option value="">Tất cả trạng thái hồ sơ</option>
+                            <option value="MOI">Mới</option>
+                            <option value="CHO_DUYET">Chờ duyệt</option>
+                            <option value="DANG_DUYET">Đang duyệt</option>
+                            <option value="DA_DUYET">Đã duyệt</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <button type="button" class="btn-primary-action" id="btnOpenAddPatientModal" style="margin-left: auto;">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm bệnh nhân vào HĐ</span>
+                    </button>
+                </div>
+
+                <!-- Bảng hồ sơ khám (khớp cột & styling trong ảnh) -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">STT</th>
+                                    <th style="width: 110px;">MÃ NB</th>
+                                    <th style="width: 140px;">MÃ HỒ SƠ</th>
+                                    <th style="min-width: 180px;">BỆNH NHÂN</th>
+                                    <th style="width: 150px;">BÁC SĨ</th>
+                                    <th style="width: 120px;">NGÀY KHÁM</th>
+                                    <th style="width: 150px;">NGÀY CẬP NHẬT</th>
+                                    <th style="width: 130px;">TRẠNG THÁI</th>
+                                    <th style="width: 130px;">ĐỒNG BỘ</th>
+                                    <th style="width: 80px; text-align: right; padding-right: 20px;">TÁC VỤ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientTableBody">
+                                <tr>
+                                    <td colspan="10" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                        Đang tải danh sách hồ sơ khám...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Phân trang hồ sơ khám -->
+                    <div class="pagination-bar">
+                        <div class="pagination-info" id="patientPaginationInfo">
+                            Đang xem 0 - 0 trong 0
+                        </div>
+                        <div class="pagination-actions">
+                            <div class="pagination-controls" id="patientPaginationControls"></div>
+                            <div class="page-size-wrap">
+                                <select id="patientPageSizeSelect" class="page-size-select">
+                                    <option value="10">10 / trang</option>
+                                    <option value="20" selected>20 / trang</option>
+                                    <option value="50">50 / trang</option>
+                                </select>
+                                <i class="ph ph-caret-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 NỘI DUNG TAB 2: ĐỊA ĐIỂM KHÁM
+                 ============================================================== -->
+            <div class="tab-pane" id="tab-locations">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-800);">Danh sách địa điểm khám được gán</h3>
+                        <span style="font-size: 13px; color: var(--slate-500);">Một hợp đồng có thể khám tại nhiều địa điểm, và mỗi địa điểm khám cho nhiều hợp đồng</span>
+                    </div>
+                    <button type="button" class="btn-primary-action" id="btnOpenAssignLocationModal">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Gán địa điểm khám</span>
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">STT</th>
+                                    <th style="width: 140px;">Mã địa điểm</th>
+                                    <th style="min-width: 200px;">Tên địa điểm</th>
+                                    <th style="min-width: 300px;">Địa chỉ</th>
+                                    <th style="width: 130px;">Trạng thái</th>
+                                    <th style="width: 150px;">Ngày gán</th>
+                                    <th style="width: 90px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locationTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                        Đang tải danh sách địa điểm...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 NỘI DUNG TAB 3: GÓI DỊCH VỤ (BẢNG 2 CẤP MASTER - CHILD)
+                 ============================================================== -->
+            <div class="tab-pane" id="tab-packages">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-800);">Danh sách gói khám của hợp đồng</h3>
+                        <span style="font-size: 13px; color: var(--slate-500);">Mỗi gói khám thuộc 1 hợp đồng, bảng con hiển thị danh sách các dịch vụ y tế được gán trong gói</span>
+                    </div>
+                    <button type="button" class="btn-primary-action" id="btnOpenAddPackageModal">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm mới gói khám</span>
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 44px; text-align: center;"></th>
+                                    <th style="width: 50px;">STT</th>
+                                    <th style="width: 130px;">Mã Gói</th>
+                                    <th style="min-width: 240px;">Tên Gói Khám</th>
+                                    <th style="width: 130px;">Số dịch vụ</th>
+                                    <th style="width: 130px;">Trạng thái</th>
+                                    <th style="width: 150px;">Ngày Tạo</th>
+                                    <th style="width: 150px;">Người tạo</th>
+                                    <th style="width: 140px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packageTableBody">
+                                <tr>
+                                    <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                        Đang tải danh sách gói khám...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 1: THÊM BỆNH NHÂN VÀO HỢP ĐỒNG
+         ============================================================== -->
+    <div class="modal-backdrop" id="addPatientModal">
+        <div class="modal-dialog" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm bệnh nhân vào hợp đồng</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseAddPatientModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <form id="addPatientForm">
+                <div class="modal-body">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Chọn người bệnh <span class="required-star">*</span></label>
+                        <select id="modalPatientSelect" class="form-control" required style="width: 100%;">
+                            <option value="">-- Đang tải danh sách người bệnh --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group">
+                            <label class="form-label">Mã hồ sơ khám</label>
+                            <input type="text" id="modalRecordCode" class="form-control" placeholder="VD: HS-2026-00892">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bác sĩ phụ trách</label>
+                            <input type="text" id="modalDoctorName" class="form-control" placeholder="VD: BS. Nguyễn Văn A" value="BS. Nguyễn Văn A">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group">
+                            <label class="form-label">Ngày khám</label>
+                            <input type="date" id="modalExamDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái hồ sơ</label>
+                            <select id="modalRecordStatus" class="form-control">
+                                <option value="MOI">Mới</option>
+                                <option value="CHO_DUYET">Chờ duyệt</option>
+                                <option value="DANG_DUYET">Đang duyệt</option>
+                                <option value="DA_DUYET">Đã duyệt</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelAddPatient">
+                        <i class="ph ph-x"></i>
+                        <span>Hủy</span>
+                    </button>
+                    <button type="submit" class="btn-modal-submit" id="btnSubmitAddPatient">
+                        <i class="ph-bold ph-plus-circle"></i>
+                        <span>Thêm vào hợp đồng</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 2: GÁN ĐỊA ĐIỂM KHÁM VÀO HỢP ĐỒNG
+         ============================================================== -->
+    <div class="modal-backdrop" id="assignLocationModal">
+        <div class="modal-dialog" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Gán địa điểm khám cho hợp đồng</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseAssignLocationModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <form id="assignLocationForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Chọn địa điểm khám <span class="required-star">*</span></label>
+                        <select id="modalLocationSelect" class="form-control" required style="width: 100%;">
+                            <option value="">-- Đang tải địa điểm --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelAssignLocation">
+                        <i class="ph ph-x"></i>
+                        <span>Hủy</span>
+                    </button>
+                    <button type="submit" class="btn-modal-submit" id="btnSubmitAssignLocation">
+                        <i class="ph-bold ph-map-pin"></i>
+                        <span>Gán địa điểm</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 3: THÊM / SỬA GÓI KHÁM
+         ============================================================== -->
+    <div class="modal-backdrop" id="packageModal">
+        <div class="modal-dialog" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="packageModalTitle">Thêm mới gói khám</h3>
+                <button type="button" class="btn-modal-close" id="btnClosePackageModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <form id="packageForm">
+                <input type="hidden" id="modalPackageId" value="">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Mã Gói <span class="required-star">*</span></label>
+                        <input type="text" id="modalPackageCode" class="form-control uppercase" placeholder="VD: GK-001" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên Gói Khám <span class="required-star">*</span></label>
+                        <input type="text" id="modalPackageName" class="form-control" placeholder="VD: Gói khám sức khỏe tổng quát định kỳ" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái <span class="required-star">*</span></label>
+                        <select id="modalPackageStatus" class="form-control" required>
+                            <option value="HIEU_LUC">Hiệu lực</option>
+                            <option value="HET_HIEU_LUC">Hết hiệu lực</option>
+                        </select>
+                    </div>
+
+                    <!-- Hàng cấu hình dịch vụ khi sửa gói -->
+                    <div id="modalEditPackageServicesRow" style="display: none; margin-top: 14px; padding: 12px 16px; background: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="font-size: 13px; font-weight: 600; color: #166534;">Dịch vụ trong gói:</span>
+                            <span id="modalPackageServiceCount" style="font-size: 13px; color: #15803d; font-weight: 700; margin-left: 6px;">0 dịch vụ</span>
+                        </div>
+                        <button type="button" class="btn-sm-action" id="btnEditPackageServices" onclick="onEditPackageServicesClicked()">
+                            <i class="ph-bold ph-plus-circle"></i> Cấu hình danh sách dịch vụ
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelPackage">
+                        <i class="ph ph-x"></i>
+                        <span>Hủy</span>
+                    </button>
+                    <button type="submit" class="btn-modal-submit" id="btnSubmitPackage">
+                        <i class="ph-bold ph-floppy-disk"></i>
+                        <span>Lưu gói khám</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 4: GÁN DỊCH VỤ VÀO GÓI KHÁM (BẢNG DANH SÁCH & TÍCH CHỌN)
+         ============================================================== -->
+    <div class="modal-backdrop" id="assignServiceModal">
+        <div class="modal-dialog" style="max-width: 920px; width: 95%;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 class="modal-title">Gán dịch vụ cho gói khám</h3>
+                    <span class="badge-count" id="selectedServicesCount" style="background-color: #d1fae5; color: #065f46; font-size: 12px; padding: 4px 10px;">Đã chọn: 0 dịch vụ</span>
+                </div>
+                <button type="button" class="btn-modal-close" id="btnCloseAssignServiceModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <form id="assignServiceForm">
+                <input type="hidden" id="targetPackageId" value="">
+                <div class="modal-body" style="padding: 18px 24px;">
+                    <!-- Thông tin gói đang cấu hình -->
+                    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 12.5px; color: #166534; font-weight: 500;">Gói khám đang cấu hình:</span>
+                            <div id="targetPackageNameDisplay" style="font-size: 14.5px; font-weight: 700; color: #14532d; margin-top: 2px;">-</div>
+                        </div>
+                        <div style="font-size: 12.5px; color: #15803d; font-weight: 600;">
+                            <i class="ph-bold ph-check-square-offset"></i> Tích chọn các dịch vụ cần gán vào gói
+                        </div>
+                    </div>
+
+                    <!-- Thanh tìm kiếm & lọc dịch vụ nhanh trong modal -->
+                    <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+                        <div class="search-box" style="flex: 1; max-width: none;">
+                            <i class="ph ph-magnifying-glass"></i>
+                            <input type="text" id="serviceModalSearchInput" class="search-input" placeholder="Tìm kiếm nhanh theo mã hoặc tên dịch vụ y tế...">
+                        </div>
+                        <div class="filter-select-wrap" style="width: 200px;">
+                            <select id="serviceModalTypeFilter" class="filter-select">
+                                <option value="">Tất cả phân loại</option>
+                                <option value="KHAM_BENH">Khám chuyên khoa</option>
+                                <option value="XET_NGHIEM">Xét nghiệm</option>
+                                <option value="CHAN_DOAN_HINH_ANH">Chẩn đoán hình ảnh</option>
+                                <option value="THU_THUAT">Thủ thuật</option>
+                                <option value="KHAC">Khác</option>
+                            </select>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Bảng danh sách toàn bộ dịch vụ kèm checkbox -->
+                    <div style="border: 1px solid var(--slate-200); border-radius: 8px; overflow: hidden;">
+                        <div style="max-height: 380px; overflow-y: auto;">
+                            <table class="data-table" style="margin-bottom: 0;">
+                                <thead style="position: sticky; top: 0; z-index: 2; background-color: #f8fafc;">
+                                    <tr>
+                                        <th style="width: 44px; text-align: center;">
+                                            <input type="checkbox" id="selectAllServicesCheckbox" style="cursor: pointer; width: 16px; height: 16px; accent-color: #059669;">
+                                        </th>
+                                        <th style="width: 50px;">STT</th>
+                                        <th style="width: 140px;">Mã dịch vụ</th>
+                                        <th style="min-width: 220px;">Tên dịch vụ</th>
+                                        <th style="width: 160px;">Phân loại</th>
+                                        <th style="width: 140px; text-align: right; padding-right: 20px;">Đơn giá (VNĐ)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalServicesTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 30px; color: var(--slate-400);">
+                                            Đang tải danh sách dịch vụ y tế...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelAssignService">
+                        <i class="ph ph-x"></i>
+                        <span>Hủy</span>
+                    </button>
+                    <button type="submit" class="btn-modal-submit" id="btnSubmitAssignService">
+                        <i class="ph-bold ph-check"></i>
+                        <span>Lưu danh sách dịch vụ</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL XÁC NHẬN XÓA CHUNG
+         ============================================================== -->
+    <div class="modal-backdrop" id="confirmDeleteModal">
+        <div class="modal-dialog" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmDeleteTitle" style="color: #dc2626;">Xác nhận xóa</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseConfirmDeleteModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size: 14px; color: var(--slate-700); line-height: 1.6;" id="confirmDeleteMessage">
+                    Bạn có chắc chắn muốn thực hiện thao tác này?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelConfirmDelete">
+                    <i class="ph ph-x"></i>
+                    <span>Hủy bỏ</span>
+                </button>
+                <button type="button" class="btn-modal-danger" id="btnExecuteConfirmDelete">
+                    <i class="ph-bold ph-trash"></i>
+                    <span>Xác nhận</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // Lấy contractId từ URL: /admin/contracts/{id}
+        const pathParts = window.location.pathname.split('/');
+        const contractId = pathParts[pathParts.length - 1];
+
+        // State
+        let contractData = null;
+        let allPatientsList = [];
+        let allLocationsList = [];
+        let allServicesList = [];
+        let packagesData = [];
+
+        let currentPatientPage = 0;
+        let currentPatientSize = 20;
+        let deleteCallback = null;
+
+        // ==============================================================
+        // KHỞI CHẠY (INIT)
+        // ==============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            loadContractDetail();
+            loadContractPatients(0);
+            loadContractLocations();
+            loadContractPackages();
+
+            // Cache preload helpers
+            preloadPatients();
+            preloadLocations();
+            preloadServices();
+
+            // Set default date for add patient modal
+            const today = new Date().toISOString().split('T')[0];
+            const examDateInput = document.getElementById('modalExamDate');
+            if (examDateInput) examDateInput.value = today;
+
+            setupEventListeners();
+        });
+
+        // ==============================================================
+        // TABS SWITCHING
+        // ==============================================================
+        function initTabs() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    const targetId = btn.getAttribute('data-tab');
+                    const targetPane = document.getElementById(targetId);
+                    if (targetPane) targetPane.classList.add('active');
+                });
+            });
+        }
+
+        // ==============================================================
+        // LOAD CONTRACT HEADER DETAIL
+        // ==============================================================
+        async function loadContractDetail() {
+            try {
+                const res = await fetch(`/api/contracts/${contractId}/detail`);
+                if (!res.ok) throw new Error('Không thể tải thông tin hợp đồng');
+                contractData = await res.json();
+
+                // Cập nhật Tiêu đề & Card
+                document.getElementById('headerContractCode').textContent = contractData.contractCode;
+                document.getElementById('cardContractName').textContent = contractData.contractName;
+                document.getElementById('cardCompanyName').textContent = contractData.companyName;
+                document.getElementById('cardContractNumber').textContent = contractData.contractCode;
+                document.getElementById('cardContractCode').textContent = contractData.contractCode;
+                document.getElementById('cardCompanyCode').textContent = contractData.companyCode;
+
+                const dateStr = contractData.createdAt ? formatDate(contractData.createdAt) : '-';
+                document.getElementById('cardEffectiveDate').textContent = dateStr;
+                document.getElementById('cardSyncTime').textContent = contractData.updatedAt ? formatDateTime(contractData.updatedAt) : dateStr;
+
+                const statusBadge = document.getElementById('cardStatusBadge');
+                statusBadge.innerHTML = `<span class="badge-status ${contractData.status === 'HIEU_LUC' ? 'active' : 'inactive'}">${escapeHtml(contractData.statusLabel)}</span>`;
+
+                // Badges
+                updateTabCounts(contractData.patientCount, contractData.locationCount, contractData.packageCount);
+            } catch (err) {
+                console.error(err);
+                showToast(err.message || 'Lỗi tải chi tiết hợp đồng', 'error');
+            }
+        }
+
+        function updateTabCounts(pCount, lCount, pkgCount) {
+            if (pCount !== undefined) document.getElementById('badgePatientCount').textContent = pCount;
+            if (lCount !== undefined) document.getElementById('badgeLocationCount').textContent = lCount;
+            if (pkgCount !== undefined) document.getElementById('badgePackageCount').textContent = pkgCount;
+        }
+
+        // ==============================================================
+        // TAB 1: DS HỒ SƠ KHÁM (PATIENTS)
+        // ==============================================================
+        async function loadContractPatients(page = 0) {
+            currentPatientPage = page;
+            const keyword = document.getElementById('patientSearchInput').value.trim();
+            const status = document.getElementById('patientStatusFilter').value;
+            const tbody = document.getElementById('patientTableBody');
+
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 30px; color: var(--slate-400);">Đang tải dữ liệu...</td></tr>`;
+
+            try {
+                let url = `/api/contracts/${contractId}/patients?page=${page}&size=${currentPatientSize}`;
+                if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+                if (status) url += `&status=${encodeURIComponent(status)}`;
+
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Không thể tải danh sách hồ sơ khám');
+                const data = await res.json();
+
+                renderPatientTable(data.items, page, currentPatientSize);
+                renderPatientPagination(data);
+                document.getElementById('badgePatientCount').textContent = data.totalElements;
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 30px; color: #dc2626;">Lỗi: ${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        function renderPatientTable(items, page, size) {
+            const tbody = document.getElementById('patientTableBody');
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 40px; color: var(--slate-400);">Chưa có hồ sơ khám nào trong hợp đồng này</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map((p, idx) => {
+                const stt = String(page * size + idx + 1).padStart(2, '0');
+                const examDateStr = p.examDate ? formatDate(p.examDate) : '-';
+                const updateDateStr = p.updatedAt ? formatDateTime(p.updatedAt) : '-';
+
+                // Trạng thái pill khớp ảnh
+                const statusClass = (p.status || 'MOI').toLowerCase();
+                const statusLabel = p.statusLabel || 'Mới';
+
+                // Đồng bộ status
+                let syncClass = 'chua_dong_bo';
+                if (p.syncStatus === 'Đã đồng bộ') syncClass = 'da_dong_bo';
+                else if (p.syncStatus === 'Lỗi đồng bộ') syncClass = 'loi_dong_bo';
+
+                return `
+                    <tr>
+                        <td style="color: var(--slate-500); font-weight: 500;">${stt}</td>
+                        <td style="font-weight: 600; color: var(--slate-700);">${escapeHtml(p.patientCode || '-')}</td>
+                        <td><span class="record-code-highlight">${escapeHtml(p.recordCode || '-')}</span></td>
+                        <td><span class="patient-name-bold">${escapeHtml(p.patientName || '-')}</span></td>
+                        <td style="color: var(--slate-700);">${escapeHtml(p.doctorName || '-')}</td>
+                        <td style="color: var(--slate-600);">${examDateStr}</td>
+                        <td style="color: var(--slate-600); font-size: 12.5px;">${updateDateStr}</td>
+                        <td>
+                            <span class="status-pill ${statusClass}">${escapeHtml(statusLabel)}</span>
+                        </td>
+                        <td>
+                            <span class="sync-label ${syncClass}">${escapeHtml(p.syncStatus || 'Chưa đồng bộ')}</span>
+                        </td>
+                        <td style="text-align: right; padding-right: 20px; white-space: nowrap;">
+                            <div class="table-actions-dropdown">
+                                <button type="button" class="btn-action-icon" title="Xem chi tiết người bệnh" onclick="window.location.href='/admin/patients'">
+                                    <i class="ph ph-folder-open"></i>
+                                </button>
+                                <button type="button" class="btn-action-icon delete" title="Xóa khỏi hợp đồng" onclick="confirmRemovePatient('${p.patientId}', '${escapeHtml(p.patientName)}')">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPatientPagination(data) {
+            const info = document.getElementById('patientPaginationInfo');
+            const controls = document.getElementById('patientPaginationControls');
+
+            const total = data.totalElements || 0;
+            const start = total === 0 ? 0 : data.page * data.size + 1;
+            const end = Math.min((data.page + 1) * data.size, total);
+            info.textContent = `Đang xem ${start} - ${end} trong ${total}`;
+
+            const totalPages = data.totalPages || 1;
+            let btns = '';
+
+            // Nút Prev
+            btns += `<button type="button" class="page-btn" ${data.page === 0 ? 'disabled' : ''} onclick="loadContractPatients(${data.page - 1})"><i class="ph ph-caret-left"></i></button>`;
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === 0 || i === totalPages - 1 || Math.abs(i - data.page) <= 1) {
+                    btns += `<button type="button" class="page-btn ${i === data.page ? 'active' : ''}" onclick="loadContractPatients(${i})">${i + 1}</button>`;
+                } else if (Math.abs(i - data.page) === 2) {
+                    btns += `<span style="padding: 0 4px; color: var(--slate-400);">...</span>`;
+                }
+            }
+
+            // Nút Next
+            btns += `<button type="button" class="page-btn" ${data.page >= totalPages - 1 ? 'disabled' : ''} onclick="loadContractPatients(${data.page + 1})"><i class="ph ph-caret-right"></i></button>`;
+
+            controls.innerHTML = btns;
+        }
+
+        // ==============================================================
+        // TAB 2: ĐỊA ĐIỂM KHÁM (LOCATIONS)
+        // ==============================================================
+        async function loadContractLocations() {
+            const tbody = document.getElementById('locationTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--slate-400);">Đang tải dữ liệu...</td></tr>`;
+
+            try {
+                const res = await fetch(`/api/contracts/${contractId}/locations`);
+                if (!res.ok) throw new Error('Không thể tải danh sách địa điểm');
+                const list = await res.json();
+
+                document.getElementById('badgeLocationCount').textContent = list.length;
+
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--slate-400);">Chưa có địa điểm khám nào được gán cho hợp đồng này</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = list.map((loc, idx) => {
+                    const stt = String(idx + 1).padStart(2, '0');
+                    const dateStr = loc.createdAt ? formatDateTime(loc.createdAt) : '-';
+                    return `
+                        <tr>
+                            <td style="color: var(--slate-500); font-weight: 500;">${stt}</td>
+                            <td><span style="font-weight: 600; color: #0f172a;">${escapeHtml(loc.code)}</span></td>
+                            <td style="font-weight: 600; color: #047857;">${escapeHtml(loc.name)}</td>
+                            <td style="color: var(--slate-600);">${escapeHtml(loc.address || '-')}</td>
+                            <td>
+                                <span class="badge-status ${loc.active ? 'active' : 'inactive'}">
+                                    ${loc.active ? 'Đang hoạt động' : 'Tạm dừng'}
+                                </span>
+                            </td>
+                            <td style="font-size: 12.5px; color: var(--slate-500);">${dateStr}</td>
+                            <td style="text-align: right; padding-right: 20px;">
+                                <button type="button" class="btn-action-icon delete" title="Hủy gán địa điểm khỏi HĐ" onclick="confirmRemoveLocation('${loc.locationId}', '${escapeHtml(loc.name)}')">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color: #dc2626;">Lỗi: ${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        // ==============================================================
+        // TAB 3: GÓI DỊCH VỤ (BẢNG 2 CẤP MASTER - CHILD)
+        // ==============================================================
+        async function loadContractPackages() {
+            const tbody = document.getElementById('packageTableBody');
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 30px; color: var(--slate-400);">Đang tải dữ liệu...</td></tr>`;
+
+            try {
+                const res = await fetch(`/api/contracts/${contractId}/packages`);
+                if (!res.ok) throw new Error('Không thể tải danh sách gói khám');
+                packagesData = await res.json();
+
+                document.getElementById('badgePackageCount').textContent = packagesData.length;
+
+                if (!packagesData || packagesData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 40px; color: var(--slate-400);">Chưa có gói khám nào trong hợp đồng này. Nhấn 'Thêm mới gói khám' để tạo.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = packagesData.map((pkg, idx) => {
+                    const stt = String(idx + 1).padStart(2, '0');
+                    const dateStr = pkg.createdAt ? formatDateTime(pkg.createdAt) : '-';
+                    const isEffective = pkg.status === 'HIEU_LUC';
+                    const servicesCount = pkg.serviceCount || 0;
+
+                    // Child services rows
+                    let childContentHtml = '';
+                    if (pkg.services && pkg.services.length > 0) {
+                        childContentHtml = `
+                            <table class="child-data-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">STT</th>
+                                        <th style="width: 140px;">Mã dịch vụ</th>
+                                        <th style="min-width: 200px;">Tên dịch vụ</th>
+                                        <th style="width: 150px;">Phân loại</th>
+                                        <th style="width: 140px; text-align: right;">Đơn giá (VNĐ)</th>
+                                        <th style="width: 150px;">Ngày gán</th>
+                                        <th style="width: 80px; text-align: right;">Tác vụ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${pkg.services.map((s, sIdx) => `
+                                        <tr>
+                                            <td style="color: var(--slate-500); font-weight: 500;">${String(sIdx + 1).padStart(2, '0')}</td>
+                                            <td style="font-weight: 600; color: #047857;">${escapeHtml(s.code)}</td>
+                                            <td style="font-weight: 600; color: var(--slate-800);">${escapeHtml(s.name)}</td>
+                                            <td><span class="badge-type">${escapeHtml(s.serviceTypeLabel || s.serviceType || '-')}</span></td>
+                                            <td style="text-align: right; font-weight: 600; color: #0f172a;">${formatCurrency(s.price)}</td>
+                                            <td style="font-size: 12px; color: var(--slate-500);">${s.createdAt ? formatDateTime(s.createdAt) : '-'}</td>
+                                            <td style="text-align: right;">
+                                                <button type="button" class="btn-sm-delete" title="Xóa dịch vụ khỏi gói" onclick="confirmRemoveService('${pkg.id}', '${s.serviceId}', '${escapeHtml(s.name)}')">
+                                                    <i class="ph ph-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        childContentHtml = `
+                            <div style="background: #ffffff; border: 1px dashed var(--slate-300); border-radius: 8px; padding: 24px; text-align: center; color: var(--slate-500); font-size: 13.5px;">
+                                <i class="ph ph-stethoscope" style="font-size: 28px; color: var(--slate-400); margin-bottom: 6px; display: block;"></i>
+                                Gói khám này chưa có dịch vụ y tế nào. 
+                                <button type="button" class="btn-sm-action" style="margin-left: 8px;" onclick="openAssignServiceModal('${pkg.id}', '${escapeHtml(pkg.packageName)}')">
+                                    <i class="ph-bold ph-plus-circle"></i> Gán dịch vụ ngay
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <!-- DÒNG CHÍNH (MASTER ROW) -->
+                        <tr class="pkg-master-row" id="master-row-${pkg.id}" onclick="togglePackageDetails('${pkg.id}', event)">
+                            <td style="text-align: center;">
+                                <button type="button" class="toggle-expand-btn" id="btn-toggle-${pkg.id}" title="Xem danh sách dịch vụ trong gói">
+                                    <i class="ph-bold ph-caret-right"></i>
+                                </button>
+                            </td>
+                            <td style="color: var(--slate-500); font-weight: 500;">${stt}</td>
+                            <td><span style="font-weight: 700; color: #047857; font-size: 13.5px;">${escapeHtml(pkg.packageCode)}</span></td>
+                            <td style="font-weight: 700; color: #0f172a;">${escapeHtml(pkg.packageName)}</td>
+                            <td>
+                                <span class="badge-count">${servicesCount} dịch vụ</span>
+                            </td>
+                            <td>
+                                <span class="badge-status ${isEffective ? 'active' : 'inactive'}">
+                                    ${escapeHtml(pkg.statusLabel || (isEffective ? 'Hiệu lực' : 'Hết hiệu lực'))}
+                                </span>
+                            </td>
+                            <td style="font-size: 12.5px; color: var(--slate-600);">${dateStr}</td>
+                            <td style="font-size: 12.5px; color: var(--slate-700);">${escapeHtml(pkg.createdBy || '-')}</td>
+                            <td style="text-align: right; padding-right: 20px; white-space: nowrap;" onclick="event.stopPropagation();">
+                                <div class="table-actions-dropdown">
+                                    <button type="button" class="btn-action-icon" title="Gán thêm dịch vụ vào gói" onclick="openAssignServiceModal('${pkg.id}', '${escapeHtml(pkg.packageName)}')">
+                                        <i class="ph-bold ph-plus-circle" style="color: #059669;"></i>
+                                    </button>
+                                    <button type="button" class="btn-action-icon" title="Sửa thông tin gói" onclick="openEditPackageModal('${pkg.id}')">
+                                        <i class="ph ph-pencil-simple"></i>
+                                    </button>
+                                    <button type="button" class="btn-action-icon delete" title="Xóa gói khám" onclick="confirmDeletePackage('${pkg.id}', '${escapeHtml(pkg.packageName)}')">
+                                        <i class="ph ph-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- DÒNG CON (CHILD ROW HIỂN THỊ DỊCH VỤ TRONG GÓI) -->
+                        <tr class="pkg-child-row" id="child-row-${pkg.id}">
+                            <td colspan="9" style="padding: 0;">
+                                <div class="pkg-child-container">
+                                    <div class="pkg-child-header">
+                                        <div class="pkg-child-title">
+                                            <i class="ph-bold ph-first-aid-kit" style="color: #059669; font-size: 17px;"></i>
+                                            <span>Danh sách dịch vụ y tế trong gói: <span style="color: #047857;">${escapeHtml(pkg.packageName)}</span></span>
+                                        </div>
+                                        <button type="button" class="btn-sm-action" onclick="openAssignServiceModal('${pkg.id}', '${escapeHtml(pkg.packageName)}')">
+                                            <i class="ph-bold ph-plus-circle"></i> Gán dịch vụ vào gói
+                                        </button>
+                                    </div>
+                                    ${childContentHtml}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 30px; color: #dc2626;">Lỗi: ${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        function togglePackageDetails(pkgId, evt) {
+            // Tránh toggle khi click vào các nút hành động
+            if (evt && (evt.target.closest('button') || evt.target.closest('.table-actions-dropdown'))) {
+                return;
+            }
+
+            const childRow = document.getElementById(`child-row-${pkgId}`);
+            const masterRow = document.getElementById(`master-row-${pkgId}`);
+            const toggleBtn = document.getElementById(`btn-toggle-${pkgId}`);
+
+            if (childRow) {
+                const isOpen = childRow.classList.contains('open');
+                if (isOpen) {
+                    childRow.classList.remove('open');
+                    masterRow.classList.remove('expanded');
+                    if (toggleBtn) toggleBtn.classList.remove('rotated');
+                } else {
+                    childRow.classList.add('open');
+                    masterRow.classList.add('expanded');
+                    if (toggleBtn) toggleBtn.classList.add('rotated');
+                }
+            }
+        }
+
+        // ==============================================================
+        // PRELOAD HELPERS (PATIENTS, LOCATIONS, SERVICES)
+        // ==============================================================
+        async function preloadPatients() {
+            try {
+                const res = await fetch('/api/patients/search?page=0&size=100');
+                if (res.ok) {
+                    const data = await res.json();
+                    allPatientsList = data.items || [];
+                    const select = document.getElementById('modalPatientSelect');
+                    if (select) {
+                        select.innerHTML = '<option value="">-- Chọn người bệnh --</option>' +
+                            allPatientsList.map(p => `<option value="${p.id}">${escapeHtml(p.patientCode)} - ${escapeHtml(p.fullName)} (${p.birthYear || '-'})</option>`).join('');
+                    }
+                }
+            } catch (e) {
+                console.warn('Lỗi preload patients', e);
+            }
+        }
+
+        async function preloadLocations() {
+            try {
+                const res = await fetch('/api/locations/search?page=0&size=100');
+                if (res.ok) {
+                    const data = await res.json();
+                    allLocationsList = data.items || [];
+                    const select = document.getElementById('modalLocationSelect');
+                    if (select) {
+                        select.innerHTML = '<option value="">-- Chọn địa điểm khám --</option>' +
+                            allLocationsList.map(l => `<option value="${l.id}">${escapeHtml(l.code)} - ${escapeHtml(l.name)}</option>`).join('');
+                    }
+                }
+            } catch (e) {
+                console.warn('Lỗi preload locations', e);
+            }
+        }
+
+        async function preloadServices() {
+            try {
+                const res = await fetch('/api/services/search?page=0&size=200');
+                if (res.ok) {
+                    const data = await res.json();
+                    allServicesList = data.items || [];
+                    const select = document.getElementById('modalServiceSelect');
+                    if (select) {
+                        select.innerHTML = '<option value="">-- Chọn dịch vụ y tế --</option>' +
+                            allServicesList.map(s => `<option value="${s.id}">[${escapeHtml(s.code)}] ${escapeHtml(s.name)} - ${formatCurrency(s.price)} đ</option>`).join('');
+                    }
+                }
+            } catch (e) {
+                console.warn('Lỗi preload services', e);
+            }
+        }
+
+        // ==============================================================
+        // MODALS HANDLING & ACTIONS
+        // ==============================================================
+        function setupEventListeners() {
+            // Patient filters
+            document.getElementById('patientSearchInput').addEventListener('input', debounce(() => loadContractPatients(0), 400));
+            document.getElementById('patientStatusFilter').addEventListener('change', () => loadContractPatients(0));
+            document.getElementById('patientPageSizeSelect').addEventListener('change', (e) => {
+                currentPatientSize = parseInt(e.target.value, 10);
+                loadContractPatients(0);
+            });
+
+            // Add patient modal
+            document.getElementById('btnOpenAddPatientModal').addEventListener('click', () => {
+                document.getElementById('modalRecordCode').value = 'HS-2026-' + Math.floor(10000 + Math.random() * 90000);
+                openModal('addPatientModal');
+            });
+            document.getElementById('btnCloseAddPatientModal').addEventListener('click', () => closeModal('addPatientModal'));
+            document.getElementById('btnCancelAddPatient').addEventListener('click', () => closeModal('addPatientModal'));
+
+            document.getElementById('addPatientForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const patientId = document.getElementById('modalPatientSelect').value;
+                const recordCode = document.getElementById('modalRecordCode').value.trim();
+                const doctorName = document.getElementById('modalDoctorName').value.trim();
+                const examDate = document.getElementById('modalExamDate').value;
+                const status = document.getElementById('modalRecordStatus').value;
+
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/patients`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ patientId, recordCode, doctorName, examDate, status })
+                    });
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Lỗi thêm bệnh nhân');
+                    }
+                    showToast('Đã thêm bệnh nhân vào hợp đồng thành công', 'success');
+                    closeModal('addPatientModal');
+                    loadContractPatients(currentPatientPage);
+                    loadContractDetail();
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            });
+
+            // Assign location modal
+            document.getElementById('btnOpenAssignLocationModal').addEventListener('click', () => openModal('assignLocationModal'));
+            document.getElementById('btnCloseAssignLocationModal').addEventListener('click', () => closeModal('assignLocationModal'));
+            document.getElementById('btnCancelAssignLocation').addEventListener('click', () => closeModal('assignLocationModal'));
+
+            document.getElementById('assignLocationForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const locationId = document.getElementById('modalLocationSelect').value;
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/locations`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ locationId })
+                    });
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Lỗi gán địa điểm');
+                    }
+                    showToast('Đã gán địa điểm khám vào hợp đồng', 'success');
+                    closeModal('assignLocationModal');
+                    loadContractLocations();
+                    loadContractDetail();
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            });
+
+            // Add/Edit package modal
+            document.getElementById('btnOpenAddPackageModal').addEventListener('click', () => {
+                document.getElementById('packageModalTitle').textContent = 'Thêm mới gói khám';
+                document.getElementById('modalPackageId').value = '';
+                document.getElementById('modalPackageCode').value = '';
+                document.getElementById('modalPackageCode').disabled = false;
+                document.getElementById('modalPackageName').value = '';
+                document.getElementById('modalPackageStatus').value = 'HIEU_LUC';
+                const editServiceRow = document.getElementById('modalEditPackageServicesRow');
+                if (editServiceRow) editServiceRow.style.display = 'none';
+                openModal('packageModal');
+            });
+            document.getElementById('btnClosePackageModal').addEventListener('click', () => closeModal('packageModal'));
+            document.getElementById('btnCancelPackage').addEventListener('click', () => closeModal('packageModal'));
+
+            document.getElementById('packageForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const pkgId = document.getElementById('modalPackageId').value;
+                const packageCode = document.getElementById('modalPackageCode').value.trim();
+                const packageName = document.getElementById('modalPackageName').value.trim();
+                const status = document.getElementById('modalPackageStatus').value;
+
+                try {
+                    let url = `/api/contracts/${contractId}/packages`;
+                    let method = 'POST';
+                    let payload = { packageCode, packageName, status };
+
+                    if (pkgId) {
+                        url += `/${pkgId}`;
+                        method = 'PUT';
+                        payload = { packageName, status };
+                    }
+
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Lỗi lưu gói khám');
+                    }
+
+                    showToast(pkgId ? 'Đã cập nhật gói khám thành công' : 'Đã thêm mới gói khám thành công', 'success');
+                    closeModal('packageModal');
+                    loadContractPackages();
+                    loadContractDetail();
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            });
+
+            // Assign service to package modal controls
+            document.getElementById('btnCloseAssignServiceModal').addEventListener('click', () => closeModal('assignServiceModal'));
+            document.getElementById('btnCancelAssignService').addEventListener('click', () => closeModal('assignServiceModal'));
+
+            // Tìm kiếm & lọc dịch vụ nhanh trong modal
+            document.getElementById('serviceModalSearchInput').addEventListener('input', debounce(() => renderModalServicesTable(), 200));
+            document.getElementById('serviceModalTypeFilter').addEventListener('change', () => renderModalServicesTable());
+
+            // Chọn tất cả dịch vụ
+            document.getElementById('selectAllServicesCheckbox').addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                const keyword = (document.getElementById('serviceModalSearchInput').value || '').toLowerCase().trim();
+                const typeFilter = document.getElementById('serviceModalTypeFilter').value;
+
+                const filtered = allServicesList.filter(s => {
+                    const matchKw = !keyword || 
+                        (s.code && s.code.toLowerCase().includes(keyword)) ||
+                        (s.name && s.name.toLowerCase().includes(keyword));
+                    const matchType = !typeFilter || s.serviceType === typeFilter;
+                    return matchKw && matchType;
+                });
+
+                filtered.forEach(s => {
+                    if (isChecked) selectedServiceIds.add(s.id);
+                    else selectedServiceIds.delete(s.id);
+                });
+                renderModalServicesTable();
+            });
+
+            // Lưu danh sách dịch vụ đã chọn vào gói (Đồng bộ: thêm mới được tích, xóa bỏ tích)
+            document.getElementById('assignServiceForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const pkgId = document.getElementById('targetPackageId').value;
+
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/packages/${pkgId}/services/sync`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ serviceIds: Array.from(selectedServiceIds) })
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Lỗi lưu danh sách dịch vụ');
+                    }
+
+                    showToast('Đã lưu danh sách dịch vụ cho gói khám thành công', 'success');
+                    closeModal('assignServiceModal');
+                    loadContractPackages();
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            });
+
+            // Confirm delete modal buttons
+            document.getElementById('btnCloseConfirmDeleteModal').addEventListener('click', () => closeModal('confirmDeleteModal'));
+            document.getElementById('btnCancelConfirmDelete').addEventListener('click', () => closeModal('confirmDeleteModal'));
+            document.getElementById('btnExecuteConfirmDelete').addEventListener('click', () => {
+                if (typeof deleteCallback === 'function') {
+                    deleteCallback();
+                }
+            });
+        }
+
+        // ==============================================================
+        // ACTIONS: EDIT & DELETE HELPERS
+        // ==============================================================
+        function openEditPackageModal(pkgId) {
+            const pkg = packagesData.find(p => p.id === pkgId);
+            if (!pkg) return;
+
+            document.getElementById('packageModalTitle').textContent = 'Chỉnh sửa gói khám';
+            document.getElementById('modalPackageId').value = pkg.id;
+            document.getElementById('modalPackageCode').value = pkg.packageCode;
+            document.getElementById('modalPackageCode').disabled = true; // Không cho sửa mã gói
+            document.getElementById('modalPackageName').value = pkg.packageName;
+            document.getElementById('modalPackageStatus').value = pkg.status;
+
+            // Hiển thị hàng cấu hình dịch vụ khi sửa gói
+            const editServiceRow = document.getElementById('modalEditPackageServicesRow');
+            if (editServiceRow) {
+                editServiceRow.style.display = 'flex';
+                const serviceCount = pkg.services ? pkg.services.length : 0;
+                document.getElementById('modalPackageServiceCount').textContent = `${serviceCount} dịch vụ đã gán`;
+            }
+
+            openModal('packageModal');
+        }
+
+        function onEditPackageServicesClicked() {
+            const pkgId = document.getElementById('modalPackageId').value;
+            const pkg = packagesData.find(p => p.id === pkgId);
+            if (!pkg) return;
+            closeModal('packageModal');
+            openAssignServiceModal(pkg.id, pkg.packageName);
+        }
+
+        let selectedServiceIds = new Set();
+
+        function openAssignServiceModal(pkgId, pkgName) {
+            document.getElementById('targetPackageId').value = pkgId;
+            document.getElementById('targetPackageNameDisplay').textContent = pkgName;
+            document.getElementById('serviceModalSearchInput').value = '';
+            document.getElementById('serviceModalTypeFilter').value = '';
+
+            const pkg = packagesData.find(p => p.id === pkgId);
+            selectedServiceIds = new Set();
+            // Nạp lại toàn bộ những dịch vụ đã được chọn lưu trước đó
+            if (pkg && pkg.services) {
+                pkg.services.forEach(s => selectedServiceIds.add(s.serviceId));
+            }
+
+            renderModalServicesTable();
+            openModal('assignServiceModal');
+        }
+
+        function renderModalServicesTable() {
+            const tbody = document.getElementById('modalServicesTableBody');
+            const keyword = (document.getElementById('serviceModalSearchInput').value || '').toLowerCase().trim();
+            const typeFilter = document.getElementById('serviceModalTypeFilter').value;
+
+            const filtered = allServicesList.filter(s => {
+                const matchKw = !keyword || 
+                    (s.code && s.code.toLowerCase().includes(keyword)) ||
+                    (s.name && s.name.toLowerCase().includes(keyword));
+                const matchType = !typeFilter || s.serviceType === typeFilter;
+                return matchKw && matchType;
+            });
+
+            // Update badge count
+            const countEl = document.getElementById('selectedServicesCount');
+            if (countEl) countEl.textContent = `Đã chọn: ${selectedServiceIds.size} dịch vụ`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--slate-400);">Không tìm thấy dịch vụ y tế nào phù hợp</td></tr>`;
+                return;
+            }
+
+            // Update select-all checkbox state
+            const selectAllCb = document.getElementById('selectAllServicesCheckbox');
+            if (selectAllCb) {
+                const allFilteredSelected = filtered.every(s => selectedServiceIds.has(s.id));
+                selectAllCb.checked = allFilteredSelected && filtered.length > 0;
+            }
+
+            tbody.innerHTML = filtered.map((s, idx) => {
+                const isChecked = selectedServiceIds.has(s.id);
+                return `
+                    <tr class="service-modal-row ${isChecked ? 'is-selected' : ''}" onclick="toggleServiceSelection('${s.id}', event)">
+                        <td style="text-align: center;" onclick="event.stopPropagation();">
+                            <input type="checkbox" class="service-checkbox" value="${s.id}" ${isChecked ? 'checked' : ''} onchange="onServiceCheckboxChanged('${s.id}', this.checked)">
+                        </td>
+                        <td style="color: var(--slate-500); font-weight: 500;">${String(idx + 1).padStart(2, '0')}</td>
+                        <td><span style="font-weight: 700; color: #047857;">${escapeHtml(s.code)}</span></td>
+                        <td style="font-weight: 600; color: var(--slate-800);">${escapeHtml(s.name)}</td>
+                        <td><span class="badge-type">${escapeHtml(s.serviceTypeLabel || s.serviceType || '-')}</span></td>
+                        <td style="text-align: right; padding-right: 20px; font-weight: 600; color: #0f172a;">${formatCurrency(s.price)} đ</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function toggleServiceSelection(sId, evt) {
+            if (evt && (evt.target.tagName === 'INPUT' || evt.target.closest('button'))) return;
+            if (selectedServiceIds.has(sId)) {
+                selectedServiceIds.delete(sId);
+            } else {
+                selectedServiceIds.add(sId);
+            }
+            renderModalServicesTable();
+        }
+
+        function onServiceCheckboxChanged(sId, isChecked) {
+            if (isChecked) {
+                selectedServiceIds.add(sId);
+            } else {
+                selectedServiceIds.delete(sId);
+            }
+            renderModalServicesTable();
+        }
+
+        function confirmRemovePatient(patientId, patientName) {
+            document.getElementById('confirmDeleteTitle').textContent = 'Xóa bệnh nhân khỏi hợp đồng';
+            document.getElementById('confirmDeleteMessage').innerHTML = `Bạn có chắc chắn muốn xóa hồ sơ của bệnh nhân <strong>${escapeHtml(patientName)}</strong> khỏi hợp đồng này?`;
+            deleteCallback = async () => {
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/patients/${patientId}`, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Không thể xóa bệnh nhân khỏi hợp đồng');
+                    showToast('Đã xóa bệnh nhân khỏi hợp đồng', 'success');
+                    closeModal('confirmDeleteModal');
+                    loadContractPatients(currentPatientPage);
+                    loadContractDetail();
+                } catch (e) {
+                    showToast(e.message, 'error');
+                }
+            };
+            openModal('confirmDeleteModal');
+        }
+
+        function confirmRemoveLocation(locationId, locationName) {
+            document.getElementById('confirmDeleteTitle').textContent = 'Hủy gán địa điểm khám';
+            document.getElementById('confirmDeleteMessage').innerHTML = `Bạn có chắc chắn muốn hủy địa điểm <strong>${escapeHtml(locationName)}</strong> khỏi hợp đồng này?`;
+            deleteCallback = async () => {
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/locations/${locationId}`, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Không thể hủy gán địa điểm');
+                    showToast('Đã hủy gán địa điểm', 'success');
+                    closeModal('confirmDeleteModal');
+                    loadContractLocations();
+                    loadContractDetail();
+                } catch (e) {
+                    showToast(e.message, 'error');
+                }
+            };
+            openModal('confirmDeleteModal');
+        }
+
+        function confirmDeletePackage(pkgId, pkgName) {
+            document.getElementById('confirmDeleteTitle').textContent = 'Xóa gói khám';
+            document.getElementById('confirmDeleteMessage').innerHTML = `Bạn có chắc chắn muốn xóa gói khám <strong>${escapeHtml(pkgName)}</strong>? Các dịch vụ đã gán trong gói cũng sẽ bị xóa.`;
+            deleteCallback = async () => {
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/packages/${pkgId}`, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Không thể xóa gói khám');
+                    showToast('Đã xóa gói khám thành công', 'success');
+                    closeModal('confirmDeleteModal');
+                    loadContractPackages();
+                    loadContractDetail();
+                } catch (e) {
+                    showToast(e.message, 'error');
+                }
+            };
+            openModal('confirmDeleteModal');
+        }
+
+        function confirmRemoveService(pkgId, serviceId, serviceName) {
+            document.getElementById('confirmDeleteTitle').textContent = 'Xóa dịch vụ khỏi gói khám';
+            document.getElementById('confirmDeleteMessage').innerHTML = `Bạn có chắc chắn muốn xóa dịch vụ <strong>${escapeHtml(serviceName)}</strong> khỏi gói khám này?`;
+            deleteCallback = async () => {
+                try {
+                    const res = await fetch(`/api/contracts/${contractId}/packages/${pkgId}/services/${serviceId}`, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Không thể xóa dịch vụ khỏi gói');
+                    showToast('Đã xóa dịch vụ khỏi gói khám', 'success');
+                    closeModal('confirmDeleteModal');
+                    loadContractPackages();
+                } catch (e) {
+                    showToast(e.message, 'error');
+                }
+            };
+            openModal('confirmDeleteModal');
+        }
+
+        // ==============================================================
+        // UTILS
+        // ==============================================================
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('show');
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('show');
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'ph-check-circle' : 'ph-warning-circle';
+            toast.innerHTML = `<i class="ph-bold ${icon}"></i><span>${escapeHtml(msg)}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function formatDate(dStr) {
+            if (!dStr) return '-';
+            const d = new Date(dStr);
+            if (isNaN(d)) return dStr;
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDateTime(dStr) {
+            if (!dStr) return '-';
+            const d = new Date(dStr);
+            if (isNaN(d)) return dStr;
+            const hours = String(d.getHours()).padStart(2, '0');
+            const mins = String(d.getMinutes()).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${hours}:${mins}, ${day}/${month}/${year}`;
+        }
+
+        function formatCurrency(num) {
+            if (num === null || num === undefined) return '0';
+            return Number(num).toLocaleString('vi-VN');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+    </script>
+</body>
+</html>

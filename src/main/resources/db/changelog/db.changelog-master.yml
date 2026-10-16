@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/changes/011-create-patients.yaml
   - include:
       file: db/changelog/changes/012-create-contracts.yaml
+  - include:
+      file: db/changelog/changes/013-create-contract-details.yaml
