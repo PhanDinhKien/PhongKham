@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách địa điểm khám | Mirai Healthcare</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('thiet-lap', 'dia-diem')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-link">Thiết lập chung</span>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Địa điểm khám</span>
+            </div>
+
+            <!-- Tiêu đề trang & Nút thêm địa điểm -->
+            <div class="page-header-row">
+                <div>
+                    <h1 class="page-title">Danh sách địa điểm khám</h1>
+                    <span class="page-subtitle">Quản lý mạng lưới cơ sở phòng khám, địa chỉ và thông tin liên hệ</span>
+                </div>
+                
+                <div class="page-header-actions">
+                    <button type="button" class="btn-add-account" id="btnOpenAddModal">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm địa điểm</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc -->
+            <div class="filter-toolbar">
+                
+                <!-- Ô tìm kiếm mã địa điểm, tên, địa chỉ -->
+                <div class="search-box">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo mã, tên cơ sở hoặc địa chỉ...">
+                </div>
+
+                <!-- Dropdown lọc theo trạng thái -->
+                <div class="filter-select-wrap">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true">Đang hoạt động</option>
+                        <option value="false">Tạm dừng</option>
+                    </select>
+                    <i class="ph ph-caret-down"></i>
+                </div>
+
+                <!-- Nút Xóa bộ lọc -->
+                <button type="button" id="btnClearFilter" class="btn-clear-filter">
+                    <i class="ph ph-funnel"></i>
+                    <span>Xóa bộ lọc</span>
+                </button>
+            </div>
+
+            <!-- Bảng dữ liệu danh sách địa điểm -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; white-space: nowrap;">STT</th>
+                                <th style="width: 140px; white-space: nowrap;">Mã địa điểm</th>
+                                <th style="width: 280px; white-space: nowrap;">Tên địa điểm</th>
+                                <th style="min-width: 280px; white-space: nowrap;">Địa chỉ chi tiết</th>
+                                <th style="width: 180px; white-space: nowrap;">Người sửa gần nhất</th>
+                                <th style="width: 140px; white-space: nowrap;">Trạng thái</th>
+                                <th style="width: 140px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="locationTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    Đang tải dữ liệu địa điểm khám...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang (Pagination Bar bên góc phải) -->
+                <div class="pagination-bar">
+                    <div class="pagination-info" id="paginationInfo">
+                        Đang xem 0 - 0 trong 0
+                    </div>
+
+                    <div class="pagination-actions">
+                        <div class="pagination-controls" id="paginationControls">
+                            <!-- Nút trang được sinh động bởi JS -->
+                        </div>
+
+                        <div class="page-size-wrap">
+                            <select id="pageSizeSelect" class="page-size-select">
+                                <option value="10">10 / trang</option>
+                                <option value="20" selected>20 / trang</option>
+                                <option value="50">50 / trang</option>
+                                <option value="100">100 / trang</option>
+                            </select>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: THÊM / CẬP NHẬT ĐỊA ĐIỂM KHÁM
+         ============================================================== -->
+    <div class="modal-backdrop" id="locationModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Thêm địa điểm khám</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <form id="locationForm">
+                <input type="hidden" id="locationId" value="">
+                
+                <div class="modal-body">
+                    
+                    <!-- Row 2 cột: Mã địa điểm * & Tên địa điểm * -->
+                    <div class="form-row-2col">
+                        <div class="form-group">
+                            <label class="form-label" for="locationCode">Mã địa điểm <span class="required-star">*</span></label>
+                            <input type="text" id="locationCode" class="form-control" placeholder="CS_01, CS_02..." required style="font-family: monospace; text-transform: uppercase;">
+                            <small id="locationCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 3px;">
+                                Mã địa điểm cố định và không thể thay đổi sau khi tạo.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="locationName">Tên địa điểm <span class="required-star">*</span></label>
+                            <input type="text" id="locationName" class="form-control" placeholder="Cơ sở Hoàn Kiếm, Chi nhánh Cầu Giấy..." required>
+                        </div>
+                    </div>
+
+                    <!-- Địa chỉ chi tiết -->
+                    <div class="form-group">
+                        <label class="form-label" for="locationAddress">Địa chỉ thực hiện khám <span class="required-star">*</span></label>
+                        <input type="text" id="locationAddress" class="form-control" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." required>
+                    </div>
+
+                    <!-- Switch Trạng thái Hoạt động -->
+                    <div class="form-group" style="margin-top: 10px; margin-bottom: 6px;">
+                        <label class="switch-label-wrap">
+                            <input type="checkbox" id="locationActive" class="switch-input" checked>
+                            <span class="switch-slider"></span>
+                            <span class="switch-text" id="activeStatusLabel">Đang hoạt động</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="btnCancelModal">Hủy</button>
+                    <button type="submit" class="btn-modal-submit" id="btnSaveLocation">Lưu địa điểm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: XÁC NHẬN XÓA MỀM ĐỊA ĐIỂM
+         ============================================================== -->
+    <div class="modal-backdrop" id="deleteConfirmModal">
+        <div class="modal-dialog" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa địa điểm</h3>
+                <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
+                    Bạn có chắc chắn muốn xóa địa điểm <strong id="deleteLocationName" style="color: var(--slate-900);"></strong> (Mã: <code id="deleteLocationCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
+                </p>
+                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
+                    <i class="ph ph-info" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
+                    Địa điểm sẽ được <strong>xóa mềm</strong> và không còn hiển thị khi đăng ký lịch khám mới. Toàn bộ hồ sơ bệnh án cũ tại địa điểm này vẫn được bảo toàn.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khung thông báo Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==============================================================
+         JAVASCRIPT XỬ LÝ NGHIỆP VỤ QUẢN LÝ ĐỊA ĐIỂM
+         ============================================================== -->
+    <script>
+        // State
+        let currentPage = 0;
+        let pageSize = 20;
+        let totalItems = 0;
+        let deleteTargetId = null;
+        let searchTimeout = null;
+
+        // DOM Elements
+        const locationTableBody = document.getElementById('locationTableBody');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationControls = document.getElementById('paginationControls');
+        const pageSizeSelect = document.getElementById('pageSizeSelect');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const btnClearFilter = document.getElementById('btnClearFilter');
+
+        // Modal Elements
+        const locationModal = document.getElementById('locationModal');
+        const btnOpenAddModal = document.getElementById('btnOpenAddModal');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const btnCancelModal = document.getElementById('btnCancelModal');
+        const locationForm = document.getElementById('locationForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const locationIdInput = document.getElementById('locationId');
+        const locationCodeInput = document.getElementById('locationCode');
+        const locationCodeHelp = document.getElementById('locationCodeHelp');
+        const locationNameInput = document.getElementById('locationName');
+        const locationAddressInput = document.getElementById('locationAddress');
+        const locationActiveCheckbox = document.getElementById('locationActive');
+        const activeStatusLabel = document.getElementById('activeStatusLabel');
+
+        // Delete Modal Elements
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        const deleteLocationName = document.getElementById('deleteLocationName');
+        const deleteLocationCode = document.getElementById('deleteLocationCode');
+        const btnCloseDeleteModal = document.getElementById('btnCloseDeleteModal');
+        const btnCancelDeleteModal = document.getElementById('btnCancelDeleteModal');
+        const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+        // Khởi động
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLocations();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            btnOpenAddModal.addEventListener('click', openAddModal);
+            btnCloseModal.addEventListener('click', closeLocationModal);
+            btnCancelModal.addEventListener('click', closeLocationModal);
+
+            btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+            btnCancelDeleteModal.addEventListener('click', closeDeleteModal);
+            btnConfirmDelete.addEventListener('click', executeDelete);
+
+            locationForm.addEventListener('submit', handleFormSubmit);
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 0;
+                    loadLocations();
+                }, 350);
+            });
+
+            statusFilter.addEventListener('change', () => {
+                currentPage = 0;
+                loadLocations();
+            });
+
+            btnClearFilter.addEventListener('click', () => {
+                searchInput.value = '';
+                statusFilter.value = '';
+                currentPage = 0;
+                loadLocations();
+            });
+
+            pageSizeSelect.addEventListener('change', (e) => {
+                pageSize = parseInt(e.target.value);
+                currentPage = 0;
+                loadLocations();
+            });
+
+            locationActiveCheckbox.addEventListener('change', (e) => {
+                activeStatusLabel.textContent = e.target.checked ? 'Đang hoạt động' : 'Tạm dừng';
+            });
+        }
+
+        // Tải danh sách địa điểm khám
+        async function loadLocations() {
+            const keyword = searchInput.value.trim();
+            const activeVal = statusFilter.value;
+
+            const params = new URLSearchParams({
+                page: currentPage,
+                size: pageSize
+            });
+
+            if (keyword) params.append('keyword', keyword);
+            if (activeVal !== '') params.append('active', activeVal);
+
+            try {
+                const response = await fetch(`/api/locations/search?${params.toString()}`);
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải danh sách địa điểm');
+                }
+                const data = await response.json();
+                renderTable(data.items || [], data.page, data.size, data.total);
+            } catch (err) {
+                locationTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #dc2626;">
+                            Có lỗi khi tải dữ liệu: ${err.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Render bảng dữ liệu
+        function renderTable(locations, page, size, total) {
+            totalItems = total;
+            currentPage = page;
+
+            if (!locations || locations.length === 0) {
+                locationTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                            Không tìm thấy địa điểm khám nào phù hợp
+                        </td>
+                    </tr>
+                `;
+                paginationInfo.textContent = 'Đang xem 0 - 0 trong 0';
+                paginationControls.innerHTML = '';
+                return;
+            }
+
+            const startIndex = page * size + 1;
+            const endIndex = Math.min((page + 1) * size, total);
+            paginationInfo.textContent = `Đang xem ${startIndex} - ${endIndex} trong ${total}`;
+
+            let html = '';
+            locations.forEach((loc, index) => {
+                const stt = String(page * size + index + 1).padStart(2, '0');
+
+                // Trạng thái pill (trên cùng 1 dòng)
+                const statusHtml = loc.active 
+                    ? `<span class="status-pill active">Hoạt động</span>`
+                    : `<span class="status-pill inactive">Tạm dừng</span>`;
+
+                html += `
+                    <tr>
+                        <td style="color: var(--slate-500); font-size: 13px;">${stt}</td>
+                        <td style="white-space: nowrap;">
+                            <span class="code-badge">${escapeHtml(loc.code)}</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="ph-bold ph-buildings" style="color: var(--primary-green); font-size: 16px;"></i>
+                                <strong style="color: var(--slate-900); font-weight: 700;">${escapeHtml(loc.name)}</strong>
+                            </div>
+                        </td>
+                        <td style="color: var(--slate-700);">
+                            <div style="display: flex; align-items: flex-start; gap: 6px;">
+                                <i class="ph-fill ph-map-pin" style="color: #ef4444; font-size: 15px; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>${escapeHtml(loc.address)}</span>
+                            </div>
+                        </td>
+                        <td style="color: var(--slate-600); font-size: 12.5px; white-space: nowrap;">
+                            <div>${escapeHtml(loc.updatedBy)}</div>
+                            <div style="font-size: 11px; color: var(--slate-400);">${formatDate(loc.updatedAt)}</div>
+                        </td>
+                        <td style="white-space: nowrap;">${statusHtml}</td>
+                        <td style="text-align: right; padding-right: 16px; white-space: nowrap;">
+                            <div class="action-btn-group" style="justify-content: flex-end;">
+                                <button type="button" class="btn-action-icon" title="Chỉnh sửa địa điểm" onclick="openEditModal('${loc.id}')">
+                                    <i class="ph ph-pencil-simple"></i>
+                                </button>
+                                <button type="button" class="btn-action-icon text-warning" title="${loc.active ? 'Tạm dừng địa điểm' : 'Kích hoạt địa điểm'}" onclick="toggleStatus('${loc.id}')">
+                                    <i class="ph ${loc.active ? 'ph-lock' : 'ph-lock-open'}"></i>
+                                </button>
+                                <button type="button" class="btn-action-icon text-danger" title="Xóa mềm địa điểm" onclick="openDeleteModal('${loc.id}', '${escapeHtml(loc.name)}', '${escapeHtml(loc.code)}')">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            locationTableBody.innerHTML = html;
+            renderPagination(page, size, total);
+        }
+
+        // Render phân trang góc phải
+        function renderPagination(page, size, total) {
+            const totalPages = Math.ceil(total / size) || 1;
+            let html = '';
+
+            html += `
+                <button type="button" class="page-btn ${page === 0 ? 'disabled' : ''}" 
+                        onclick="goToPage(${page - 1})" ${page === 0 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-left"></i>
+                </button>
+            `;
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === 0 || i === totalPages - 1 || (i >= page - 1 && i <= page + 1)) {
+                    html += `
+                        <button type="button" class="page-btn ${i === page ? 'active' : ''}" 
+                                onclick="goToPage(${i})">
+                            ${i + 1}
+                        </button>
+                    `;
+                } else if (i === page - 2 || i === page + 2) {
+                    html += `<span class="page-ellipsis">...</span>`;
+                }
+            }
+
+            html += `
+                <button type="button" class="page-btn ${page >= totalPages - 1 ? 'disabled' : ''}" 
+                        onclick="goToPage(${page + 1})" ${page >= totalPages - 1 ? 'disabled' : ''}>
+                    <i class="ph ph-caret-right"></i>
+                </button>
+            `;
+
+            paginationControls.innerHTML = html;
+        }
+
+        function goToPage(targetPage) {
+            if (targetPage < 0) return;
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            if (targetPage >= totalPages) return;
+            currentPage = targetPage;
+            loadLocations();
+        }
+
+        // Mở Modal Thêm mới
+        function openAddModal() {
+            modalTitle.textContent = 'Thêm địa điểm khám';
+            locationIdInput.value = '';
+            locationForm.reset();
+            locationCodeInput.readOnly = false;
+            locationCodeHelp.style.display = 'none';
+            locationActiveCheckbox.checked = true;
+            activeStatusLabel.textContent = 'Đang hoạt động';
+
+            locationModal.classList.add('show');
+            locationCodeInput.focus();
+        }
+
+        // Mở Modal Sửa
+        async function openEditModal(id) {
+            try {
+                const response = await fetch(`/api/locations/${id}`);
+                if (!response.ok) throw new Error('Không thể tải thông tin địa điểm');
+                const loc = await response.json();
+
+                modalTitle.textContent = 'Cập nhật địa điểm khám';
+                locationIdInput.value = loc.id;
+                locationCodeInput.value = loc.code || '';
+                locationCodeInput.readOnly = true;
+                locationCodeHelp.style.display = 'block';
+                locationNameInput.value = loc.name || '';
+                locationAddressInput.value = loc.address || '';
+                locationActiveCheckbox.checked = loc.active;
+                activeStatusLabel.textContent = loc.active ? 'Đang hoạt động' : 'Tạm dừng';
+
+                locationModal.classList.add('show');
+                locationNameInput.focus();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, true);
+            }
+        }
+
+        function closeLocationModal() {
+            locationModal.classList.remove('show');
+        }
+
+        // Submit form
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const id = locationIdInput.value;
+            const code = locationCodeInput.value.trim().toUpperCase();
+            const name = locationNameInput.value.trim();
+            const address = locationAddressInput.value.trim();
+            const active = locationActiveCheckbox.checked;
+
+            const isEdit = !!id;
+            const payload = isEdit
+                ? { name, address, active }
+                : { code, name, address, active };
+
+            try {
+                const url = isEdit ? `/api/locations/${id}` : '/api/locations';
+                const method = isEdit ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || (isEdit ? 'Cập nhật thất bại' : 'Thêm địa điểm thất bại'));
+                }
+
+                showToast(isEdit ? 'Đã cập nhật địa điểm thành công!' : 'Đã thêm địa điểm mới thành công!');
+                closeLocationModal();
+                loadLocations();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // Toggle trạng thái
+        async function toggleStatus(id) {
+            try {
+                const response = await fetch(`/api/locations/${id}/toggle-status`, {
+                    method: 'PATCH'
+                });
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Không thể đổi trạng thái địa điểm');
+                }
+                const updated = await response.json();
+                showToast(`Đã chuyển địa điểm "${updated.name}" sang trạng thái: ${updated.active ? 'Hoạt động' : 'Tạm dừng'}!`);
+                loadLocations();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, true);
+            }
+        }
+
+        // Modal xác nhận xóa mềm
+        function openDeleteModal(id, name, code) {
+            deleteTargetId = id;
+            deleteLocationName.textContent = name;
+            deleteLocationCode.textContent = code;
+            deleteConfirmModal.classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            deleteConfirmModal.classList.remove('show');
+            deleteTargetId = null;
+        }
+
+        // Thực hiện xóa mềm
+        async function executeDelete() {
+            if (!deleteTargetId) return;
+
+            try {
+                const response = await fetch(`/api/locations/${deleteTargetId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Xóa địa điểm thất bại');
+                }
+
+                showToast('Đã xóa mềm địa điểm thành công!');
+                closeDeleteModal();
+                loadLocations();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // Toast notification
+        function showToast(message, isError = false) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'toast-error' : ''}`;
+            toast.innerHTML = `
+                <i class="ph ${isError ? 'ph-warning-circle' : 'ph-check-circle'}" style="font-size: 20px; color: ${isError ? '#dc2626' : 'var(--primary-green)'};"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

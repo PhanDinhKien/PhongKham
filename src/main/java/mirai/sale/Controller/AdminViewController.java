@@ -40,4 +40,12 @@ public class AdminViewController {
     public String showRoleEditPage() {
         return "admin/role-edit";
     }
+
+    /**
+     * Hiển thị màn hình Quản lý địa điểm khám
+     */
+    @GetMapping("/admin/locations")
+    public String showLocationsPage() {
+        return "admin/locations";
+    }
 }

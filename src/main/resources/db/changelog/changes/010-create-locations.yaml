@@ -1,0 +1,72 @@
+databaseChangeLog:
+- changeSet:
+    id: 010-create-locations
+    author: phankien
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: locationsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: code
+            type: varchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: nvarchar(255)
+        - column:
+            constraints:
+              nullable: false
+            name: address
+            type: nvarchar(500)
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: bit
+            defaultValueBoolean: true
+        - column:
+            constraints:
+              nullable: false
+            name: is_deleted
+            type: bit
+            defaultValueBoolean: false
+        - column:
+            name: deleted_at
+            type: datetime2
+        - column:
+            name: deleted_by
+            type: nvarchar(100)
+        - column:
+            name: created_by
+            type: nvarchar(100)
+        - column:
+            name: updated_by
+            type: nvarchar(100)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        - column:
+            constraints:
+              nullable: false
+            name: updated_at
+            type: datetime2
+        tableName: locations
+- changeSet:
+    id: 010-locations-unique-code
+    author: phankien
+    changes:
+    - addUniqueConstraint:
+        columnNames: code
+        constraintName: UC_LOCATIONS_CODE
+        tableName: locations
