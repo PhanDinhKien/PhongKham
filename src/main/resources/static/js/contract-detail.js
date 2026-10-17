@@ -1172,13 +1172,227 @@
                 showToast('Vui lòng chọn ít nhất một dịch vụ để tiếp tục!', 'error');
                 return;
             }
+            openReceiptModal();
+        }
 
-            const pName = currentSalesPatient ? currentSalesPatient.patientName : 'Bệnh nhân';
-            const totalText = document.getElementById('salesTotalPrice').textContent;
-            const count = selectedSalesServiceIds.size;
+        let currentReceiptData = null;
 
-            showToast(`Đã xuất phiếu thu cho bệnh nhân "${pName}" (${count} dịch vụ - ${totalText})`, 'success');
+        async function openReceiptModal() {
+            if (!currentSalesPatient) {
+                showToast('Chưa chọn bệnh nhân', 'error');
+                return;
+            }
+
+            // Đóng salesModal tạm thời
+            closeModal('salesModal');
+
+            // 1. Nạp thông tin Header
+            document.getElementById('receiptPatientName').textContent = currentSalesPatient.patientName || 'Bệnh nhân';
+            document.getElementById('receiptRecordCodeBadge').textContent = (currentSalesPatient.recordCode && currentSalesPatient.recordCode !== '-') 
+                ? currentSalesPatient.recordCode 
+                : (currentSalesPatient.patientCode || 'HS-2026.08.0001');
+
+            const genderText = currentSalesPatient.gender === 'NAM' ? 'Nam' : 'Nữ';
+            const bYear = currentSalesPatient.birthYear;
+            const dobText = bYear ? (String(bYear).includes('/') || String(bYear).includes('-') ? formatDate(bYear) : ('01/10/' + bYear)) : '01/10/1990';
+            const compName = (contractData && contractData.companyName) ? contractData.companyName : 'CTY TNHH ABC Việt Nam';
+            const cCode = (contractData && contractData.contractCode) ? contractData.contractCode : 'HĐ-2026-118';
+
+            let pkgName = 'Chưa chọn gói';
+            let currentPackageServiceIds = new Set();
+            if (currentSalesPackageId) {
+                const pkg = (packagesData || []).find(p => p.id === currentSalesPackageId);
+                if (pkg) {
+                    pkgName = pkg.packageName;
+                    (pkg.services || []).forEach(ps => {
+                        if (ps.serviceId) currentPackageServiceIds.add(ps.serviceId);
+                    });
+                }
+            }
+
+            document.getElementById('receiptGender').textContent = genderText;
+            document.getElementById('receiptDob').textContent = dobText;
+            document.getElementById('receiptCompanyName').textContent = compName;
+            document.getElementById('receiptContractCode').textContent = cCode;
+            document.getElementById('receiptPackageName').textContent = pkgName;
+
+            // 2. Render danh sách dịch vụ đã chọn (hiển thị đầy đủ đơn giá gốc)
+            const selectedServices = [];
+            selectedSalesServiceIds.forEach(id => {
+                const s = (salesServicesList || []).find(item => item.id === id);
+                if (s) {
+                    selectedServices.push(s);
+                }
+            });
+
+            // Render danh sách dịch vụ: hiển thị mã dịch vụ và đơn giá gốc
+            const servicesListEl = document.getElementById('receiptServicesList');
+            servicesListEl.innerHTML = selectedServices.map(s => {
+                const priceNum = Number(s.price || 0);
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 8px; border-bottom: 1px dashed #f1f5f9;">
+                        <div>
+                            <div style="font-weight: 600; color: #1e293b; font-size: 14px;">${escapeHtml(s.name)}</div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${escapeHtml(s.code || 'DV')}</div>
+                        </div>
+                        <div style="font-weight: 700; color: #0f172a; font-size: 14.5px;">${formatCurrency(priceNum)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // 3. Tính toán tổng tiền theo giá gốc các dịch vụ
+            let subtotal = 0;
+            const totalCount = selectedServices.length;
+
+            selectedServices.forEach(s => {
+                subtotal += Number(s.price || 0);
+            });
+
+            // 4. Lấy chính sách giảm giá của hợp đồng này
+            let discountPolicy = null;
+            try {
+                const cCodeQuery = (contractData && contractData.contractCode) ? contractData.contractCode : '';
+                let fetchUrl = `/api/discounts/search?active=true&size=100`;
+                if (cCodeQuery) {
+                    fetchUrl += `&companyOrContract=${encodeURIComponent(cCodeQuery)}`;
+                }
+                let dRes = await fetch(fetchUrl);
+                let policies = [];
+                if (dRes.ok) {
+                    const dData = await dRes.json();
+                    policies = dData.content || [];
+                }
+
+                // Nếu không tìm thấy với query theo cCodeQuery, thử tìm kiếm chung toàn bộ danh sách active
+                if (policies.length === 0 && cCodeQuery) {
+                    const fbRes = await fetch(`/api/discounts/search?active=true&size=100`);
+                    if (fbRes.ok) {
+                        const fbData = await fbRes.json();
+                        policies = fbData.content || [];
+                    }
+                }
+
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                // Tìm chính sách gắn với contractId này và còn hạn ngày
+                discountPolicy = policies.find(p => {
+                    const hasContract = (p.contracts || []).some(c => c.contractId === contractId || (contractData && c.contractCode === contractData.contractCode));
+                    const validStart = !p.startDate || p.startDate <= todayStr;
+                    const validEnd = !p.endDate || p.endDate >= todayStr;
+                    return hasContract && validStart && validEnd;
+                });
+
+                // Fallback nếu không có chính sách nào khớp hạn ngày: lấy chính sách active gắn với hợp đồng
+                if (!discountPolicy) {
+                    discountPolicy = policies.find(p => {
+                        return (p.contracts || []).some(c => c.contractId === contractId || (contractData && c.contractCode === contractData.contractCode));
+                    });
+                }
+            } catch (err) {
+                console.warn('Lỗi kiểm tra chính sách giảm giá:', err);
+            }
+
+            // 5. Tính chiết khấu theo số lượng dịch vụ được cấu hình trong chính sách giảm giá của từng hợp đồng
+            let discountAmount = 0;
+            let discountBadgeText = '0%';
+
+            if (discountPolicy && discountPolicy.tiers && discountPolicy.tiers.length > 0 && totalCount > 0) {
+                const sortedTiers = [...discountPolicy.tiers].sort((a, b) => a.tierNumber - b.tierNumber);
+                let matchedTier = null;
+
+                for (const t of sortedTiers) {
+                    if (totalCount >= t.fromQuantity && (t.toQuantity == null || totalCount <= t.toQuantity)) {
+                        matchedTier = t;
+                        break;
+                    }
+                }
+
+                // Nếu số lượng vượt quá toQuantity của bậc cao nhất, lấy bậc cao nhất
+                if (!matchedTier && sortedTiers.length > 0 && totalCount >= sortedTiers[sortedTiers.length - 1].fromQuantity) {
+                    matchedTier = sortedTiers[sortedTiers.length - 1];
+                }
+
+                if (matchedTier) {
+                    const dVal = Number(matchedTier.discountValue || 0);
+                    if (discountPolicy.discountType === 'PERCENT') {
+                        discountAmount = Math.round(subtotal * dVal / 100);
+                        if (discountPolicy.maxDiscountPerService && discountPolicy.maxDiscountPerService > 0) {
+                            const cap = discountPolicy.maxDiscountPerService * totalCount;
+                            if (discountAmount > cap) discountAmount = cap;
+                        }
+                        discountBadgeText = `${discountPolicy.code} • ${dVal}%`;
+                    } else {
+                        discountAmount = Math.min(subtotal, dVal);
+                        discountBadgeText = `${discountPolicy.code} • -${formatCurrency(discountAmount)}đ`;
+                    }
+                }
+            }
+
+            // Nếu không có chính sách giảm giá hoặc không khớp bậc nào thì vẫn tính ra giá tiền theo giá bình thường
+            const finalAmount = Math.max(0, subtotal - discountAmount);
+
+            // 6. Điền dữ liệu vào giao diện Modal Phiếu thu
+            document.getElementById('receiptSubtotalLabel').textContent = `Tạm tính (${totalCount} dịch vụ)`;
+            document.getElementById('receiptSubtotalValue').textContent = `${formatCurrency(subtotal)} đ`;
+
+            const discountRow = document.getElementById('receiptDiscountRow');
+            if (discountAmount > 0) {
+                discountRow.style.display = 'flex';
+                document.getElementById('receiptDiscountBadge').textContent = discountBadgeText;
+                document.getElementById('receiptDiscountValue').textContent = `- ${formatCurrency(discountAmount)} đ`;
+            } else {
+                // Không có chính sách hoặc chiết khấu 0% -> ẩn dòng chiết khấu, tính giá bình thường
+                discountRow.style.display = 'none';
+            }
+
+            document.getElementById('receiptFinalAmount').textContent = `${formatCurrency(finalAmount)} đ`;
+            document.getElementById('receiptCustomerPaid').value = `${formatCurrency(finalAmount)} đ`;
+            document.getElementById('receiptChangeAmount').value = `0 đ`;
+
+            // Thông tin Thu ngân & Thời gian
+            const now = new Date();
+            const timeStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const cashierName = (contractData && contractData.updatedBy) ? contractData.updatedBy.split('@')[0] : 'Trần Thu Hà';
+            document.getElementById('receiptCashier').value = `${cashierName} - ${timeStr}`;
+
+            currentReceiptData = {
+                patient: currentSalesPatient,
+                selectedServices,
+                subtotal,
+                discountAmount,
+                finalAmount,
+                discountPolicy
+            };
+
+            openModal('receiptModal');
+        }
+
+        function handleReceiptCustomerPaidChange(val) {
+            if (!currentReceiptData) return;
+            const numericStr = String(val).replace(/[^0-9]/g, '');
+            const paid = numericStr ? parseInt(numericStr, 10) : 0;
+            const finalAmount = currentReceiptData.finalAmount || 0;
+            const change = Math.max(0, paid - finalAmount);
+            document.getElementById('receiptChangeAmount').value = formatCurrency(change) + ' đ';
+        }
+
+        function backToSalesModal() {
+            closeModal('receiptModal');
+            openModal('salesModal');
+        }
+
+        function executeConfirmPayment() {
+            if (!currentReceiptData) return;
+            const pName = currentReceiptData.patient ? currentReceiptData.patient.patientName : 'Bệnh nhân';
+            const amountText = formatCurrency(currentReceiptData.finalAmount) + ' đ';
+
+            showToast(`Đã xác nhận thanh toán thành công cho bệnh nhân "${pName}" (Số tiền thực thu: ${amountText})`, 'success');
+            closeModal('receiptModal');
             closeSalesModal();
+            clearAllSalesSelections();
+
+            loadContractPatients(currentPatientPage);
+            loadContractDetail();
         }
 
         // ==============================================================

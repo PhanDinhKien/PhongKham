@@ -636,6 +636,131 @@
         </div>
     </div>
 
+    <!-- ==============================================================
+         MODAL 6: PHIẾU THU / THANH TOÁN (KHỚP ẢNH MOCKUP)
+         ============================================================== -->
+    <div class="modal-backdrop" id="receiptModal">
+        <div class="modal-dialog modal-dialog-receipt" style="max-width: 1100px; width: 95%;">
+            <!-- Header Card (Khớp ảnh) -->
+            <div class="receipt-header-card" style="background: #ffffff; padding: 20px 28px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0;" id="receiptPatientName">Lê Thị Ngọc A</h2>
+                        <span class="sales-record-code-badge" id="receiptRecordCodeBadge">HS-2026.08.0001</span>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 13px; color: #64748b;" id="receiptPatientMeta">
+                        <span id="receiptGender">Nữ</span> • 
+                        <span id="receiptDob">01/10/1990</span> • 
+                        <span id="receiptCompanyName">CTY TNHH ABC Việt Nam</span> (<span id="receiptContractCode">HĐ-2026-118</span>) • 
+                        <span id="receiptPackageName" style="color: #475569; font-weight: 500;">Gói CNBV Việt Nam - Nữ</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-back-cart" onclick="backToSalesModal()" style="display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; color: #1e293b; cursor: pointer; transition: all 0.2s ease;">
+                    <i class="ph ph-arrow-left"></i>
+                    <span>Quay lại giỏ hàng</span>
+                </button>
+            </div>
+
+            <!-- Body Modal (2 Cột khớp ảnh) -->
+            <div class="modal-body" style="padding: 24px 28px; background: #f8fafc; max-height: calc(85vh - 120px); overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+                    
+                    <!-- CỘT TRÁI: THÀNH TIỀN -->
+                    <div class="receipt-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <div style="font-size: 13px; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 16px;">
+                            THÀNH TIỀN
+                        </div>
+
+                        <!-- Danh sách dịch vụ -->
+                        <div id="receiptServicesList" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding-right: 6px;">
+                            <!-- Sẽ render động qua JS -->
+                        </div>
+
+                        <!-- Phần tính toán chiết khấu & tổng tiền -->
+                        <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                                <span style="color: #64748b;" id="receiptSubtotalLabel">Tạm tính (0 dịch vụ)</span>
+                                <span style="font-weight: 700; color: #0f172a;" id="receiptSubtotalValue">0 đ</span>
+                            </div>
+
+                            <div id="receiptDiscountRow" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="color: #ea580c; font-weight: 500;">Chiết khấu</span>
+                                    <span class="badge-discount-policy" id="receiptDiscountBadge" style="background: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px;">CK • 0%</span>
+                                </div>
+                                <span style="font-weight: 700; color: #ea580c;" id="receiptDiscountValue">- 0 đ</span>
+                            </div>
+
+                            <!-- Banner: Số tiền thực thu -->
+                            <div style="background: #eff6ff; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                                <span style="font-size: 17px; font-weight: 700; color: #1d4ed8;">Số tiền thực thu</span>
+                                <span style="font-size: 22px; font-weight: 800; color: #1d4ed8;" id="receiptFinalAmount">0 đ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT PHẢI: FORM THANH TOÁN -->
+                    <div class="receipt-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <!-- Hình thức thanh toán -->
+                            <div>
+                                <label style="display: block; font-size: 13.5px; font-weight: 600; color: #334155; margin-bottom: 8px;">
+                                    Hình thức thanh toán <span style="color: #dc2626;">*</span>
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 20px;">
+                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
+                                        <input type="radio" name="receiptPaymentMethod" value="CHUYEN_KHOAN" checked style="accent-color: #00684a; width: 16px; height: 16px;">
+                                        <span>Chuyển khoản</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
+                                        <input type="radio" name="receiptPaymentMethod" value="TIEN_MAT" style="accent-color: #00684a; width: 16px; height: 16px;">
+                                        <span>Tiền mặt</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
+                                        <input type="radio" name="receiptPaymentMethod" value="QUET_THE" style="accent-color: #00684a; width: 16px; height: 16px;">
+                                        <span>Quẹt thẻ</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Khách thanh toán -->
+                            <div>
+                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Khách thanh toán</label>
+                                <input type="text" id="receiptCustomerPaid" oninput="handleReceiptCustomerPaidChange(this.value)" style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 16px; font-size: 15px; font-weight: 700; color: #0f172a; text-align: right; background: #ffffff;">
+                            </div>
+
+                            <!-- Tiền thừa hoàn lại -->
+                            <div>
+                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Tiền thừa hoàn lại</label>
+                                <input type="text" id="receiptChangeAmount" value="0 đ" readonly style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 16px; font-size: 14px; color: #64748b; text-align: right; background: #f8fafc;">
+                            </div>
+
+                            <!-- Thu ngân -->
+                            <div>
+                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Thu ngân</label>
+                                <input type="text" id="receiptCashier" readonly style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 16px; font-size: 13.5px; color: #334155; text-align: right; background: #f8fafc;">
+                            </div>
+
+                            <!-- Ghi chú -->
+                            <div>
+                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Ghi chú</label>
+                                <input type="text" id="receiptNote" placeholder="Nhập ghi chú bác sĩ / thu ngân..." value="Bác Sĩ Tuyết" style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 16px; font-size: 13.5px; color: #0f172a; text-align: right;">
+                            </div>
+                        </div>
+
+                        <!-- Nút xác nhận thanh toán -->
+                        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                            <button type="button" id="btnConfirmPayment" onclick="executeConfirmPayment()" style="background: #00684a; color: #ffffff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,104,74,0.2); transition: background 0.15s ease;">
+                                <span>Xác nhận thanh toán</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 
