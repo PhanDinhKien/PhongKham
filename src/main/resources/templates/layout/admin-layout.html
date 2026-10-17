@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Mirai Healthcare Admin</title>
+<head th:fragment="admin-head(title)">
+    <th:block th:fragment="common-head(title)">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="${title != null ? title + ' | Mirai Healthcare' : 'Mirai Healthcare Admin'}">Mirai Healthcare Admin</title>
+        
+        <!-- Google Fonts: Inter -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        
+        <!-- Phosphor Icons -->
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+        <!-- Admin Core CSS -->
+        <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+    </th:block>
 </head>
 <body>
 
@@ -93,10 +109,6 @@
 
         <!-- Nhóm dưới: Nhật ký hoạt động & Đăng xuất -->
         <div class="sidebar-footer">
-            <a th:href="@{/admin/logs}" class="footer-nav-item" th:classappend="${activeGroup == 'logs'} ? 'active' : ''">
-                <i class="ph ph-clock-counter-clockwise"></i>
-                <span>Nhật ký hoạt động</span>
-            </a>
             <a th:href="@{/login?logout}" class="footer-nav-item">
                 <i class="ph ph-sign-out"></i>
                 <span>Đăng xuất</span>
