@@ -533,6 +533,109 @@
         </div>
     </div>
 
+    <!-- ==============================================================
+         MODAL BÁN HÀNG / CHỌN DỊCH VỤ CHO BỆNH NHÂN (KHỚP ẢNH MOCKUP)
+         ============================================================== -->
+    <div class="modal-backdrop" id="salesModal">
+        <div class="modal-dialog modal-dialog-sales" style="max-width: 1280px; width: 96%;">
+            <!-- Header Modal (Bỏ nút Đổi khách hàng theo yêu cầu) -->
+            <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 20px 24px; position: relative;">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0;" id="salesPatientName">Bệnh nhân</h2>
+                        <span class="sales-record-code-badge" id="salesRecordCodeBadge">HS-2026.08.0001</span>
+                    </div>
+                    <div class="sales-patient-meta" id="salesPatientMeta" style="margin-top: 6px; font-size: 13px; color: #64748b;">
+                        <span id="salesPatientGender">Nữ</span> • 
+                        <span id="salesPatientDob">1990</span> • 
+                        <span id="salesCompanyName">Doanh nghiệp</span> (<span id="salesContractCode">HĐ</span>) • 
+                        <span id="salesPackageBadge" style="font-weight: 600; color: #00684a;">Chưa chọn gói</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-modal-close" id="btnCloseSalesModal" onclick="closeSalesModal()">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="modal-body" style="padding: 20px 24px; max-height: calc(85vh - 160px); overflow-y: auto;">
+                <!-- Filter Bar (Tìm kiếm & Chọn gói khám, điểm khám, ca khám trên 1 hàng không bị đè nhau) -->
+                <div class="sales-filter-bar" style="display: flex; flex-wrap: nowrap; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <!-- Ô tìm kiếm dịch vụ -->
+                    <div class="search-box" style="flex: 1 1 220px; min-width: 180px;">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="salesServiceSearchInput" class="search-input" placeholder="Tìm mã dịch vụ, tên dịch vụ...">
+                    </div>
+
+                    <!-- Dropdown chọn gói khám trong HĐ -->
+                    <div class="filter-select-wrap" style="flex: 0 0 260px; width: 260px; min-width: 0;">
+                        <select id="salesPackageSelect" class="filter-select" onchange="handleSalesPackageChange(this.value)">
+                            <option value="">-- Chọn gói khám trong HĐ --</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Dropdown chọn địa điểm khám -->
+                    <div class="filter-select-wrap" style="flex: 0 0 210px; width: 210px; min-width: 0;">
+                        <select id="salesLocationSelect" class="filter-select" onchange="handleSalesLocationChange(this.value)">
+                            <option value="">-- Chọn điểm khám --</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Dropdown chọn ca làm việc -->
+                    <div class="filter-select-wrap" style="flex: 0 0 190px; width: 190px; min-width: 0;">
+                        <select id="salesShiftSelect" class="filter-select">
+                            <option value="">-- Chọn ca khám --</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                </div>
+
+                <!-- Bảng danh sách dịch vụ (Bỏ cột TT theo HĐ, cột Tự TT đổi thành Chọn dịch vụ) -->
+                <div class="sales-table-card" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #ffffff;">
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="data-table sales-services-table" style="margin-bottom: 0;">
+                            <thead style="position: sticky; top: 0; z-index: 2; background-color: #f0f7ff;">
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th style="min-width: 260px;">DỊCH VỤ</th>
+                                    <th style="width: 120px; text-align: center;">SL CÒN LẠI</th>
+                                    <th style="width: 140px; text-align: right;">ĐƠN GIÁ</th>
+                                    <th style="width: 130px; text-align: center;">CHỌN DỊCH VỤ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesServicesTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                        Đang tải danh sách dịch vụ...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bar (Bán hàng) -->
+            <div class="modal-footer" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: #ffffff; border-top: 1px solid #e2e8f0;">
+                <button type="button" class="btn-clear-sales" onclick="clearAllSalesSelections()" style="background: #d1fae5; color: #065f46; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s ease;">
+                    <i class="ph ph-arrow-counter-clockwise"></i>
+                    <span>Xóa tất cả</span>
+                </button>
+
+                <div style="font-size: 14.5px; color: #334155;">
+                    Đã chọn <b id="salesSelectedCount" style="color: #00684a;">0</b> dịch vụ • Tổng <b id="salesTotalPrice" style="color: #0f172a; font-size: 15.5px;">0đ</b>
+                </div>
+
+                <button type="button" class="btn-primary-action" id="btnSubmitSales" onclick="confirmSalesOrder()" style="background: #00684a; color: white; border: none; padding: 11px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,104,74,0.2);">
+                    <span>Xem phiếu thu</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 

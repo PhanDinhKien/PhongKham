@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-fix-null-active-in-contract-locations
+      author: kien
+      changes:
+        - sql:
+            sql: UPDATE contract_locations SET active = 1 WHERE active IS NULL

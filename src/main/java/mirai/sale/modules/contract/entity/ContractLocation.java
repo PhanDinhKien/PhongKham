@@ -28,8 +28,8 @@ public class ContractLocation {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @Column(name = "active", nullable = false)
-    private boolean active = true;
+    @Column(name = "active")
+    private Boolean active = true;
 
     @Nationalized
     @Column(name = "shift_config", length = 255)
@@ -56,10 +56,10 @@ public class ContractLocation {
         this.active = true;
     }
 
-    public ContractLocation(Contract contract, Location location, boolean active, String shiftConfig, String createdBy) {
+    public ContractLocation(Contract contract, Location location, Boolean active, String shiftConfig, String createdBy) {
         this.contract = contract;
         this.location = location;
-        this.active = active;
+        this.active = active != null ? active : true;
         this.shiftConfig = shiftConfig;
         this.createdBy = createdBy;
     }
@@ -101,11 +101,11 @@ public class ContractLocation {
     }
 
     public boolean isActive() {
-        return active;
+        return active != null && active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setActive(Boolean active) {
+        this.active = active != null ? active : true;
     }
 
     public String getShiftConfig() {
