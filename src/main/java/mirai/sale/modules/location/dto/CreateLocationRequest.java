@@ -2,9 +2,9 @@ package mirai.sale.modules.location.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public record CreateLocationRequest(
-    @NotBlank(message = "Mã địa điểm không được để trống")
     @Size(max = 50, message = "Mã địa điểm tối đa 50 ký tự")
     String code,
 
@@ -12,11 +12,12 @@ public record CreateLocationRequest(
     @Size(max = 255, message = "Tên địa điểm tối đa 255 ký tự")
     String name,
 
-    @NotBlank(message = "Địa chỉ không được để trống")
     @Size(max = 500, message = "Địa chỉ tối đa 500 ký tự")
     String address,
 
-    Boolean active
+    Boolean active,
+
+    List<ShiftDto> shifts
 ) {
     public CreateLocationRequest {
         if (active == null) {
@@ -24,12 +25,17 @@ public record CreateLocationRequest(
         }
         if (code != null) {
             code = code.trim().toUpperCase();
+            if (code.isEmpty()) {
+                code = null;
+            }
         }
         if (name != null) {
             name = name.trim();
         }
         if (address != null) {
             address = address.trim();
+        } else {
+            address = "";
         }
     }
 }

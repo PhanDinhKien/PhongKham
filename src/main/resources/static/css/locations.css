@@ -1,0 +1,491 @@
+/**
+ * ==============================================================
+ * ĐỊA ĐIỂM KHÁM - STYLES (LOCATIONS MODULE CSS)
+ * Matches Figma / UI Mockups Image 1 & Image 2
+ * ==============================================================
+ */
+
+/* Nút Thêm mới chuẩn xanh đậm */
+.btn-primary-green {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #00684a;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-green:hover {
+    background: #00523a;
+    box-shadow: 0 4px 12px rgba(0, 104, 74, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Nút xóa bộ lọc */
+.btn-filter-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-filter-clear:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* Bảng cha Địa điểm */
+.location-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.location-table thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: none;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.location-table tbody tr.parent-row {
+    border-bottom: 1px solid #edf2f7;
+    transition: background 0.15s ease;
+}
+
+.location-table tbody tr.parent-row:hover {
+    background: #f8fafc;
+}
+
+.location-table tbody tr.parent-row.is-expanded {
+    background: #f8fafc;
+    border-bottom: none;
+}
+
+.location-table tbody td {
+    padding: 14px 18px;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+/* Nút mở rộng chevron */
+.btn-expand-row {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-expand-row:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-expand-row i {
+    transition: transform 0.2s ease;
+}
+
+.is-expanded .btn-expand-row i {
+    transform: rotate(90deg);
+}
+
+/* Các nút tác vụ */
+.action-btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.action-btn.btn-add-contract {
+    color: #00684a;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.action-btn.btn-add-contract:hover {
+    background: #e6f4ea;
+    color: #00523a;
+}
+
+.action-btn.btn-delete:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* Bảng con (Nested Subtable chứa Hợp đồng) */
+.subtable-container-row {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.subtable-wrapper {
+    padding: 12px 18px 20px 48px;
+    background: #f8fafc;
+}
+
+.subtable {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+}
+
+.subtable thead th {
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.subtable tbody td {
+    padding: 12px 16px;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.subtable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Switch Toggle Trạng thái áp dụng chuẩn iOS / Figma */
+.switch-status-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch-status-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: 0.25s ease;
+    border-radius: 24px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch-status-toggle input:checked + .switch-slider {
+    background-color: #00684a;
+}
+
+.switch-status-toggle input:checked + .switch-slider:before {
+    transform: translateX(20px);
+}
+
+/* Modal Form Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card-box {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 580px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #00684a;
+    margin: 0;
+}
+
+.modal-btn-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.modal-body-content {
+    padding: 24px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.modal-form-group {
+    margin-bottom: 20px;
+}
+
+.modal-form-label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.modal-form-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #0f172a;
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.modal-form-input:focus {
+    outline: none;
+    border-color: #00684a;
+    box-shadow: 0 0 0 3px rgba(0, 104, 74, 0.12);
+}
+
+.modal-form-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Bảng thiết lập Ca làm việc trong Modal */
+.shifts-table-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.shifts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shifts-table th {
+    background: #f8fafc;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #475569;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.shifts-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.shifts-table tr:last-child td {
+    border-bottom: none;
+}
+
+.shifts-time-input {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.shifts-time-input:focus {
+    outline: none;
+    border-color: #00684a;
+}
+
+.btn-add-shift-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #00684a;
+    font-weight: 600;
+    font-size: 13px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 14px;
+    transition: color 0.15s ease;
+}
+
+.btn-add-shift-link:hover {
+    color: #00523a;
+    text-decoration: underline;
+}
+
+.modal-footer-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 18px 24px;
+    border-top: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.modal-btn-cancel {
+    padding: 9px 20px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-cancel:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.modal-btn-save {
+    padding: 9px 24px;
+    border: none;
+    background: #00684a;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-save:hover {
+    background: #00523a;
+}
+
+/* Modal chọn hợp đồng */
+.contract-pick-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.contract-pick-item:hover {
+    border-color: #00684a;
+    background: #f0fdf4;
+}
+
+.contract-pick-item.selected {
+    border-color: #00684a;
+    background: #f0fdf4;
+}

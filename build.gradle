@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'org.springframework.security:spring-security-crypto' // BCrypt để băm mật khẩu
 	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 

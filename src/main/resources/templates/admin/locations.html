@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{layout/admin-layout :: common-head('Danh sách địa điểm khám')}"></th:block>
+    <th:block th:replace="~{layout/admin-layout :: common-head('Địa điểm khám')}"></th:block>
+    <!-- Locations Module CSS -->
+    <link rel="stylesheet" th:href="@{/css/locations.css}" href="/css/locations.css">
 </head>
 <body>
 
@@ -22,65 +24,53 @@
                 <span class="breadcrumb-current">Địa điểm khám</span>
             </div>
 
-            <!-- Tiêu đề trang & Nút thêm địa điểm -->
-            <div class="page-header-row">
+            <!-- Tiêu đề trang -->
+            <div class="page-header-row" style="margin-bottom: 20px;">
                 <div>
-                    <h1 class="page-title">Danh sách địa điểm khám</h1>
-                    <span class="page-subtitle">Quản lý mạng lưới cơ sở phòng khám, địa chỉ và thông tin liên hệ</span>
-                </div>
-                
-                <div class="page-header-actions">
-                    <button type="button" class="btn-add-account" id="btnOpenAddModal">
-                        <i class="ph-bold ph-plus"></i>
-                        <span>Thêm địa điểm</span>
-                    </button>
+                    <h1 class="page-title" style="font-size: 26px; font-weight: 800; color: #00684a; margin: 0;">Địa điểm khám</h1>
                 </div>
             </div>
 
-            <!-- Thanh công cụ tìm kiếm & Bộ lọc -->
-            <div class="filter-toolbar">
-                
-                <!-- Ô tìm kiếm mã địa điểm, tên, địa chỉ -->
-                <div class="search-box">
-                    <i class="ph ph-magnifying-glass"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo mã, tên cơ sở hoặc địa chỉ...">
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc chuẩn Mockup Image 1 -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; max-width: 500px;">
+                    <!-- Ô tìm kiếm mã địa điểm, tên địa điểm -->
+                    <div style="position: relative; flex: 1;">
+                        <i class="ph ph-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 17px;"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Tìm mã địa điểm, tên địa điểm" style="padding-left: 40px; border-radius: 8px; border: 1px solid #cbd5e1; height: 42px; width: 100%; box-sizing: border-box;">
+                    </div>
+
+                    <!-- Nút Xóa bộ lọc -->
+                    <button type="button" id="btnClearFilter" class="btn-filter-clear">
+                        <i class="ph ph-funnel"></i>
+                        <span>Xóa bộ lọc</span>
+                    </button>
                 </div>
 
-                <!-- Dropdown lọc theo trạng thái -->
-                <div class="filter-select-wrap">
-                    <select id="statusFilter" class="filter-select">
-                        <option value="">Tất cả trạng thái</option>
-                        <option value="true">Đang hoạt động</option>
-                        <option value="false">Tạm dừng</option>
-                    </select>
-                    <i class="ph ph-caret-down"></i>
-                </div>
-
-                <!-- Nút Xóa bộ lọc -->
-                <button type="button" id="btnClearFilter" class="btn-clear-filter">
-                    <i class="ph ph-funnel"></i>
-                    <span>Xóa bộ lọc</span>
+                <!-- Nút Thêm mới (Màu xanh đậm theo mockup) -->
+                <button type="button" class="btn-primary-green" id="btnOpenAddModal">
+                    <i class="ph-bold ph-plus"></i>
+                    <span>Thêm mới</span>
                 </button>
             </div>
 
-            <!-- Bảng dữ liệu danh sách địa điểm -->
-            <div class="table-card">
+            <!-- Bảng dữ liệu danh sách địa điểm (2 cấp lồng nhau) -->
+            <div class="table-card" style="border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
                 <div class="table-responsive">
-                    <table class="data-table">
+                    <table class="location-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; white-space: nowrap;">STT</th>
-                                <th style="width: 140px; white-space: nowrap;">Mã địa điểm</th>
-                                <th style="width: 280px; white-space: nowrap;">Tên địa điểm</th>
-                                <th style="min-width: 280px; white-space: nowrap;">Địa chỉ chi tiết</th>
-                                <th style="width: 180px; white-space: nowrap;">Người sửa gần nhất</th>
-                                <th style="width: 140px; white-space: nowrap;">Trạng thái</th>
-                                <th style="width: 140px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                                <th style="width: 44px; text-align: center;"></th>
+                                <th style="width: 160px;">Mã địa điểm</th>
+                                <th style="min-width: 260px;">Tên địa điểm</th>
+                                <th style="width: 150px;">Ca 1</th>
+                                <th style="width: 150px;">Ca 2</th>
+                                <th style="width: 130px; text-align: right; padding-right: 24px;">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="locationTableBody">
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">
                                     Đang tải dữ liệu địa điểm khám...
                                 </td>
                             </tr>
@@ -88,125 +78,189 @@
                     </table>
                 </div>
 
-                <!-- Phân trang (Pagination Bar bên góc phải) -->
-                <div class="pagination-bar">
-                    <div class="pagination-info" id="paginationInfo">
+                <!-- Phân trang (Pagination Bar chuẩn mockup Image 1) -->
+                <div class="pagination-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid #f1f5f9; background: #ffffff;">
+                    <div class="pagination-info" id="paginationInfo" style="font-size: 13.5px; color: #64748b;">
                         Đang xem 0 - 0 trong 0
                     </div>
 
-                    <div class="pagination-actions">
-                        <div class="pagination-controls" id="paginationControls">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="pagination-controls" id="paginationControls" style="display: flex; align-items: center; gap: 4px;">
                             <!-- Nút trang được sinh động bởi JS -->
                         </div>
 
-                        <div class="page-size-wrap">
-                            <select id="pageSizeSelect" class="page-size-select">
+                        <!-- Dropdown số bản ghi trên trang -->
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <select id="pageSizeSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; color: #334155; background: #ffffff; cursor: pointer;">
                                 <option value="10">10 / trang</option>
                                 <option value="20" selected>20 / trang</option>
                                 <option value="50">50 / trang</option>
-                                <option value="100">100 / trang</option>
                             </select>
-                            <i class="ph ph-caret-down"></i>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </main>
     </div>
 
     <!-- ==============================================================
-         MODAL: THÊM / CẬP NHẬT ĐỊA ĐIỂM KHÁM
+         MODAL 1: THÊM MỚI / CẬP NHẬT ĐỊA ĐIỂM KHÁM (Chuẩn Image 2)
          ============================================================== -->
-    <div class="modal-backdrop" id="locationModal">
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Thêm địa điểm khám</h3>
-                <button type="button" class="btn-modal-close" id="btnCloseModal">
+    <div id="locationModal" class="modal-overlay">
+        <div class="modal-card-box">
+            <!-- Header Modal -->
+            <div class="modal-header-bar">
+                <h3 class="modal-header-title" id="locationModalTitle">Thêm mới địa điểm khám</h3>
+                <button type="button" class="modal-btn-close" onclick="closeLocationModal()">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
 
-            <form id="locationForm">
-                <input type="hidden" id="locationId" value="">
-                
-                <div class="modal-body">
-                    
-                    <!-- Row 2 cột: Mã địa điểm * & Tên địa điểm * -->
-                    <div class="form-row-2col">
-                        <div class="form-group">
-                            <label class="form-label" for="locationCode">Mã địa điểm <span class="required-star">*</span></label>
-                            <input type="text" id="locationCode" class="form-control" placeholder="CS_01, CS_02..." required style="font-family: monospace; text-transform: uppercase;">
-                            <small id="locationCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 3px;">
-                                Mã địa điểm cố định và không thể thay đổi sau khi tạo.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="locationName">Tên địa điểm <span class="required-star">*</span></label>
-                            <input type="text" id="locationName" class="form-control" placeholder="Cơ sở Hoàn Kiếm, Chi nhánh Cầu Giấy..." required>
+            <!-- Form Body -->
+            <form id="locationForm" onsubmit="handleSaveLocation(event)">
+                <div class="modal-body-content">
+                    <input type="hidden" id="locationId">
+
+                    <!-- Mã địa điểm -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label" for="locationCode">Mã địa điểm</label>
+                        <input type="text" id="locationCode" class="modal-form-input" placeholder="Mã tự sinh">
+                    </div>
+
+                    <!-- Tên địa điểm -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label" for="locationName">Tên địa điểm <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="locationName" class="modal-form-input" placeholder="Nhập tên địa điểm" required>
+                    </div>
+
+                    <!-- Ca làm việc -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label">Ca làm việc</label>
+                        <div class="shifts-table-card">
+                            <table class="shifts-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">Ca</th>
+                                        <th style="width: 200px;">Giờ bắt đầu</th>
+                                        <th style="width: 200px;">Giờ kết thúc</th>
+                                        <th style="width: 40px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalShiftsTbody">
+                                    <!-- Rendered dynamically via JS -->
+                                </tbody>
+                            </table>
+                            <div style="padding: 6px 12px; background: #fafafa; border-top: 1px solid #f1f5f9; text-align: right;">
+                                <button type="button" class="btn-add-shift-link" onclick="addNewShiftRow()">
+                                    <i class="ph ph-plus-circle" style="font-size: 16px;"></i>
+                                    <span>Thêm ca</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Địa chỉ chi tiết -->
-                    <div class="form-group">
-                        <label class="form-label" for="locationAddress">Địa chỉ thực hiện khám <span class="required-star">*</span></label>
-                        <input type="text" id="locationAddress" class="form-control" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." required>
-                    </div>
-
-                    <!-- Switch Trạng thái Hoạt động -->
-                    <div class="form-group" style="margin-top: 10px; margin-bottom: 6px;">
-                        <label class="switch-label-wrap">
-                            <input type="checkbox" id="locationActive" class="switch-input" checked>
+                    <!-- Toggle Hoạt động -->
+                    <div class="modal-form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 0; padding-top: 6px;">
+                        <label class="switch-status-toggle">
+                            <input type="checkbox" id="locationActive" checked>
                             <span class="switch-slider"></span>
-                            <span class="switch-text" id="activeStatusLabel">Đang hoạt động</span>
                         </label>
+                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">Hoạt động</span>
                     </div>
-
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-modal-cancel" id="btnCancelModal">Hủy</button>
-                    <button type="submit" class="btn-modal-submit" id="btnSaveLocation">Lưu địa điểm</button>
+                <!-- Footer Modal -->
+                <div class="modal-footer-bar">
+                    <button type="button" class="modal-btn-cancel" onclick="closeLocationModal()">Hủy</button>
+                    <button type="submit" class="modal-btn-save" id="btnSaveLocation">Lưu</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- ==============================================================
-         MODAL: XÁC NHẬN XÓA MỀM ĐỊA ĐIỂM
+         MODAL 2: THÊM HỢP ĐỒNG VÀO ĐỊA ĐIỂM KHÁM
          ============================================================== -->
-    <div class="modal-backdrop" id="deleteConfirmModal">
-        <div class="modal-dialog" style="max-width: 450px;">
-            <div class="modal-header">
-                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa địa điểm</h3>
-                <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
+    <div id="addContractModal" class="modal-overlay">
+        <div class="modal-card-box" style="max-width: 620px;">
+            <!-- Header Modal -->
+            <div class="modal-header-bar">
+                <div>
+                    <h3 class="modal-header-title">Thêm hợp đồng vào địa điểm khám</h3>
+                    <div id="addContractTargetLocationName" style="font-size: 13px; color: #64748b; margin-top: 4px;"></div>
+                </div>
+                <button type="button" class="modal-btn-close" onclick="closeAddContractModal()">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa địa điểm <strong id="deleteLocationName" style="color: var(--slate-900);"></strong> (Mã: <code id="deleteLocationCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
-                </p>
-                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
-                    <i class="ph ph-info" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
-                    Địa điểm sẽ được <strong>xóa mềm</strong> và không còn hiển thị khi đăng ký lịch khám mới. Toàn bộ hồ sơ bệnh án cũ tại địa điểm này vẫn được bảo toàn.
+
+            <!-- Form Body -->
+            <form id="assignContractForm" onsubmit="handleAssignContractSubmit(event)">
+                <input type="hidden" id="assignTargetLocationId">
+
+                <div class="modal-body-content">
+                    <!-- Chọn hợp đồng -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label">Chọn hợp đồng áp dụng <span style="color: #ef4444;">*</span></label>
+                        <div style="position: relative; margin-bottom: 8px;">
+                            <i class="ph ph-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="text" id="contractSearchFilter" class="modal-form-input" placeholder="Lọc theo mã hoặc tên hợp đồng..." style="padding-left: 36px;" oninput="filterContractPickerList(this.value)">
+                        </div>
+
+                        <div id="contractPickerList" style="max-height: 220px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px;">
+                            <!-- Render contracts dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình ca làm việc cho hợp đồng -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label">Cấu hình ca làm việc cho hợp đồng này</label>
+                        <div id="contractShiftsConfigBox" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+                            <!-- Checkboxes for shifts of this location -->
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái áp dụng -->
+                    <div class="modal-form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 0;">
+                        <label class="switch-status-toggle">
+                            <input type="checkbox" id="assignContractActive" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">Trạng thái áp dụng</span>
+                    </div>
                 </div>
+
+                <!-- Footer Modal -->
+                <div class="modal-footer-bar">
+                    <button type="button" class="modal-btn-cancel" onclick="closeAddContractModal()">Hủy</button>
+                    <button type="submit" class="modal-btn-save" id="btnSubmitAssignContract">Xác nhận thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 3: XÁC NHẬN XÓA ĐỊA ĐIỂM / GỠ HỢP ĐỒNG
+         ============================================================== -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-card-box" style="max-width: 440px; text-align: center; padding: 28px 24px;">
+            <div style="width: 52px; height: 52px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444; font-size: 26px;">
+                <i class="ph ph-trash"></i>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
-                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            <h3 id="deleteModalTitle" style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Xác nhận xóa?</h3>
+            <p id="deleteModalDesc" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Thao tác này không thể hoàn tác.</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" class="modal-btn-cancel" onclick="closeDeleteModal()">Hủy bỏ</button>
+                <button type="button" class="modal-btn-save" id="btnExecuteDelete" style="background: #ef4444;">Xác nhận xóa</button>
             </div>
         </div>
     </div>
 
-    <!-- Khung thông báo Toast -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;"></div>
 
-    <!-- ==============================================================
-         JAVASCRIPT XỬ LÝ NGHIỆP VỤ QUẢN LÝ ĐỊA ĐIỂM
-         ============================================================== -->
-    <!-- Locations Management Script -->
+    <!-- Locations Module JS -->
     <script th:src="@{/js/locations.js}" src="/js/locations.js"></script>
 </body>
 </html>

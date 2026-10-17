@@ -2,12 +2,11 @@ package mirai.sale.modules.location.controller;
 
 import jakarta.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mirai.sale.common.dto.PageResponse;
-import mirai.sale.modules.location.dto.CreateLocationRequest;
-import mirai.sale.modules.location.dto.LocationResponse;
-import mirai.sale.modules.location.dto.UpdateLocationRequest;
+import mirai.sale.modules.location.dto.*;
 import mirai.sale.modules.location.service.LocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +33,14 @@ public class LocationController {
         @RequestParam(defaultValue = "20") int size
     ) {
         return locationService.search(keyword, active, page, size);
+    }
+
+    /**
+     * Lấy danh sách địa điểm đang hoạt động và ĐÃ CÓ CẤU HÌNH CA LÀM VIỆC
+     */
+    @GetMapping("/active-with-shifts")
+    public List<LocationResponse> getActiveLocationsWithShifts() {
+        return locationService.getActiveLocationsWithShifts();
     }
 
     /**
@@ -84,5 +91,54 @@ public class LocationController {
     public LocationResponse toggleStatus(@PathVariable UUID id, Principal principal) {
         String currentUser = principal != null ? principal.getName() : "Admin";
         return locationService.toggleStatus(id, currentUser);
+    }
+
+    // ==============================================================
+    // CONTRACTS ASSIGNED TO LOCATION
+    // ==============================================================
+
+    /**
+     * Lấy danh sách hợp đồng đã gán vào địa điểm khám
+     */
+    @GetMapping("/{id}/contracts")
+    public List<LocationContractResponse> getContractsByLocation(@PathVariable UUID id) {
+        return locationService.getContractsByLocation(id);
+    }
+
+    /**
+     * Thêm hợp đồng vào địa điểm khám
+     */
+    @PostMapping("/{id}/contracts")
+    public ResponseEntity<LocationContractResponse> addContractToLocation(
+        @PathVariable UUID id,
+        @Valid @RequestBody AssignContractToLocationRequest req,
+        Principal principal
+    ) {
+        String currentUser = principal != null ? principal.getName() : "Admin";
+        LocationContractResponse res = locationService.addContractToLocation(id, req, currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    /**
+     * Bật / tắt trạng thái áp dụng của hợp đồng tại địa điểm khám
+     */
+    @PatchMapping("/{id}/contracts/{contractLocationId}/toggle-status")
+    public LocationContractResponse toggleContractLocationStatus(
+        @PathVariable UUID id,
+        @PathVariable UUID contractLocationId
+    ) {
+        return locationService.toggleContractLocationStatus(id, contractLocationId);
+    }
+
+    /**
+     * Gỡ hợp đồng khỏi địa điểm khám
+     */
+    @DeleteMapping("/{id}/contracts/{contractLocationId}")
+    public ResponseEntity<Map<String, String>> removeContractFromLocation(
+        @PathVariable UUID id,
+        @PathVariable UUID contractLocationId
+    ) {
+        locationService.removeContractFromLocation(id, contractLocationId);
+        return ResponseEntity.ok(Map.of("message", "Đã gỡ hợp đồng khỏi địa điểm"));
     }
 }

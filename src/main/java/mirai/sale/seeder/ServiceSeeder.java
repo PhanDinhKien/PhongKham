@@ -44,6 +44,14 @@ public class ServiceSeeder implements ApplicationRunner {
 
         seedService("TT_001", "Điện tâm đồ (ECG) 12 chuyển đạo", new BigDecimal("80000"), ServiceType.THU_THUAT, "Ghi điện học tim phát hiện rối loạn nhịp tim và thiếu máu cơ tim", "admin@phongkham.local");
         seedService("TT_002", "Nội soi Tai - Mũi - Họng ống mềm", new BigDecimal("250000"), ServiceType.THU_THUAT, "Quan sát rõ nét niêm mạc vòm họng và dây thanh âm", "admin@phongkham.local");
+
+        // Dịch vụ theo chuẩn UI Mockup Image 1
+        seedService("DV-NS-0110", "Nội soi dạ dày gây mê", new BigDecimal("1150000"), ServiceType.CHAN_DOAN_HINH_ANH, "Nội soi đường tiêu hóa trên không đau bằng gây mê tĩnh mạch", "admin@phongkham.local");
+        seedService("DV-NS-0111", "Nội soi dạ dày không gây mê", new BigDecimal("700000"), ServiceType.CHAN_DOAN_HINH_ANH, "Nội soi dạ dày gây tê tại chỗ", "admin@phongkham.local");
+        seedService("DV-SA-0231", "Siêu âm ổ bụng tổng quát", new BigDecimal("250000"), ServiceType.CHAN_DOAN_HINH_ANH, "Siêu âm tầm soát ổ bụng tổng quát", "admin@phongkham.local");
+        seedService("DV-XQ-0055", "Chụp X-quang phổi thẳng", new BigDecimal("180000"), ServiceType.CHAN_DOAN_HINH_ANH, "Chụp X-quang tim phổi thẳng kỹ thuật số", "admin@phongkham.local");
+        seedService("DV-XQ-0056", "Chụp X-quang cột sống thẳng-nghiêng", new BigDecimal("700000"), ServiceType.CHAN_DOAN_HINH_ANH, "Chụp X-quang cột sống tư thế thẳng và nghiêng", "admin@phongkham.local");
+        seedService("DV-XQ-0057", "Chụp X-quang lồng ngực", new BigDecimal("700000"), ServiceType.CHAN_DOAN_HINH_ANH, "Chụp lồng ngực toàn cảnh", "admin@phongkham.local");
     }
 
     private void seedService(String code, String name, BigDecimal price, ServiceType type, String desc, String author) {

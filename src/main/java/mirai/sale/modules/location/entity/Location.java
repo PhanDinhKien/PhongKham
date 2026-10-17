@@ -26,8 +26,12 @@ public class Location {
     private String name;
 
     @Nationalized
-    @Column(name = "address", length = 500, nullable = false)
+    @Column(name = "address", length = 500)
     private String address;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("shiftNumber ASC")
+    private java.util.List<LocationShift> shifts = new java.util.ArrayList<>();
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
@@ -158,7 +162,11 @@ public class Location {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public java.util.List<LocationShift> getShifts() {
+        return shifts;
+    }
+
+    public void setShifts(java.util.List<LocationShift> shifts) {
+        this.shifts = shifts;
     }
 }

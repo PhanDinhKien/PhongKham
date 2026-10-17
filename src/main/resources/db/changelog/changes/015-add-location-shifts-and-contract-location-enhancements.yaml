@@ -1,0 +1,73 @@
+databaseChangeLog:
+- changeSet:
+    id: 015-add-location-shifts-and-contract-location-enhancements
+    author: phankien
+    changes:
+    # 1. Bảng lưu các ca làm việc của địa điểm khám
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: locationShiftsPK
+            name: id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: location_id
+            type: uniqueidentifier
+        - column:
+            constraints:
+              nullable: false
+            name: shift_number
+            type: int
+        - column:
+            name: shift_name
+            type: nvarchar(50)
+        - column:
+            constraints:
+              nullable: false
+            name: start_time
+            type: varchar(10)
+        - column:
+            constraints:
+              nullable: false
+            name: end_time
+            type: varchar(10)
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: datetime2
+        tableName: location_shifts
+
+    - addForeignKeyConstraint:
+        baseColumnNames: location_id
+        baseTableName: location_shifts
+        constraintName: FK_LOCATION_SHIFTS_LOCATION
+        referencedColumnNames: id
+        referencedTableName: locations
+        onDelete: CASCADE
+
+    # 2. Bổ sung trường cho bảng contract_locations
+    - addColumn:
+        tableName: contract_locations
+        columns:
+        - column:
+            name: active
+            type: bit
+            defaultValueBoolean: true
+        - column:
+            name: shift_config
+            type: nvarchar(255)
+        - column:
+            name: updated_at
+            type: datetime2
+
+    # 3. Cho phép cột address trong locations có thể null
+    - dropNotNullConstraint:
+        columnDataType: nvarchar(500)
+        columnName: address
+        tableName: locations

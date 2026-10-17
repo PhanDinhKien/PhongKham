@@ -1,0 +1,543 @@
+/**
+ * ==============================================================
+ * ĐỊNH MỨC DỊCH VỤ - STYLES (SERVICE QUOTAS MODULE CSS)
+ * Matches Figma / UI Mockups Image 1 & Image 2
+ * ==============================================================
+ */
+
+/* Nút chính xanh đậm */
+.btn-primary-green {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #00684a;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-green:hover {
+    background: #00523a;
+    box-shadow: 0 4px 12px rgba(0, 104, 74, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Nút Đồng bộ HIS */
+.btn-sync-his {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-sync-his:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* Nút Xóa bộ lọc */
+.btn-filter-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-filter-clear:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* Bảng cha Định mức dịch vụ */
+.quota-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.quota-table thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.quota-table tbody tr.parent-row {
+    border-bottom: 1px solid #edf2f7;
+    transition: background 0.15s ease;
+}
+
+.quota-table tbody tr.parent-row:hover {
+    background: #f8fafc;
+}
+
+.quota-table tbody tr.parent-row.is-expanded {
+    background: #f8fafc;
+    border-bottom: none;
+}
+
+.quota-table tbody td {
+    padding: 14px 18px;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+/* Nút mở rộng chevron */
+.btn-expand-row {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-expand-row:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.is-expanded .btn-expand-row i {
+    transform: rotate(90deg);
+}
+
+/* Badge số lượng đang áp dụng chuẩn Image 1 */
+.badge-active-quota {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: #e6f4ea;
+    color: #00684a;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+/* Nút tác vụ */
+.action-btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.action-btn.btn-add-quota {
+    color: #475569;
+    font-size: 19px;
+}
+
+.action-btn.btn-add-quota:hover {
+    background: #e6f4ea;
+    color: #00684a;
+}
+
+.action-btn.btn-delete:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* Bảng con Subtable chứa danh sách Định mức theo Địa điểm */
+.subtable-container-row {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.subtable-wrapper {
+    padding: 12px 18px 20px 48px;
+    background: #f8fafc;
+}
+
+.subtable {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+}
+
+.subtable thead th {
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.subtable tbody td {
+    padding: 12px 16px;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.subtable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Switch Toggle Trạng thái áp dụng */
+.switch-status-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch-status-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ef4444;
+    transition: 0.25s ease;
+    border-radius: 24px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch-status-toggle input:checked + .switch-slider {
+    background-color: #00684a;
+}
+
+.switch-status-toggle input:checked + .switch-slider:before {
+    transform: translateX(20px);
+}
+
+/* Modal Form Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card-box {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #00684a;
+    margin: 0;
+}
+
+.modal-btn-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.modal-body-content {
+    padding: 24px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.modal-form-group {
+    margin-bottom: 20px;
+}
+
+.modal-form-label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.modal-form-select, .modal-form-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #0f172a;
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.modal-form-select:focus, .modal-form-input:focus {
+    outline: none;
+    border-color: #00684a;
+    box-shadow: 0 0 0 3px rgba(0, 104, 74, 0.12);
+}
+
+/* Multi-select Tags Box cho Địa điểm áp dụng */
+.multi-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    min-height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.multi-tags-container:focus-within {
+    border-color: #00684a;
+    box-shadow: 0 0 0 3px rgba(0, 104, 74, 0.12);
+}
+
+.tag-badge-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.tag-badge-item .btn-remove-tag {
+    cursor: pointer;
+    font-size: 14px;
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+}
+
+.tag-badge-item .btn-remove-tag:hover {
+    color: #1d4ed8;
+}
+
+/* Khung Thông số định mức (Box Image 2) */
+.quota-shifts-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.quota-shifts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.badge-total-allocated {
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.quota-shifts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.shift-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.shift-input-wrap input {
+    padding-right: 48px;
+}
+
+.shift-unit-label {
+    position: absolute;
+    right: 12px;
+    font-size: 13px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+/* Khung Thời gian áp dụng Date Range */
+.date-range-flex {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-input-icon-wrap {
+    position: relative;
+    flex: 1;
+}
+
+.date-input-icon-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 16px;
+}
+
+.date-input-icon-wrap input {
+    padding-left: 36px;
+}
+
+.modal-footer-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 18px 24px;
+    border-top: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.modal-btn-cancel {
+    padding: 9px 20px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-cancel:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.modal-btn-save {
+    padding: 9px 24px;
+    border: none;
+    background: #00684a;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-btn-save:hover {
+    background: #00523a;
+}

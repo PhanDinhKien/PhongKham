@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/admin-layout :: common-head('Định mức dịch vụ')}"></th:block>
+    <!-- Service Quotas Module CSS -->
+    <link rel="stylesheet" th:href="@{/css/service-quotas.css}" href="/css/service-quotas.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Khung Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('thiet-lap', 'dinh-muc-dich-vu')}"></div>
+
+        <!-- Phân vùng nội dung chính bên phải -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-link">Thiết lập chung</span>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Định mức dịch vụ</span>
+            </div>
+
+            <!-- Tiêu đề trang & Nút hành động chuẩn Image 1 -->
+            <div class="page-header-row" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <h1 class="page-title" style="font-size: 26px; font-weight: 800; color: #00684a; margin: 0;">Định mức dịch vụ</h1>
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Nút Đồng bộ HIS -->
+                    <button type="button" class="btn-sync-his" id="btnSyncHis" onclick="handleSyncHis()">
+                        <i class="ph ph-arrows-clockwise" style="font-size: 16px;"></i>
+                        <span>Đồng bộ HIS</span>
+                    </button>
+
+                    <!-- Nút Thêm mới (Xanh đậm) -->
+                    <button type="button" class="btn-primary-green" id="btnOpenAddModal" onclick="openAddQuotaModal()">
+                        <i class="ph-bold ph-plus"></i>
+                        <span>Thêm mới</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc chuẩn Image 1 -->
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                <!-- Ô tìm kiếm mã dịch vụ, tên dịch vụ -->
+                <div style="position: relative; flex: 1; max-width: 360px;">
+                    <i class="ph ph-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 17px;"></i>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm mã dịch vụ, tên dịch vụ" 
+                           style="padding-left: 40px; border-radius: 8px; border: 1px solid #cbd5e1; height: 42px; width: 100%; box-sizing: border-box;">
+                </div>
+
+                <!-- Dropdown lọc theo loại dịch vụ -->
+                <div style="position: relative; width: 160px;">
+                    <select id="typeFilter" class="form-control" style="border-radius: 8px; border: 1px solid #cbd5e1; height: 42px; width: 100%; padding: 0 14px; appearance: none; background: #fff; cursor: pointer;">
+                        <option value="">Tất cả loại</option>
+                        <option value="CHAN_DOAN_HINH_ANH">CDHA-TDCN</option>
+                        <option value="XET_NGHIEM">Xét nghiệm</option>
+                        <option value="KHAM_BENH">Khám chuyên khoa</option>
+                        <option value="THU_THUAT">Thủ thuật</option>
+                        <option value="KHAC">Khác</option>
+                    </select>
+                    <i class="ph ph-caret-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none;"></i>
+                </div>
+
+                <!-- Nút Xóa bộ lọc -->
+                <button type="button" id="btnClearFilter" class="btn-filter-clear">
+                    <i class="ph ph-funnel"></i>
+                    <span>Xóa bộ lọc</span>
+                </button>
+            </div>
+
+            <!-- Bảng dữ liệu định mức dịch vụ 2 cấp lồng nhau chuẩn Image 1 -->
+            <div class="table-card" style="border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                <div class="table-responsive">
+                    <table class="quota-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 44px; text-align: center;"></th>
+                                <th style="width: 150px;">Mã dịch vụ</th>
+                                <th style="min-width: 280px;">Tên dịch vụ</th>
+                                <th style="width: 170px;">Loại dịch vụ</th>
+                                <th style="width: 160px;">Đơn giá</th>
+                                <th style="width: 160px;">SL áp dụng</th>
+                                <th style="width: 100px; text-align: right; padding-right: 24px;">Tác vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotaTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">
+                                    Đang tải dữ liệu định mức dịch vụ...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang chuẩn Image 1 -->
+                <div class="pagination-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid #f1f5f9; background: #ffffff;">
+                    <div class="pagination-info" id="paginationInfo" style="font-size: 13.5px; color: #64748b;">
+                        Đang xem 0 - 0 trong 0
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="pagination-controls" id="paginationControls" style="display: flex; align-items: center; gap: 4px;">
+                            <!-- Nút trang render qua JS -->
+                        </div>
+
+                        <!-- Dropdown số bản ghi trên trang -->
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <select id="pageSizeSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; color: #334155; background: #ffffff; cursor: pointer;">
+                                <option value="10">10 / trang</option>
+                                <option value="20" selected>20 / trang</option>
+                                <option value="50">50 / trang</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: THIẾT LẬP ĐỊNH MỨC DỊCH VỤ (Chuẩn Image 2)
+         ============================================================== -->
+    <div id="quotaModal" class="modal-overlay">
+        <div class="modal-card-box">
+            <!-- Header Modal -->
+            <div class="modal-header-bar">
+                <h3 class="modal-header-title" id="quotaModalTitle">Thiết lập định mức dịch vụ</h3>
+                <button type="button" class="modal-btn-close" onclick="closeQuotaModal()">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Form Body -->
+            <form id="quotaForm" onsubmit="handleSaveQuota(event)">
+                <input type="hidden" id="editingQuotaId">
+
+                <div class="modal-body-content">
+                    <!-- 1. Dịch vụ áp dụng -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label" for="serviceSelect">Dịch vụ áp dụng <span style="color: #ef4444;">*</span></label>
+                        <select id="serviceSelect" class="modal-form-select" required>
+                            <option value="">Chọn dịch vụ y tế...</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Địa điểm áp dụng (Chỉ lấy địa điểm đang hoạt động và đã có cấu hình ca) -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label" for="locationSelect">Địa điểm khám <span style="color: #ef4444;">*</span></label>
+                        <select id="locationSelect" class="modal-form-select" required onchange="handleLocationChange(this.value)">
+                            <option value="">-- Chọn địa điểm khám --</option>
+                        </select>
+                        <span style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">
+                            <i class="ph ph-info"></i> Chỉ hiển thị các địa điểm đang hoạt động và đã được thiết lập ca làm việc
+                        </span>
+                    </div>
+
+                    <!-- 3. Hợp đồng áp dụng (Thuộc địa điểm khám đã chọn) -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label" for="contractSelect">Hợp đồng áp dụng</label>
+                        <select id="contractSelect" class="modal-form-select">
+                            <option value="">-- Chọn hợp đồng áp dụng (hoặc để áp dụng chung) --</option>
+                        </select>
+                        <span id="contractSelectNotice" style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">
+                            Vui lòng chọn địa điểm khám để tải danh sách hợp đồng
+                        </span>
+                    </div>
+
+                    <!-- 4. Cấu hình định mức theo ca thực tế của địa điểm khám -->
+                    <div class="modal-form-group">
+                        <div class="quota-shifts-box">
+                            <div class="quota-shifts-header">
+                                <span style="font-size: 13.5px; font-weight: 700; color: #0f172a;">
+                                    <i class="ph ph-clock" style="margin-right: 4px; color: #00684a;"></i> Cấu hình ca làm việc
+                                </span>
+                                <span class="badge-total-allocated" id="totalAllocatedBadge">Tổng phân bổ: 0 lượt</span>
+                            </div>
+
+                            <!-- Container render động các ca từ địa điểm -->
+                            <div id="dynamicShiftsContainer" class="quota-shifts-grid">
+                                <div style="grid-column: 1 / -1; text-align: center; padding: 18px 10px; color: #94a3b8; font-size: 13px;">
+                                    <i class="ph ph-calendar-blank" style="font-size: 20px; display: block; margin-bottom: 4px;"></i>
+                                    Vui lòng chọn địa điểm khám để cấu hình số lượt theo ca
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Thời gian áp dụng -->
+                    <div class="modal-form-group">
+                        <label class="modal-form-label">Thời gian áp dụng</label>
+                        <div class="date-range-flex">
+                            <div class="date-input-icon-wrap">
+                                <i class="ph ph-calendar"></i>
+                                <input type="date" id="validFrom" class="modal-form-input">
+                            </div>
+                            <span style="color: #64748b; font-weight: 700;">→</span>
+                            <div class="date-input-icon-wrap">
+                                <i class="ph ph-calendar"></i>
+                                <input type="date" id="validTo" class="modal-form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Toggle Hoạt động -->
+                    <div class="modal-form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 0;">
+                        <label class="switch-status-toggle">
+                            <input type="checkbox" id="quotaActive" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">Hoạt động</span>
+                    </div>
+                </div>
+
+                <!-- Footer Modal -->
+                <div class="modal-footer-bar">
+                    <button type="button" class="modal-btn-cancel" onclick="closeQuotaModal()">Hủy</button>
+                    <button type="submit" class="modal-btn-save" id="btnSaveQuota">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: XÁC NHẬN XÓA ĐỊNH MỨC DỊCH VỤ
+         ============================================================== -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-card-box" style="max-width: 440px; text-align: center; padding: 28px 24px;">
+            <div style="width: 52px; height: 52px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444; font-size: 26px;">
+                <i class="ph ph-trash"></i>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Xác nhận xóa định mức?</h3>
+            <p id="deleteModalDesc" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Thao tác này không thể hoàn tác.</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" class="modal-btn-cancel" onclick="closeDeleteModal()">Hủy bỏ</button>
+                <button type="button" class="modal-btn-save" id="btnExecuteDelete" style="background: #ef4444;">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <!-- Service Quotas Module JS -->
+    <script th:src="@{/js/service-quotas.js}" src="/js/service-quotas.js"></script>
+</body>
+</html>

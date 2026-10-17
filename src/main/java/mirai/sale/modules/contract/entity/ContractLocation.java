@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import mirai.sale.modules.location.entity.Location;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
@@ -27,6 +28,13 @@ public class ContractLocation {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
+    @Nationalized
+    @Column(name = "shift_config", length = 255)
+    private String shiftConfig;
+
     @Column(name = "created_by", length = 100)
     private String createdBy;
 
@@ -34,12 +42,25 @@ public class ContractLocation {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @org.hibernate.annotations.UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public ContractLocation() {
     }
 
     public ContractLocation(Contract contract, Location location, String createdBy) {
         this.contract = contract;
         this.location = location;
+        this.createdBy = createdBy;
+        this.active = true;
+    }
+
+    public ContractLocation(Contract contract, Location location, boolean active, String shiftConfig, String createdBy) {
+        this.contract = contract;
+        this.location = location;
+        this.active = active;
+        this.shiftConfig = shiftConfig;
         this.createdBy = createdBy;
     }
 
@@ -79,7 +100,27 @@ public class ContractLocation {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getShiftConfig() {
+        return shiftConfig;
+    }
+
+    public void setShiftConfig(String shiftConfig) {
+        this.shiftConfig = shiftConfig;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

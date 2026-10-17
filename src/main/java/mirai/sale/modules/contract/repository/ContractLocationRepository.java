@@ -25,4 +25,14 @@ public interface ContractLocationRepository extends JpaRepository<ContractLocati
     Optional<ContractLocation> findByContractIdAndLocationId(UUID contractId, UUID locationId);
 
     void deleteByContractIdAndLocationId(UUID contractId, UUID locationId);
+
+    @Query("""
+        SELECT cl FROM ContractLocation cl
+        JOIN FETCH cl.contract c
+        WHERE cl.location.id = :locationId AND c.isDeleted = false
+        ORDER BY cl.createdAt DESC
+    """)
+    List<ContractLocation> findByLocationIdWithContract(@Param("locationId") UUID locationId);
+
+    long countByLocationId(UUID locationId);
 }

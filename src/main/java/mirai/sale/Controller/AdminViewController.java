@@ -88,4 +88,12 @@ public class AdminViewController {
     public String showDiscountFormPage() {
         return "admin/discount-form";
     }
+
+    /**
+     * Hiển thị màn hình Quản lý định mức dịch vụ
+     */
+    @GetMapping({"/admin/service-quotas", "/admin/dinh-muc-dich-vu"})
+    public String showServiceQuotasPage() {
+        return "admin/service-quotas";
+    }
 }

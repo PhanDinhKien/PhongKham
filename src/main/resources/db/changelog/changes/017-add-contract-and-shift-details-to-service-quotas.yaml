@@ -1,0 +1,24 @@
+databaseChangeLog:
+- changeSet:
+    id: 017-add-contract-and-shift-details-to-service-quotas
+    author: phankien
+    changes:
+    # 1. Bổ sung contract_id và shift_details vào bảng service_quotas
+    - addColumn:
+        tableName: service_quotas
+        columns:
+        - column:
+            name: contract_id
+            type: uniqueidentifier
+        - column:
+            name: shift_details
+            type: nvarchar(max)
+
+    # 2. Thêm khóa ngoại contract_id
+    - addForeignKeyConstraint:
+        baseColumnNames: contract_id
+        baseTableName: service_quotas
+        constraintName: FK_SERVICE_QUOTAS_CONTRACT
+        referencedColumnNames: id
+        referencedTableName: contracts
+        onDelete: SET NULL

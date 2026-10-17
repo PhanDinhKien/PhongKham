@@ -27,3 +27,9 @@ databaseChangeLog:
       file: db/changelog/changes/013-create-contract-details.yaml
   - include:
       file: db/changelog/changes/014-create-discount-policies.yaml
+  - include:
+      file: db/changelog/changes/015-add-location-shifts-and-contract-location-enhancements.yaml
+  - include:
+      file: db/changelog/changes/016-create-service-quotas.yaml
+  - include:
+      file: db/changelog/changes/017-add-contract-and-shift-details-to-service-quotas.yaml
