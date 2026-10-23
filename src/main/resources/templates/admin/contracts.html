@@ -71,20 +71,20 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; white-space: nowrap;">STT</th>
-                                <th style="width: 170px; white-space: nowrap;">Mã hợp đồng</th>
-                                <th style="min-width: 250px; white-space: nowrap;">Tên hợp đồng</th>
-                                <th style="width: 140px; white-space: nowrap;">Mã công ty</th>
-                                <th style="width: 240px; white-space: nowrap;">Tên công ty</th>
-                                <th style="width: 140px; white-space: nowrap;">Trạng thái</th>
-                                <th style="width: 160px; white-space: nowrap;">Người tạo</th>
-                                <th style="width: 160px; white-space: nowrap;">Người sửa gần nhất</th>
-                                <th style="width: 120px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                                <th class="th-w-50-nowrap">STT</th>
+                                <th class="th-w-170-nowrap">Mã hợp đồng</th>
+                                <th class="th-min-w-250-nowrap">Tên hợp đồng</th>
+                                <th class="th-w-140-nowrap">Mã công ty</th>
+                                <th class="th-w-240-nowrap">Tên công ty</th>
+                                <th class="th-w-140-nowrap">Trạng thái</th>
+                                <th class="th-w-160-nowrap">Người tạo</th>
+                                <th class="th-w-160-nowrap">Người sửa gần nhất</th>
+                                <th class="th-w-120-right-nowrap">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="contractTableBody">
                             <tr>
-                                <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                <td colspan="9" class="td-empty-center">
                                     Đang tải dữ liệu danh sách hợp đồng...
                                 </td>
                             </tr>
@@ -124,7 +124,7 @@
          MODAL: THÊM / CẬP NHẬT HỢP ĐỒNG
          ============================================================== -->
     <div class="modal-backdrop" id="contractModal">
-        <div class="modal-dialog" style="max-width: 620px;">
+        <div class="modal-dialog modal-dialog-w620">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalTitle">Thêm mới hợp đồng</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseModal">
@@ -140,14 +140,14 @@
                     <!-- Row 1: Mã hợp đồng * + Nút sinh mã & Tên hợp đồng * -->
                     <div class="form-row-2col">
                         <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label class="form-label" for="contractCode" style="margin-bottom: 0;">Mã hợp đồng <span class="required-star">*</span></label>
+                            <div class="form-label-row">
+                                <label class="form-label form-label-mb-0" for="contractCode">Mã hợp đồng <span class="required-star">*</span></label>
                                 <button type="button" id="btnAutoCode" class="btn-generate-code" title="Tự động lấy mã tiếp theo">
                                     <i class="ph ph-magic-wand"></i> Lấy mã tự động
                                 </button>
                             </div>
-                            <input type="text" id="contractCode" class="form-control" placeholder="HD00001, HD00002..." required style="font-family: monospace; font-weight: 700; text-transform: uppercase;">
-                            <small id="contractCodeError" style="display: none; color: #dc2626; font-size: 11.5px; margin-top: 3px; font-weight: 500;">
+                            <input type="text" id="contractCode" class="form-control input-code-mono" placeholder="HD00001, HD00002..." required>
+                            <small id="contractCodeError" class="field-error-text">
                                 Mã hợp đồng đã tồn tại trong hệ thống!
                             </small>
                         </div>
@@ -172,7 +172,7 @@
                     <div class="form-row-2col">
                         <div class="form-group">
                             <label class="form-label" for="companyCode">Mã công ty <span class="required-star">*</span></label>
-                            <input type="text" id="companyCode" class="form-control" placeholder="CTY-FPT, CTY-VNG..." required style="font-family: monospace; text-transform: uppercase;">
+                            <input type="text" id="companyCode" class="form-control input-mono-upper" placeholder="CTY-FPT, CTY-VNG..." required>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="companyName">Tên công ty / Doanh nghiệp <span class="required-star">*</span></label>
@@ -194,22 +194,28 @@
          MODAL: XÁC NHẬN XÓA MỀM HỢP ĐỒNG
          ============================================================== -->
     <div class="modal-backdrop" id="deleteConfirmModal">
-        <div class="modal-dialog" style="max-width: 460px;">
+        <div class="modal-dialog modal-dialog-w460">
             <div class="modal-header">
-                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa hợp đồng</h3>
+                <h3 class="modal-title modal-title-danger">Xác nhận xóa hợp đồng</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa hợp đồng <strong id="deleteContractName" style="color: var(--slate-900);"></strong> (Mã: <code id="deleteContractCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
+                <p class="modal-desc-slate700">
+                    Bạn có chắc chắn muốn xóa hợp đồng <strong id="deleteContractName" class="text-slate-900"></strong> (Mã: <code id="deleteContractCode" class="code-green-bold"></code>) không?
                 </p>
-                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
-                    <i class="ph ph-warning-circle" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
+                <div class="danger-alert-box">
+                    <i class="ph ph-warning-circle danger-alert-icon"></i>
                     Hợp đồng sẽ được <strong>xóa mềm</strong> (Soft Delete) khỏi danh sách quản lý trực tiếp. Các dữ liệu lịch khám và hóa đơn thanh toán cũ thuộc hợp đồng này vẫn được lưu trữ bảo toàn.
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
             <div class="modal-footer">
                 <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
                 <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>

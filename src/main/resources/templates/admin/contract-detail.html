@@ -3,7 +3,8 @@
 <head>
     <th:block th:replace="~{layout/admin-layout :: common-head('Chi tiết Hợp đồng')}"></th:block>
     <!-- Contract Detail Specific CSS -->
-    <link rel="stylesheet" th:href="@{/css/contract-detail.css}" href="/css/contract-detail.css">
+    <link rel="stylesheet" th:href="@{/css/contract-detail.css(v='1.1')}" href="/css/contract-detail.css?v=1.1">
+    <link rel="stylesheet" th:href="@{/css/receipts.css(v='1.0')}" href="/css/receipts.css">
 </head>
 <body>
 
@@ -16,7 +17,7 @@
         <main class="admin-main">
             
             <!-- Breadcrumbs -->
-            <div class="breadcrumb-bar" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="breadcrumb-bar breadcrumb-bar-between">
                 <div>
                     <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
                     <span class="breadcrumb-separator">›</span>
@@ -31,10 +32,10 @@
             </div>
 
             <!-- Tiêu đề trang (Khớp giao diện) -->
-            <div class="page-header-row" style="margin-bottom: 20px;">
+            <div class="page-header-row page-header-row-cd">
                 <div>
-                    <h1 class="page-title" style="font-size: 26px; font-weight: 800; color: #0f172a;">
-                        Chi tiết hợp đồng <span id="headerContractCode" style="color: #047857;">...</span>
+                    <h1 class="page-title page-title-cd">
+                        Chi tiết hợp đồng <span id="headerContractCode" class="header-contract-code">...</span>
                     </h1>
                 </div>
             </div>
@@ -80,7 +81,7 @@
                 <div class="contract-footer-note">
                     <span class="dot">•</span>
                     <span>Đồng bộ lần cuối: <strong id="cardSyncTime">-</strong></span>
-                    <span style="margin: 0 10px; color: var(--slate-300);">|</span>
+                    <span class="note-separator">|</span>
                     <span>Trạng thái: <span id="cardStatusBadge">-</span></span>
                 </div>
             </div>
@@ -108,7 +109,7 @@
                  ============================================================== -->
             <div class="tab-pane active" id="tab-patients">
                 <!-- Thanh công cụ lọc & tìm kiếm hồ sơ -->
-                <div class="filter-toolbar" style="margin-bottom: 16px;">
+                <div class="filter-toolbar filter-toolbar-cd">
                     <div class="search-box">
                         <i class="ph ph-magnifying-glass"></i>
                         <input type="text" id="patientSearchInput" class="search-input" placeholder="Tìm theo mã NB, mã hồ sơ, tên bệnh nhân, bác sĩ...">
@@ -125,7 +126,7 @@
                         <i class="ph ph-caret-down"></i>
                     </div>
 
-                    <button type="button" class="btn-primary-action" id="btnOpenAddPatientModal" style="margin-left: auto;">
+                    <button type="button" class="btn-primary-action btn-add-patient" id="btnOpenAddPatientModal">
                         <i class="ph-bold ph-plus"></i>
                         <span>Thêm bệnh nhân vào HĐ</span>
                     </button>
@@ -137,21 +138,21 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">STT</th>
-                                    <th style="width: 110px;">MÃ NB</th>
-                                    <th style="width: 140px;">MÃ HỒ SƠ</th>
-                                    <th style="min-width: 180px;">BỆNH NHÂN</th>
-                                    <th style="width: 150px;">BÁC SĨ</th>
-                                    <th style="width: 120px;">NGÀY KHÁM</th>
-                                    <th style="width: 150px;">NGÀY CẬP NHẬT</th>
-                                    <th style="width: 130px;">TRẠNG THÁI</th>
-                                    <th style="width: 130px;">ĐỒNG BỘ</th>
-                                    <th style="width: 80px; text-align: right; padding-right: 20px;">TÁC VỤ</th>
+                                    <th class="th-col-stt">STT</th>
+                                    <th class="th-col-patient-code">MÃ NB</th>
+                                    <th class="th-col-record-code">MÃ HỒ SƠ</th>
+                                    <th class="th-col-patient-name">BỆNH NHÂN</th>
+                                    <th class="th-col-doctor">BÁC SĨ</th>
+                                    <th class="th-col-exam-date">NGÀY KHÁM</th>
+                                    <th class="th-col-update-date">NGÀY CẬP NHẬT</th>
+                                    <th class="th-col-status">TRẠNG THÁI</th>
+                                    <th class="th-col-sync">ĐỒNG BỘ</th>
+                                    <th class="th-col-action">TÁC VỤ</th>
                                 </tr>
                             </thead>
                             <tbody id="patientTableBody">
                                 <tr>
-                                    <td colspan="10" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    <td colspan="10" class="td-empty-table">
                                         Đang tải danh sách hồ sơ khám...
                                     </td>
                                 </tr>
@@ -183,10 +184,10 @@
                  NỘI DUNG TAB 2: ĐỊA ĐIỂM KHÁM
                  ============================================================== -->
             <div class="tab-pane" id="tab-locations">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div class="tab-section-header">
                     <div>
-                        <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-800);">Danh sách địa điểm khám được gán</h3>
-                        <span style="font-size: 13px; color: var(--slate-500);">Một hợp đồng có thể khám tại nhiều địa điểm, và mỗi địa điểm khám cho nhiều hợp đồng</span>
+                        <h3 class="tab-section-title">Danh sách địa điểm khám được gán</h3>
+                        <span class="tab-section-subtitle">Một hợp đồng có thể khám tại nhiều địa điểm, và mỗi địa điểm khám cho nhiều hợp đồng</span>
                     </div>
                     <button type="button" class="btn-primary-action" id="btnOpenAssignLocationModal">
                         <i class="ph-bold ph-plus"></i>
@@ -199,18 +200,18 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">STT</th>
-                                    <th style="width: 140px;">Mã địa điểm</th>
-                                    <th style="min-width: 200px;">Tên địa điểm</th>
-                                    <th style="min-width: 300px;">Địa chỉ</th>
-                                    <th style="width: 130px;">Trạng thái</th>
-                                    <th style="width: 150px;">Ngày gán</th>
-                                    <th style="width: 90px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                                    <th class="th-col-stt">STT</th>
+                                    <th class="th-col-loc-code">Mã địa điểm</th>
+                                    <th class="th-col-loc-name">Tên địa điểm</th>
+                                    <th class="th-col-loc-address">Địa chỉ</th>
+                                    <th class="th-col-status">Trạng thái</th>
+                                    <th class="th-col-update-date">Ngày gán</th>
+                                    <th class="th-col-loc-action">Tác vụ</th>
                                 </tr>
                             </thead>
                             <tbody id="locationTableBody">
                                 <tr>
-                                    <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    <td colspan="7" class="td-empty-table">
                                         Đang tải danh sách địa điểm...
                                     </td>
                                 </tr>
@@ -224,10 +225,10 @@
                  NỘI DUNG TAB 3: GÓI DỊCH VỤ (BẢNG 2 CẤP MASTER - CHILD)
                  ============================================================== -->
             <div class="tab-pane" id="tab-packages">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div class="tab-section-header">
                     <div>
-                        <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-800);">Danh sách gói khám của hợp đồng</h3>
-                        <span style="font-size: 13px; color: var(--slate-500);">Mỗi gói khám thuộc 1 hợp đồng, bảng con hiển thị danh sách các dịch vụ y tế được gán trong gói</span>
+                        <h3 class="tab-section-title">Danh sách gói khám của hợp đồng</h3>
+                        <span class="tab-section-subtitle">Mỗi gói khám thuộc 1 hợp đồng, bảng con hiển thị danh sách các dịch vụ y tế được gán trong gói</span>
                     </div>
                     <button type="button" class="btn-primary-action" id="btnOpenAddPackageModal">
                         <i class="ph-bold ph-plus"></i>
@@ -240,20 +241,20 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 44px; text-align: center;"></th>
-                                    <th style="width: 50px;">STT</th>
-                                    <th style="width: 130px;">Mã Gói</th>
-                                    <th style="min-width: 240px;">Tên Gói Khám</th>
-                                    <th style="width: 130px;">Số dịch vụ</th>
-                                    <th style="width: 130px;">Trạng thái</th>
-                                    <th style="width: 150px;">Ngày Tạo</th>
-                                    <th style="width: 150px;">Người tạo</th>
-                                    <th style="width: 140px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                                    <th class="th-col-pkg-toggle"></th>
+                                    <th class="th-col-stt">STT</th>
+                                    <th class="th-col-pkg-code">Mã Gói</th>
+                                    <th class="th-col-pkg-name">Tên Gói Khám</th>
+                                    <th class="th-col-pkg-count">Số dịch vụ</th>
+                                    <th class="th-col-status">Trạng thái</th>
+                                    <th class="th-col-update-date">Ngày Tạo</th>
+                                    <th class="th-col-update-date">Người tạo</th>
+                                    <th class="th-col-pkg-action">Tác vụ</th>
                                 </tr>
                             </thead>
                             <tbody id="packageTableBody">
                                 <tr>
-                                    <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    <td colspan="9" class="td-empty-table">
                                         Đang tải danh sách gói khám...
                                     </td>
                                 </tr>
@@ -270,7 +271,7 @@
          MODAL 1: THÊM BỆNH NHÂN VÀO HỢP ĐỒNG
          ============================================================== -->
     <div class="modal-backdrop" id="addPatientModal">
-        <div class="modal-dialog" style="max-width: 580px;">
+        <div class="modal-dialog modal-dialog-w580">
             <div class="modal-header">
                 <h3 class="modal-title">Thêm bệnh nhân vào hợp đồng</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseAddPatientModal">
@@ -279,9 +280,9 @@
             </div>
             <form id="addPatientForm">
                 <div class="modal-body">
-                    <div class="form-group" style="margin-bottom: 14px;">
+                    <div class="form-group form-group-mb14">
                         <label class="form-label">Chọn người bệnh <span class="required-star">*</span></label>
-                        <select id="modalPatientSelect" class="form-control" required style="width: 100%;">
+                        <select id="modalPatientSelect" class="form-control modal-patient-select" required>
                             <option value="">-- Đang tải danh sách người bệnh --</option>
                         </select>
                     </div>
@@ -331,7 +332,7 @@
          MODAL 2: GÁN ĐỊA ĐIỂM KHÁM VÀO HỢP ĐỒNG
          ============================================================== -->
     <div class="modal-backdrop" id="assignLocationModal">
-        <div class="modal-dialog" style="max-width: 520px;">
+        <div class="modal-dialog modal-dialog-w520">
             <div class="modal-header">
                 <h3 class="modal-title">Gán địa điểm khám cho hợp đồng</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseAssignLocationModal">
@@ -342,7 +343,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label">Chọn địa điểm khám <span class="required-star">*</span></label>
-                        <select id="modalLocationSelect" class="form-control" required style="width: 100%;">
+                        <select id="modalLocationSelect" class="form-control modal-location-select" required>
                             <option value="">-- Đang tải địa điểm --</option>
                         </select>
                     </div>
@@ -365,7 +366,7 @@
          MODAL 3: THÊM / SỬA GÓI KHÁM
          ============================================================== -->
     <div class="modal-backdrop" id="packageModal">
-        <div class="modal-dialog" style="max-width: 540px;">
+        <div class="modal-dialog modal-dialog-w540">
             <div class="modal-header">
                 <h3 class="modal-title" id="packageModalTitle">Thêm mới gói khám</h3>
                 <button type="button" class="btn-modal-close" id="btnClosePackageModal">
@@ -392,10 +393,10 @@
                     </div>
 
                     <!-- Hàng cấu hình dịch vụ khi sửa gói -->
-                    <div id="modalEditPackageServicesRow" style="display: none; margin-top: 14px; padding: 12px 16px; background: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; justify-content: space-between; align-items: center;">
+                    <div id="modalEditPackageServicesRow" class="edit-package-services-box">
                         <div>
-                            <span style="font-size: 13px; font-weight: 600; color: #166534;">Dịch vụ trong gói:</span>
-                            <span id="modalPackageServiceCount" style="font-size: 13px; color: #15803d; font-weight: 700; margin-left: 6px;">0 dịch vụ</span>
+                            <span class="edit-package-services-title">Dịch vụ trong gói:</span>
+                            <span id="modalPackageServiceCount" class="edit-package-services-count">0 dịch vụ</span>
                         </div>
                         <button type="button" class="btn-sm-action" id="btnEditPackageServices" onclick="onEditPackageServicesClicked()">
                             <i class="ph-bold ph-plus-circle"></i> Cấu hình danh sách dịch vụ
@@ -420,11 +421,11 @@
          MODAL 4: GÁN DỊCH VỤ VÀO GÓI KHÁM (BẢNG DANH SÁCH & TÍCH CHỌN)
          ============================================================== -->
     <div class="modal-backdrop" id="assignServiceModal">
-        <div class="modal-dialog" style="max-width: 920px; width: 95%;">
+        <div class="modal-dialog modal-dialog-w920">
             <div class="modal-header">
-                <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="assign-service-header-left">
                     <h3 class="modal-title">Gán dịch vụ cho gói khám</h3>
-                    <span class="badge-count" id="selectedServicesCount" style="background-color: #d1fae5; color: #065f46; font-size: 12px; padding: 4px 10px;">Đã chọn: 0 dịch vụ</span>
+                    <span class="badge-count badge-assign-count" id="selectedServicesCount">Đã chọn: 0 dịch vụ</span>
                 </div>
                 <button type="button" class="btn-modal-close" id="btnCloseAssignServiceModal">
                     <i class="ph ph-x"></i>
@@ -432,25 +433,25 @@
             </div>
             <form id="assignServiceForm">
                 <input type="hidden" id="targetPackageId" value="">
-                <div class="modal-body" style="padding: 18px 24px;">
+                <div class="modal-body modal-body-assign-service">
                     <!-- Thông tin gói đang cấu hình -->
-                    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                    <div class="target-package-banner">
                         <div>
-                            <span style="font-size: 12.5px; color: #166534; font-weight: 500;">Gói khám đang cấu hình:</span>
-                            <div id="targetPackageNameDisplay" style="font-size: 14.5px; font-weight: 700; color: #14532d; margin-top: 2px;">-</div>
+                            <span class="target-package-sub">Gói khám đang cấu hình:</span>
+                            <div id="targetPackageNameDisplay" class="target-package-name">-</div>
                         </div>
-                        <div style="font-size: 12.5px; color: #15803d; font-weight: 600;">
+                        <div class="target-package-hint">
                             <i class="ph-bold ph-check-square-offset"></i> Tích chọn các dịch vụ cần gán vào gói
                         </div>
                     </div>
 
                     <!-- Thanh tìm kiếm & lọc dịch vụ nhanh trong modal -->
-                    <div style="display: flex; gap: 12px; margin-bottom: 14px;">
-                        <div class="search-box" style="flex: 1; max-width: none;">
+                    <div class="assign-service-toolbar">
+                        <div class="search-box assign-service-search">
                             <i class="ph ph-magnifying-glass"></i>
                             <input type="text" id="serviceModalSearchInput" class="search-input" placeholder="Tìm kiếm nhanh theo mã hoặc tên dịch vụ y tế...">
                         </div>
-                        <div class="filter-select-wrap" style="width: 200px;">
+                        <div class="filter-select-wrap assign-service-filter-wrap">
                             <select id="serviceModalTypeFilter" class="filter-select">
                                 <option value="">Tất cả phân loại</option>
                                 <option value="KHAM_BENH">Khám chuyên khoa</option>
@@ -464,24 +465,24 @@
                     </div>
 
                     <!-- Bảng danh sách toàn bộ dịch vụ kèm checkbox -->
-                    <div style="border: 1px solid var(--slate-200); border-radius: 8px; overflow: hidden;">
-                        <div style="max-height: 380px; overflow-y: auto;">
-                            <table class="data-table" style="margin-bottom: 0;">
-                                <thead style="position: sticky; top: 0; z-index: 2; background-color: #f8fafc;">
+                    <div class="assign-service-table-wrapper">
+                        <div class="assign-service-scroll">
+                            <table class="data-table assign-service-table">
+                                <thead class="assign-service-thead">
                                     <tr>
-                                        <th style="width: 44px; text-align: center;">
-                                            <input type="checkbox" id="selectAllServicesCheckbox" style="cursor: pointer; width: 16px; height: 16px; accent-color: #059669;">
+                                        <th class="th-service-chk">
+                                            <input type="checkbox" id="selectAllServicesCheckbox" class="checkbox-select-all-services">
                                         </th>
-                                        <th style="width: 50px;">STT</th>
-                                        <th style="width: 140px;">Mã dịch vụ</th>
-                                        <th style="min-width: 220px;">Tên dịch vụ</th>
-                                        <th style="width: 160px;">Phân loại</th>
-                                        <th style="width: 140px; text-align: right; padding-right: 20px;">Đơn giá (VNĐ)</th>
+                                        <th class="th-col-stt">STT</th>
+                                        <th class="th-col-pkg-code">Mã dịch vụ</th>
+                                        <th class="th-service-name">Tên dịch vụ</th>
+                                        <th class="th-service-type">Phân loại</th>
+                                        <th class="th-service-price">Đơn giá (VNĐ)</th>
                                     </tr>
                                 </thead>
                                 <tbody id="modalServicesTableBody">
                                     <tr>
-                                        <td colspan="6" style="text-align: center; padding: 30px; color: var(--slate-400);">
+                                        <td colspan="6" class="td-empty-table">
                                             Đang tải danh sách dịch vụ y tế...
                                         </td>
                                     </tr>
@@ -508,15 +509,15 @@
          MODAL XÁC NHẬN XÓA CHUNG
          ============================================================== -->
     <div class="modal-backdrop" id="confirmDeleteModal">
-        <div class="modal-dialog" style="max-width: 440px;">
+        <div class="modal-dialog modal-dialog-w440">
             <div class="modal-header">
-                <h3 class="modal-title" id="confirmDeleteTitle" style="color: #dc2626;">Xác nhận xóa</h3>
+                <h3 class="modal-title confirm-delete-title" id="confirmDeleteTitle">Xác nhận xóa</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseConfirmDeleteModal">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <div style="font-size: 14px; color: var(--slate-700); line-height: 1.6;" id="confirmDeleteMessage">
+                <div class="confirm-delete-msg" id="confirmDeleteMessage">
                     Bạn có chắc chắn muốn thực hiện thao tác này?
                 </div>
             </div>
@@ -537,19 +538,19 @@
          MODAL BÁN HÀNG / CHỌN DỊCH VỤ CHO BỆNH NHÂN (KHỚP ẢNH MOCKUP)
          ============================================================== -->
     <div class="modal-backdrop" id="salesModal">
-        <div class="modal-dialog modal-dialog-sales" style="max-width: 1280px; width: 96%;">
+        <div class="modal-dialog modal-dialog-sales">
             <!-- Header Modal (Bỏ nút Đổi khách hàng theo yêu cầu) -->
-            <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 20px 24px; position: relative;">
-                <div style="flex: 1;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0;" id="salesPatientName">Bệnh nhân</h2>
+            <div class="modal-header sales-modal-header">
+                <div class="sales-modal-title-wrap">
+                    <div class="sales-modal-title-row">
+                        <h2 class="sales-patient-name-title" id="salesPatientName">Bệnh nhân</h2>
                         <span class="sales-record-code-badge" id="salesRecordCodeBadge">HS-2026.08.0001</span>
                     </div>
-                    <div class="sales-patient-meta" id="salesPatientMeta" style="margin-top: 6px; font-size: 13px; color: #64748b;">
+                    <div class="sales-patient-meta" id="salesPatientMeta">
                         <span id="salesPatientGender">Nữ</span> • 
                         <span id="salesPatientDob">1990</span> • 
                         <span id="salesCompanyName">Doanh nghiệp</span> (<span id="salesContractCode">HĐ</span>) • 
-                        <span id="salesPackageBadge" style="font-weight: 600; color: #00684a;">Chưa chọn gói</span>
+                        <span id="salesPackageBadge" class="sales-package-badge-text">Chưa chọn gói</span>
                     </div>
                 </div>
                 <button type="button" class="btn-modal-close" id="btnCloseSalesModal" onclick="closeSalesModal()">
@@ -558,17 +559,17 @@
             </div>
 
             <!-- Body Modal -->
-            <div class="modal-body" style="padding: 20px 24px; max-height: calc(85vh - 160px); overflow-y: auto;">
+            <div class="modal-body sales-modal-body">
                 <!-- Filter Bar (Tìm kiếm & Chọn gói khám, điểm khám, ca khám trên 1 hàng không bị đè nhau) -->
-                <div class="sales-filter-bar" style="display: flex; flex-wrap: nowrap; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div class="sales-filter-bar">
                     <!-- Ô tìm kiếm dịch vụ -->
-                    <div class="search-box" style="flex: 1 1 220px; min-width: 180px;">
+                    <div class="search-box sales-search-box-wrap">
                         <i class="ph ph-magnifying-glass"></i>
                         <input type="text" id="salesServiceSearchInput" class="search-input" placeholder="Tìm mã dịch vụ, tên dịch vụ...">
                     </div>
 
                     <!-- Dropdown chọn gói khám trong HĐ -->
-                    <div class="filter-select-wrap" style="flex: 0 0 260px; width: 260px; min-width: 0;">
+                    <div class="filter-select-wrap sales-package-select-wrap">
                         <select id="salesPackageSelect" class="filter-select" onchange="handleSalesPackageChange(this.value)">
                             <option value="">-- Chọn gói khám trong HĐ --</option>
                         </select>
@@ -576,7 +577,7 @@
                     </div>
 
                     <!-- Dropdown chọn địa điểm khám -->
-                    <div class="filter-select-wrap" style="flex: 0 0 210px; width: 210px; min-width: 0;">
+                    <div class="filter-select-wrap sales-location-select-wrap">
                         <select id="salesLocationSelect" class="filter-select" onchange="handleSalesLocationChange(this.value)">
                             <option value="">-- Chọn điểm khám --</option>
                         </select>
@@ -584,7 +585,7 @@
                     </div>
 
                     <!-- Dropdown chọn ca làm việc -->
-                    <div class="filter-select-wrap" style="flex: 0 0 190px; width: 190px; min-width: 0;">
+                    <div class="filter-select-wrap sales-shift-select-wrap">
                         <select id="salesShiftSelect" class="filter-select">
                             <option value="">-- Chọn ca khám --</option>
                         </select>
@@ -593,21 +594,21 @@
                 </div>
 
                 <!-- Bảng danh sách dịch vụ (Bỏ cột TT theo HĐ, cột Tự TT đổi thành Chọn dịch vụ) -->
-                <div class="sales-table-card" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #ffffff;">
-                    <div style="max-height: 400px; overflow-y: auto;">
-                        <table class="data-table sales-services-table" style="margin-bottom: 0;">
-                            <thead style="position: sticky; top: 0; z-index: 2; background-color: #f0f7ff;">
+                <div class="sales-table-card">
+                    <div class="sales-table-scroll">
+                        <table class="data-table sales-services-table">
+                            <thead class="sales-services-thead">
                                 <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="min-width: 260px;">DỊCH VỤ</th>
-                                    <th style="width: 120px; text-align: center;">SL CÒN LẠI</th>
-                                    <th style="width: 140px; text-align: right;">ĐƠN GIÁ</th>
-                                    <th style="width: 130px; text-align: center;">CHỌN DỊCH VỤ</th>
+                                    <th class="th-sales-stt">STT</th>
+                                    <th class="th-sales-name">DỊCH VỤ</th>
+                                    <th class="th-sales-remaining">SL CÒN LẠI</th>
+                                    <th class="th-sales-price">ĐƠN GIÁ</th>
+                                    <th class="th-sales-action">CHỌN DỊCH VỤ</th>
                                 </tr>
                             </thead>
                             <tbody id="salesServicesTableBody">
                                 <tr>
-                                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                    <td colspan="5" class="td-empty-table">
                                         Đang tải danh sách dịch vụ...
                                     </td>
                                 </tr>
@@ -618,17 +619,17 @@
             </div>
 
             <!-- Footer Bar (Bán hàng) -->
-            <div class="modal-footer" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: #ffffff; border-top: 1px solid #e2e8f0;">
-                <button type="button" class="btn-clear-sales" onclick="clearAllSalesSelections()" style="background: #d1fae5; color: #065f46; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s ease;">
+            <div class="modal-footer sales-modal-footer">
+                <button type="button" class="btn-clear-sales" onclick="clearAllSalesSelections()">
                     <i class="ph ph-arrow-counter-clockwise"></i>
                     <span>Xóa tất cả</span>
                 </button>
 
-                <div style="font-size: 14.5px; color: #334155;">
-                    Đã chọn <b id="salesSelectedCount" style="color: #00684a;">0</b> dịch vụ • Tổng <b id="salesTotalPrice" style="color: #0f172a; font-size: 15.5px;">0đ</b>
+                <div class="sales-footer-summary">
+                    Đã chọn <b id="salesSelectedCount" class="sales-count-bold">0</b> dịch vụ • Tổng <b id="salesTotalPrice" class="sales-total-bold">0đ</b>
                 </div>
 
-                <button type="button" class="btn-primary-action" id="btnSubmitSales" onclick="confirmSalesOrder()" style="background: #00684a; color: white; border: none; padding: 11px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,104,74,0.2);">
+                <button type="button" class="btn-primary-action btn-view-receipt-order" id="btnSubmitSales" onclick="confirmSalesOrder()">
                     <span>Xem phiếu thu</span>
                     <i class="ph-bold ph-arrow-right"></i>
                 </button>
@@ -640,84 +641,84 @@
          MODAL 6: PHIẾU THU / THANH TOÁN (KHỚP ẢNH MOCKUP)
          ============================================================== -->
     <div class="modal-backdrop" id="receiptModal">
-        <div class="modal-dialog modal-dialog-receipt" style="max-width: 1100px; width: 95%;">
+        <div class="modal-dialog modal-dialog-receipt">
             <!-- Header Card (Khớp ảnh) -->
-            <div class="receipt-header-card" style="background: #ffffff; padding: 20px 28px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
+            <div class="receipt-header-card">
                 <div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0;" id="receiptPatientName">Lê Thị Ngọc A</h2>
-                        <span class="sales-record-code-badge" id="receiptRecordCodeBadge">HS-2026.08.0001</span>
+                    <div class="receipt-patient-title-wrap">
+                        <h2 class="receipt-patient-name" id="receiptPatientName">Lê Thị Ngọc A</h2>
+                        <span class="sales-record-code-badge receipt-record-code-badge" id="receiptRecordCodeBadge">HS-2026.08.0001</span>
                     </div>
-                    <div style="margin-top: 6px; font-size: 13px; color: #64748b;" id="receiptPatientMeta">
+                    <div class="receipt-patient-meta" id="receiptPatientMeta">
                         <span id="receiptGender">Nữ</span> • 
                         <span id="receiptDob">01/10/1990</span> • 
                         <span id="receiptCompanyName">CTY TNHH ABC Việt Nam</span> (<span id="receiptContractCode">HĐ-2026-118</span>) • 
-                        <span id="receiptPackageName" style="color: #475569; font-weight: 500;">Gói CNBV Việt Nam - Nữ</span>
+                        <span id="receiptPackageName" class="receipt-package-name-meta">Gói CNBV Việt Nam - Nữ</span>
                     </div>
                 </div>
-                <button type="button" class="btn-back-cart" onclick="backToSalesModal()" style="display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; color: #1e293b; cursor: pointer; transition: all 0.2s ease;">
+                <button type="button" class="btn-receipt-modal-close" onclick="backToSalesModal()">
                     <i class="ph ph-arrow-left"></i>
                     <span>Quay lại giỏ hàng</span>
                 </button>
             </div>
 
             <!-- Body Modal (2 Cột khớp ảnh) -->
-            <div class="modal-body" style="padding: 24px 28px; background: #f8fafc; max-height: calc(85vh - 120px); overflow-y: auto;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+            <div class="modal-body receipt-modal-body receipt-modal-body-scroll">
+                <div class="receipt-modal-grid">
                     
                     <!-- CỘT TRÁI: THÀNH TIỀN -->
-                    <div class="receipt-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-                        <div style="font-size: 13px; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 16px;">
+                    <div class="receipt-card">
+                        <div class="receipt-card-title">
                             THÀNH TIỀN
                         </div>
 
                         <!-- Danh sách dịch vụ -->
-                        <div id="receiptServicesList" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding-right: 6px;">
+                        <div id="receiptServicesList" class="detail-services-list">
                             <!-- Sẽ render động qua JS -->
                         </div>
 
                         <!-- Phần tính toán chiết khấu & tổng tiền -->
-                        <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; display: flex; flex-direction: column; gap: 10px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                                <span style="color: #64748b;" id="receiptSubtotalLabel">Tạm tính (0 dịch vụ)</span>
-                                <span style="font-weight: 700; color: #0f172a;" id="receiptSubtotalValue">0 đ</span>
+                        <div class="detail-calc-box">
+                            <div class="detail-calc-row">
+                                <span class="detail-calc-label" id="receiptSubtotalLabel">Tạm tính (0 dịch vụ)</span>
+                                <span class="detail-calc-value" id="receiptSubtotalValue">0 đ</span>
                             </div>
 
-                            <div id="receiptDiscountRow" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="color: #ea580c; font-weight: 500;">Chiết khấu</span>
-                                    <span class="badge-discount-policy" id="receiptDiscountBadge" style="background: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px;">CK • 0%</span>
+                            <div id="receiptDiscountRow" class="detail-calc-row">
+                                <div class="detail-discount-label-wrap">
+                                    <span class="detail-discount-text">Chiết khấu</span>
+                                    <span class="badge-discount-policy" id="receiptDiscountBadge">CK • 0%</span>
                                 </div>
-                                <span style="font-weight: 700; color: #ea580c;" id="receiptDiscountValue">- 0 đ</span>
+                                <span class="detail-discount-value" id="receiptDiscountValue">- 0 đ</span>
                             </div>
 
                             <!-- Banner: Số tiền thực thu -->
-                            <div style="background: #eff6ff; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
-                                <span style="font-size: 17px; font-weight: 700; color: #1d4ed8;">Số tiền thực thu</span>
-                                <span style="font-size: 22px; font-weight: 800; color: #1d4ed8;" id="receiptFinalAmount">0 đ</span>
+                            <div class="detail-final-banner">
+                                <span class="detail-final-label">Số tiền thực thu</span>
+                                <span class="detail-final-amount" id="receiptFinalAmount">0 đ</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- CỘT PHẢI: FORM THANH TOÁN -->
-                    <div class="receipt-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between;">
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="receipt-card receipt-card-payment">
+                        <div class="receipt-form-stack">
                             <!-- Hình thức thanh toán -->
                             <div>
-                                <label style="display: block; font-size: 13.5px; font-weight: 600; color: #334155; margin-bottom: 8px;">
-                                    Hình thức thanh toán <span style="color: #dc2626;">*</span>
+                                <label class="receipt-form-label">
+                                    Hình thức thanh toán <span class="req-star">*</span>
                                 </label>
-                                <div style="display: flex; align-items: center; gap: 20px;">
-                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
-                                        <input type="radio" name="receiptPaymentMethod" value="CHUYEN_KHOAN" checked style="accent-color: #00684a; width: 16px; height: 16px;">
+                                <div class="receipt-radio-group">
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="receiptPaymentMethod" value="CHUYEN_KHOAN" checked>
                                         <span>Chuyển khoản</span>
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
-                                        <input type="radio" name="receiptPaymentMethod" value="TIEN_MAT" style="accent-color: #00684a; width: 16px; height: 16px;">
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="receiptPaymentMethod" value="TIEN_MAT">
                                         <span>Tiền mặt</span>
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer;">
-                                        <input type="radio" name="receiptPaymentMethod" value="QUET_THE" style="accent-color: #00684a; width: 16px; height: 16px;">
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="receiptPaymentMethod" value="QUET_THE">
                                         <span>Quẹt thẻ</span>
                                     </label>
                                 </div>
@@ -725,32 +726,32 @@
 
                             <!-- Khách thanh toán -->
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Khách thanh toán</label>
-                                <input type="text" id="receiptCustomerPaid" oninput="handleReceiptCustomerPaidChange(this.value)" style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 16px; font-size: 15px; font-weight: 700; color: #0f172a; text-align: right; background: #ffffff;">
+                                <label class="receipt-form-label-muted">Khách thanh toán</label>
+                                <input type="text" id="receiptCustomerPaid" oninput="handleReceiptCustomerPaidChange(this.value)" class="receipt-input-highlight">
                             </div>
 
                             <!-- Tiền thừa hoàn lại -->
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Tiền thừa hoàn lại</label>
-                                <input type="text" id="receiptChangeAmount" value="0 đ" readonly style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 16px; font-size: 14px; color: #64748b; text-align: right; background: #f8fafc;">
+                                <label class="receipt-form-label-muted">Tiền thừa hoàn lại</label>
+                                <input type="text" id="receiptChangeAmount" value="0 đ" readonly class="receipt-input-readonly">
                             </div>
 
                             <!-- Thu ngân -->
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Thu ngân</label>
-                                <input type="text" id="receiptCashier" readonly style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 16px; font-size: 13.5px; color: #334155; text-align: right; background: #f8fafc;">
+                                <label class="receipt-form-label-muted">Thu ngân</label>
+                                <input type="text" id="receiptCashier" readonly class="receipt-input-cashier">
                             </div>
 
                             <!-- Ghi chú -->
                             <div>
-                                <label style="display: block; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Ghi chú</label>
-                                <input type="text" id="receiptNote" placeholder="Nhập ghi chú bác sĩ / thu ngân..." value="Bác Sĩ Tuyết" style="width: 100%; box-sizing: border-box; height: 42px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 16px; font-size: 13.5px; color: #0f172a; text-align: right;">
+                                <label class="receipt-form-label-muted">Ghi chú</label>
+                                <input type="text" id="receiptNote" placeholder="Nhập ghi chú bác sĩ / thu ngân..." value="Bác Sĩ Tuyết" class="receipt-input-note">
                             </div>
                         </div>
 
                         <!-- Nút xác nhận thanh toán -->
-                        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
-                            <button type="button" id="btnConfirmPayment" onclick="executeConfirmPayment()" style="background: #00684a; color: #ffffff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,104,74,0.2); transition: background 0.15s ease;">
+                        <div class="receipt-modal-footer">
+                            <button type="button" id="btnConfirmPayment" onclick="executeConfirmPayment()" class="btn-confirm-payment-lg">
                                 <span>Xác nhận thanh toán</span>
                             </button>
                         </div>
@@ -766,6 +767,6 @@
 
     <!-- SCRIPT LOGIC -->
     <!-- Contract Detail JS -->
-    <script th:src="@{/js/contract-detail.js}" src="/js/contract-detail.js"></script>
+    <script th:src="@{/js/contract-detail.js(v='1.1')}" src="/js/contract-detail.js?v=1.1"></script>
 </body>
 </html>

@@ -25,19 +25,19 @@
             </div>
 
             <!-- Tiêu đề trang -->
-            <div class="page-header-row" style="margin-bottom: 20px;">
+            <div class="page-header-row loc-header-row">
                 <div>
-                    <h1 class="page-title" style="font-size: 26px; font-weight: 800; color: #00684a; margin: 0;">Địa điểm khám</h1>
+                    <h1 class="page-title loc-page-title">Địa điểm khám</h1>
                 </div>
             </div>
 
             <!-- Thanh công cụ tìm kiếm & Bộ lọc chuẩn Mockup Image 1 -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; gap: 12px; flex: 1; max-width: 500px;">
+            <div class="loc-toolbar-row">
+                <div class="loc-search-group">
                     <!-- Ô tìm kiếm mã địa điểm, tên địa điểm -->
-                    <div style="position: relative; flex: 1;">
-                        <i class="ph ph-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 17px;"></i>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Tìm mã địa điểm, tên địa điểm" style="padding-left: 40px; border-radius: 8px; border: 1px solid #cbd5e1; height: 42px; width: 100%; box-sizing: border-box;">
+                    <div class="loc-search-wrapper">
+                        <i class="ph ph-magnifying-glass loc-search-icon"></i>
+                        <input type="text" id="searchInput" class="form-control loc-search-input" placeholder="Tìm mã địa điểm, tên địa điểm">
                     </div>
 
                     <!-- Nút Xóa bộ lọc -->
@@ -55,22 +55,22 @@
             </div>
 
             <!-- Bảng dữ liệu danh sách địa điểm (2 cấp lồng nhau) -->
-            <div class="table-card" style="border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+            <div class="table-card loc-table-card">
                 <div class="table-responsive">
                     <table class="location-table">
                         <thead>
                             <tr>
-                                <th style="width: 44px; text-align: center;"></th>
-                                <th style="width: 160px;">Mã địa điểm</th>
-                                <th style="min-width: 260px;">Tên địa điểm</th>
-                                <th style="width: 150px;">Ca 1</th>
-                                <th style="width: 150px;">Ca 2</th>
-                                <th style="width: 130px; text-align: right; padding-right: 24px;">Tác vụ</th>
+                                <th class="loc-col-chevron"></th>
+                                <th class="loc-col-code">Mã địa điểm</th>
+                                <th class="loc-col-name">Tên địa điểm</th>
+                                <th class="loc-col-shift1">Ca 1</th>
+                                <th class="loc-col-shift2">Ca 2</th>
+                                <th class="loc-col-actions">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="locationTableBody">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 40px; color: #94a3b8;">
+                                <td colspan="6" class="loc-empty-td">
                                     Đang tải dữ liệu địa điểm khám...
                                 </td>
                             </tr>
@@ -79,19 +79,19 @@
                 </div>
 
                 <!-- Phân trang (Pagination Bar chuẩn mockup Image 1) -->
-                <div class="pagination-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid #f1f5f9; background: #ffffff;">
-                    <div class="pagination-info" id="paginationInfo" style="font-size: 13.5px; color: #64748b;">
+                <div class="pagination-bar loc-pagination-bar">
+                    <div class="pagination-info loc-pagination-info" id="paginationInfo">
                         Đang xem 0 - 0 trong 0
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <div class="pagination-controls" id="paginationControls" style="display: flex; align-items: center; gap: 4px;">
+                    <div class="loc-pagination-right">
+                        <div class="pagination-controls loc-pagination-controls" id="paginationControls">
                             <!-- Nút trang được sinh động bởi JS -->
                         </div>
 
                         <!-- Dropdown số bản ghi trên trang -->
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <select id="pageSizeSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; color: #334155; background: #ffffff; cursor: pointer;">
+                        <div class="loc-page-size-wrap">
+                            <select id="pageSizeSelect" class="loc-page-size-select">
                                 <option value="10">10 / trang</option>
                                 <option value="20" selected>20 / trang</option>
                                 <option value="50">50 / trang</option>
@@ -130,7 +130,7 @@
 
                     <!-- Tên địa điểm -->
                     <div class="modal-form-group">
-                        <label class="modal-form-label" for="locationName">Tên địa điểm <span style="color: #ef4444;">*</span></label>
+                        <label class="modal-form-label" for="locationName">Tên địa điểm <span class="req-star">*</span></label>
                         <input type="text" id="locationName" class="modal-form-input" placeholder="Nhập tên địa điểm" required>
                     </div>
 
@@ -141,19 +141,19 @@
                             <table class="shifts-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 50px; text-align: center;">Ca</th>
-                                        <th style="width: 200px;">Giờ bắt đầu</th>
-                                        <th style="width: 200px;">Giờ kết thúc</th>
-                                        <th style="width: 40px;"></th>
+                                        <th class="shift-col-num">Ca</th>
+                                        <th class="shift-col-start">Giờ bắt đầu</th>
+                                        <th class="shift-col-end">Giờ kết thúc</th>
+                                        <th class="shift-col-act"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="modalShiftsTbody">
                                     <!-- Rendered dynamically via JS -->
                                 </tbody>
                             </table>
-                            <div style="padding: 6px 12px; background: #fafafa; border-top: 1px solid #f1f5f9; text-align: right;">
+                            <div class="shifts-card-footer">
                                 <button type="button" class="btn-add-shift-link" onclick="addNewShiftRow()">
-                                    <i class="ph ph-plus-circle" style="font-size: 16px;"></i>
+                                    <i class="ph ph-plus-circle shift-plus-icon"></i>
                                     <span>Thêm ca</span>
                                 </button>
                             </div>
@@ -161,12 +161,12 @@
                     </div>
 
                     <!-- Toggle Hoạt động -->
-                    <div class="modal-form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 0; padding-top: 6px;">
+                    <div class="modal-form-group modal-toggle-row">
                         <label class="switch-status-toggle">
                             <input type="checkbox" id="locationActive" checked>
                             <span class="switch-slider"></span>
                         </label>
-                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">Hoạt động</span>
+                        <span class="modal-toggle-label">Hoạt động</span>
                     </div>
                 </div>
 
@@ -183,12 +183,12 @@
          MODAL 2: THÊM HỢP ĐỒNG VÀO ĐỊA ĐIỂM KHÁM
          ============================================================== -->
     <div id="addContractModal" class="modal-overlay">
-        <div class="modal-card-box" style="max-width: 620px;">
+        <div class="modal-card-box modal-box-md">
             <!-- Header Modal -->
             <div class="modal-header-bar">
                 <div>
                     <h3 class="modal-header-title">Thêm hợp đồng vào địa điểm khám</h3>
-                    <div id="addContractTargetLocationName" style="font-size: 13px; color: #64748b; margin-top: 4px;"></div>
+                    <div id="addContractTargetLocationName" class="modal-sub-label"></div>
                 </div>
                 <button type="button" class="modal-btn-close" onclick="closeAddContractModal()">
                     <i class="ph ph-x"></i>
@@ -202,13 +202,13 @@
                 <div class="modal-body-content">
                     <!-- Chọn hợp đồng -->
                     <div class="modal-form-group">
-                        <label class="modal-form-label">Chọn hợp đồng áp dụng <span style="color: #ef4444;">*</span></label>
-                        <div style="position: relative; margin-bottom: 8px;">
-                            <i class="ph ph-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                            <input type="text" id="contractSearchFilter" class="modal-form-input" placeholder="Lọc theo mã hoặc tên hợp đồng..." style="padding-left: 36px;" oninput="filterContractPickerList(this.value)">
+                        <label class="modal-form-label">Chọn hợp đồng áp dụng <span class="req-star">*</span></label>
+                        <div class="modal-input-icon-wrap">
+                            <i class="ph ph-magnifying-glass modal-search-icon"></i>
+                            <input type="text" id="contractSearchFilter" class="modal-form-input modal-input-pl" placeholder="Lọc theo mã hoặc tên hợp đồng..." oninput="filterContractPickerList(this.value)">
                         </div>
 
-                        <div id="contractPickerList" style="max-height: 220px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px;">
+                        <div id="contractPickerList" class="contract-picker-box">
                             <!-- Render contracts dynamically -->
                         </div>
                     </div>
@@ -216,18 +216,18 @@
                     <!-- Cấu hình ca làm việc cho hợp đồng -->
                     <div class="modal-form-group">
                         <label class="modal-form-label">Cấu hình ca làm việc cho hợp đồng này</label>
-                        <div id="contractShiftsConfigBox" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+                        <div id="contractShiftsConfigBox" class="contract-shifts-box">
                             <!-- Checkboxes for shifts of this location -->
                         </div>
                     </div>
 
                     <!-- Trạng thái áp dụng -->
-                    <div class="modal-form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 0;">
+                    <div class="modal-form-group modal-toggle-row">
                         <label class="switch-status-toggle">
                             <input type="checkbox" id="assignContractActive" checked>
                             <span class="switch-slider"></span>
                         </label>
-                        <span style="font-size: 14px; font-weight: 600; color: #1e293b;">Trạng thái áp dụng</span>
+                        <span class="modal-toggle-label">Trạng thái áp dụng</span>
                     </div>
                 </div>
 
@@ -244,21 +244,21 @@
          MODAL 3: XÁC NHẬN XÓA ĐỊA ĐIỂM / GỠ HỢP ĐỒNG
          ============================================================== -->
     <div id="deleteConfirmModal" class="modal-overlay">
-        <div class="modal-card-box" style="max-width: 440px; text-align: center; padding: 28px 24px;">
-            <div style="width: 52px; height: 52px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444; font-size: 26px;">
+        <div class="modal-card-box modal-box-sm">
+            <div class="modal-danger-icon-circle">
                 <i class="ph ph-trash"></i>
             </div>
-            <h3 id="deleteModalTitle" style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Xác nhận xóa?</h3>
-            <p id="deleteModalDesc" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Thao tác này không thể hoàn tác.</p>
-            <div style="display: flex; gap: 12px; justify-content: center;">
+            <h3 id="deleteModalTitle" class="modal-confirm-title">Xác nhận xóa?</h3>
+            <p id="deleteModalDesc" class="modal-confirm-desc">Thao tác này không thể hoàn tác.</p>
+            <div class="modal-confirm-actions">
                 <button type="button" class="modal-btn-cancel" onclick="closeDeleteModal()">Hủy bỏ</button>
-                <button type="button" class="modal-btn-save" id="btnExecuteDelete" style="background: #ef4444;">Xác nhận xóa</button>
+                <button type="button" class="modal-btn-save btn-danger-confirm" id="btnExecuteDelete">Xác nhận xóa</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification Container -->
-    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;"></div>
+    <div id="toastContainer" class="toast-container-fixed"></div>
 
     <!-- Locations Module JS -->
     <script th:src="@{/js/locations.js}" src="/js/locations.js"></script>

@@ -74,6 +74,14 @@ public class AdminViewController {
     }
 
     /**
+     * Hiển thị màn hình Danh sách phiếu thu
+     */
+    @GetMapping({"/admin/receipts", "/admin/phieu-thu"})
+    public String showReceiptsPage() {
+        return "admin/receipts";
+    }
+
+    /**
      * Hiển thị màn hình Quản lý chính sách giảm giá
      */
     @GetMapping({"/admin/discounts", "/admin/chinh-sach-giam-gia"})

@@ -1381,12 +1381,77 @@
             openModal('salesModal');
         }
 
-        function executeConfirmPayment() {
+        async function executeConfirmPayment() {
             if (!currentReceiptData) return;
-            const pName = currentReceiptData.patient ? currentReceiptData.patient.patientName : 'Bệnh nhân';
+            const p = currentReceiptData.patient || {};
+            const pName = p.patientName || 'Bệnh nhân';
             const amountText = formatCurrency(currentReceiptData.finalAmount) + ' đ';
 
-            showToast(`Đã xác nhận thanh toán thành công cho bệnh nhân "${pName}" (Số tiền thực thu: ${amountText})`, 'success');
+            // Lấy thông tin từ form
+            const paymentMethodEl = document.querySelector('input[name="receiptPaymentMethod"]:checked');
+            const paymentMethod = paymentMethodEl ? paymentMethodEl.value : 'CHUYEN_KHOAN';
+            const cashierName = document.getElementById('receiptCashier').value || 'NV. Thu ngân';
+            const note = document.getElementById('receiptNote').value || '';
+
+            const customerPaidStr = String(document.getElementById('receiptCustomerPaid').value || '').replace(/[^0-9]/g, '');
+            const customerPaid = customerPaidStr ? parseInt(customerPaidStr, 10) : currentReceiptData.finalAmount;
+            const changeStr = String(document.getElementById('receiptChangeAmount').value || '').replace(/[^0-9]/g, '');
+            const changeAmount = changeStr ? parseInt(changeStr, 10) : 0;
+
+            const pkg = (packagesData || []).find(pkgItem => pkgItem.id === currentSalesPackageId);
+            const pkgName = pkg ? pkg.packageName : '';
+
+            // Chuẩn bị payload gửi lên API lưu phiếu thu
+            const payload = {
+                patientId: p.patientId || null,
+                patientCode: p.patientCode || null,
+                recordCode: p.recordCode || null,
+                patientName: pName,
+                gender: p.gender || null,
+                birthYear: p.birthYear ? String(p.birthYear) : null,
+                contractId: contractId || null,
+                companyCode: (contractData && contractData.companyCode) ? contractData.companyCode : null,
+                companyName: (contractData && contractData.companyName) ? contractData.companyName : null,
+                contractCode: (contractData && contractData.contractCode) ? contractData.contractCode : null,
+                contractName: (contractData && contractData.contractName) ? contractData.contractName : null,
+                packageName: pkgName,
+                services: (currentReceiptData.selectedServices || []).map(s => ({
+                    id: s.id,
+                    code: s.code,
+                    name: s.name,
+                    price: s.price,
+                    serviceType: s.serviceType
+                })),
+                subtotal: currentReceiptData.subtotal,
+                discountCode: currentReceiptData.discountPolicy ? currentReceiptData.discountPolicy.code : null,
+                discountPercent: (currentReceiptData.discountPolicy && currentReceiptData.discountPolicy.discountType === 'PERCENT') ? currentReceiptData.discountPolicy.tiers?.[0]?.discountValue : null,
+                discountAmount: currentReceiptData.discountAmount,
+                finalAmount: currentReceiptData.finalAmount,
+                customerPaid: customerPaid,
+                changeAmount: changeAmount,
+                paymentMethod: paymentMethod,
+                cashierName: cashierName,
+                note: note
+            };
+
+            try {
+                const res = await fetch('/api/receipts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    const savedReceipt = await res.json();
+                    showToast(`Đã xác nhận thanh toán & lưu phiếu thu "${savedReceipt.receiptCode}" thành công!`, 'success');
+                } else {
+                    showToast(`Đã xác nhận thanh toán thành công cho bệnh nhân "${pName}" (Số tiền: ${amountText})`, 'success');
+                }
+            } catch (err) {
+                console.error('Lỗi gọi API lưu phiếu thu:', err);
+                showToast(`Đã xác nhận thanh toán thành công cho bệnh nhân "${pName}" (Số tiền: ${amountText})`, 'success');
+            }
+
             closeModal('receiptModal');
             closeSalesModal();
             clearAllSalesSelections();

@@ -31,7 +31,7 @@
                     <span>Quay lại danh sách vai trò</span>
                 </a>
 
-                <div class="page-header-row" style="margin-top: 4px;">
+                <div class="page-header-row page-header-row-mt4">
                     <div>
                         <h1 class="page-title" id="pageTitle">Chỉnh sửa vai trò & phân quyền</h1>
                         <span class="page-subtitle" id="pageSubtitle">Thiết lập thông tin và cấu hình các quyền hạn truy cập của vai trò</span>
@@ -74,21 +74,21 @@
                             <!-- Mã vai trò * -->
                             <div class="form-group">
                                 <label class="form-label" for="roleCode">Mã vai trò <span class="required-star">*</span></label>
-                                <input type="text" id="roleCode" class="form-control" placeholder="BAC_SI_KET_LUAN" required style="font-family: monospace; text-transform: uppercase;">
-                                <small id="roleCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 4px;">
+                                <input type="text" id="roleCode" class="form-control input-mono-upper" placeholder="BAC_SI_KET_LUAN" required>
+                                <small id="roleCodeHelp" class="field-help-text-mt4">
                                     Mã vai trò là định danh cố định không thể sửa sau khi khởi tạo.
                                 </small>
                             </div>
                         </div>
 
                         <!-- Mô tả vai trò -->
-                        <div class="form-group" style="margin-top: 10px;">
+                        <div class="form-group form-group-mt-10">
                             <label class="form-label" for="roleDescription">Mô tả chức năng & nhiệm vụ</label>
                             <input type="text" id="roleDescription" class="form-control" placeholder="Mô tả phạm vi quyền hạn và trách nhiệm của vai trò trong phòng khám...">
                         </div>
 
                         <!-- Switch Trạng thái Hoạt động -->
-                        <div class="form-group" style="margin-top: 14px; margin-bottom: 0;">
+                        <div class="form-group form-group-mt-14-mb-0">
                             <label class="switch-label-wrap">
                                 <input type="checkbox" id="roleActive" class="switch-input" checked>
                                 <span class="switch-slider"></span>
@@ -105,7 +105,7 @@
                                 <span>2. Ma trận phân quyền hệ thống</span>
                             </div>
                             <div>
-                                <span class="perm-count-pill" style="font-size: 13px; padding: 5px 14px;">
+                                <span class="perm-count-pill perm-count-pill-lg">
                                     <i class="ph-bold ph-check"></i>
                                     <span>Đã chọn <strong id="selectedPermCount">0</strong> / <strong id="totalPermCount">0</strong> quyền</span>
                                 </span>
@@ -133,7 +133,7 @@
 
                         <!-- Lưới hiển thị các nhóm quyền hạn theo Module -->
                         <div class="perm-matrix-grid" id="permMatrixContainer">
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--slate-400);">
+                            <div class="empty-grid-cell">
                                 Đang tải ma trận quyền hạn...
                             </div>
                         </div>

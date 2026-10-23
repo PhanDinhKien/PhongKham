@@ -40,7 +40,7 @@ public class SecurityConfig {
                     "/api/auth/logout-all",
                     "/error"
                 ).permitAll()
-                .requestMatchers("/api/users/**", "/api/roles/**", "/api/services/**", "/api/locations/**", "/api/patients/**", "/api/contracts/**", "/api/discounts/**", "/api/service-quotas/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/**", "/api/roles/**", "/api/services/**", "/api/locations/**", "/api/patients/**", "/api/contracts/**", "/api/discounts/**", "/api/service-quotas/**", "/api/receipts/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .addFilterBefore(new JwtAuthenticationFilter(jwtService, authServiceProvider), UsernamePasswordAuthenticationFilter.class);

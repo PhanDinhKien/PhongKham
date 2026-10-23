@@ -1,0 +1,44 @@
+package mirai.sale.modules.receipt.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record ReceiptDto(
+        UUID id,
+        String receiptCode,
+        UUID patientId,
+        String patientCode,
+        String recordCode,
+        String patientName,
+        String gender,
+        String genderLabel,
+        String birthYear,
+        UUID contractId,
+        String companyCode,
+        String companyName,
+        String contractCode,
+        String contractName,
+        String packageName,
+        Integer serviceCount,
+        String labServices,
+        String imagingServices,
+        String allServicesJson,
+        BigDecimal subtotal,
+        String discountCode,
+        BigDecimal discountPercent,
+        BigDecimal discountAmount,
+        BigDecimal finalAmount,
+        BigDecimal customerPaid,
+        BigDecimal changeAmount,
+        String paymentMethod,
+        String paymentMethodLabel,
+        String cashierName,
+        String note,
+        String printStatus,
+        String printStatusLabel,
+        String syncStatus,
+        String syncStatusLabel,
+        String createdBy,
+        LocalDateTime createdAt
+) {}

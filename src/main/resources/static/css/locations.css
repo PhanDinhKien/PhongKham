@@ -489,3 +489,234 @@
     border-color: #00684a;
     background: #f0fdf4;
 }
+
+/* Page Header & Toolbar */
+.loc-header-row {
+    margin-bottom: 20px;
+}
+
+.loc-page-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #00684a;
+    margin: 0;
+}
+
+.loc-toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.loc-search-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    max-width: 500px;
+}
+
+.loc-search-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.loc-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 17px;
+}
+
+.loc-search-input {
+    padding-left: 40px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    height: 42px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.loc-table-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+/* Table columns */
+.loc-col-chevron { width: 44px; text-align: center; }
+.loc-col-code { width: 160px; font-weight: 600; color: #0f172a; }
+.loc-col-name { min-width: 260px; font-weight: 500; color: #1e293b; }
+.loc-col-shift1 { width: 150px; color: #334155; }
+.loc-col-shift2 { width: 150px; color: #334155; }
+.loc-col-actions { width: 130px; text-align: right; padding-right: 24px; }
+.loc-empty-td { text-align: center; padding: 40px; color: #94a3b8; }
+.loc-error-td { text-align: center; padding: 40px; color: #ef4444; }
+
+/* Pagination */
+.loc-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.loc-pagination-info {
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+.loc-pagination-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.loc-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.loc-page-size-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.loc-page-size-select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    color: #334155;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+/* Modals & Sub-forms */
+.req-star { color: #ef4444; }
+.shift-col-num { width: 50px; text-align: center; }
+.shift-col-start { width: 200px; }
+.shift-col-end { width: 200px; }
+.shift-col-act { width: 40px; }
+.shifts-card-footer {
+    padding: 6px 12px;
+    background: #fafafa;
+    border-top: 1px solid #f1f5f9;
+    text-align: right;
+}
+.shift-plus-icon { font-size: 16px; }
+.modal-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+    padding-top: 6px;
+}
+.modal-toggle-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.modal-box-md { max-width: 620px; }
+.modal-sub-label {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.modal-input-icon-wrap {
+    position: relative;
+    margin-bottom: 8px;
+}
+.modal-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+.modal-input-pl { padding-left: 36px; }
+
+.contract-picker-box {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.contract-shifts-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+/* Delete Modal */
+.modal-box-sm {
+    max-width: 440px;
+    text-align: center;
+    padding: 28px 24px;
+}
+.modal-danger-icon-circle {
+    width: 52px;
+    height: 52px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #ef4444;
+    font-size: 26px;
+}
+.modal-confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+.modal-confirm-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+.modal-confirm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.btn-danger-confirm {
+    background: #ef4444;
+}
+.btn-danger-confirm:hover {
+    background: #dc2626;
+}
+
+.toast-container-fixed {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Nested contracts table columns */
+.sub-col-contract-code { width: 200px; font-weight: 600; color: #00684a; }
+.sub-col-contract-name { color: #1e293b; font-weight: 500; }
+.sub-col-contract-status { width: 170px; }
+.sub-col-contract-action { width: 80px; text-align: right; padding-right: 20px; }
+

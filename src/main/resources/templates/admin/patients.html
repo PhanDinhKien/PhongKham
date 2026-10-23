@@ -70,21 +70,21 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; white-space: nowrap;">STT</th>
-                                <th style="width: 170px; white-space: nowrap;">Mã người bệnh</th>
-                                <th style="width: 220px; white-space: nowrap;">Họ và tên</th>
-                                <th style="width: 130px; white-space: nowrap;">Năm sinh</th>
-                                <th style="width: 110px; white-space: nowrap;">Giới tính</th>
-                                <th style="width: 140px; white-space: nowrap;">Số điện thoại</th>
-                                <th style="min-width: 200px; white-space: nowrap;">Địa chỉ</th>
-                                <th style="min-width: 200px; white-space: nowrap;">Ghi chú (Bệnh nền)</th>
-                                <th style="width: 160px; white-space: nowrap;">Người sửa gần nhất</th>
-                                <th style="width: 120px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                                <th class="th-w-50-nowrap">STT</th>
+                                <th class="th-w-170-nowrap">Mã người bệnh</th>
+                                <th class="th-w-220-nowrap">Họ và tên</th>
+                                <th class="th-w-130-nowrap">Năm sinh</th>
+                                <th class="th-w-110-nowrap">Giới tính</th>
+                                <th class="th-w-140-nowrap">Số điện thoại</th>
+                                <th class="th-min-w-200-nowrap">Địa chỉ</th>
+                                <th class="th-min-w-200-nowrap">Ghi chú (Bệnh nền)</th>
+                                <th class="th-w-160-nowrap">Người sửa gần nhất</th>
+                                <th class="th-w-120-right-nowrap">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="patientTableBody">
                             <tr>
-                                <td colspan="10" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                <td colspan="10" class="td-empty-center">
                                     Đang tải dữ liệu hồ sơ người bệnh...
                                 </td>
                             </tr>
@@ -124,7 +124,7 @@
          MODAL: THÊM / CẬP NHẬT HỒ SƠ NGƯỜI BỆNH
          ============================================================== -->
     <div class="modal-backdrop" id="patientModal">
-        <div class="modal-dialog" style="max-width: 650px;">
+        <div class="modal-dialog modal-dialog-w650">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalTitle">Thêm mới người bệnh</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseModal">
@@ -140,16 +140,16 @@
                     <!-- Row 1: Mã người bệnh * + Nút sinh mã & Họ và tên * -->
                     <div class="form-row-2col">
                         <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label class="form-label" for="patientCode" style="margin-bottom: 0;">Mã người bệnh <span class="required-star">*</span></label>
+                            <div class="form-label-row">
+                                <label class="form-label form-label-mb-0" for="patientCode">Mã người bệnh <span class="required-star">*</span></label>
                                 <button type="button" id="btnAutoCode" class="btn-generate-code" title="Tự động lấy mã tiếp theo">
                                     <i class="ph ph-magic-wand"></i> Lấy mã tự động
                                 </button>
                             </div>
-                            <div class="input-with-icon" style="position: relative;">
-                                <input type="text" id="patientCode" class="form-control" placeholder="BN00001, BN00002..." required style="font-family: monospace; font-weight: 700; text-transform: uppercase;">
+                            <div class="input-with-icon input-with-icon-rel">
+                                <input type="text" id="patientCode" class="form-control input-code-mono" placeholder="BN00001, BN00002..." required>
                             </div>
-                            <small id="patientCodeError" style="display: none; color: #dc2626; font-size: 11.5px; margin-top: 3px; font-weight: 500;">
+                            <small id="patientCodeError" class="field-error-text">
                                 Mã người bệnh đã tồn tại trong hệ thống!
                             </small>
                         </div>
@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <label class="form-label" for="birthYear">Năm sinh <span class="required-star">*</span></label>
                             <input type="number" id="birthYear" class="form-control" placeholder="1990" min="1900" max="2099" required>
-                            <small id="agePreview" style="color: var(--slate-500); font-size: 11.5px; margin-top: 3px; display: block;"></small>
+                            <small id="agePreview" class="field-hint-preview"></small>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="gender">Giới tính <span class="required-star">*</span></label>
@@ -208,22 +208,28 @@
          MODAL: XÁC NHẬN XÓA MỀM NGƯỜI BỆNH
          ============================================================== -->
     <div class="modal-backdrop" id="deleteConfirmModal">
-        <div class="modal-dialog" style="max-width: 460px;">
+        <div class="modal-dialog modal-dialog-w460">
             <div class="modal-header">
-                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa hồ sơ người bệnh</h3>
+                <h3 class="modal-title modal-title-danger">Xác nhận xóa hồ sơ người bệnh</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa hồ sơ người bệnh <strong id="deletePatientName" style="color: var(--slate-900);"></strong> (Mã: <code id="deletePatientCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
+                <p class="modal-desc-slate700">
+                    Bạn có chắc chắn muốn xóa hồ sơ người bệnh <strong id="deletePatientName" class="text-slate-900"></strong> (Mã: <code id="deletePatientCode" class="code-green-bold"></code>) không?
                 </p>
-                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
-                    <i class="ph ph-warning-circle" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
+                <div class="danger-alert-box">
+                    <i class="ph ph-warning-circle danger-alert-icon"></i>
                     Hồ sơ sẽ được <strong>xóa mềm</strong> (Soft Delete) khỏi danh sách quản lý trực tiếp. Các lịch sử khám, đơn thuốc và kết quả xét nghiệm liên quan trong quá khứ vẫn được lưu trữ bảo toàn.
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
             <div class="modal-footer">
                 <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
                 <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>

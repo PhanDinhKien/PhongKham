@@ -541,3 +541,255 @@
 .modal-btn-save:hover {
     background: #00523a;
 }
+
+/* Page Header & Toolbar */
+.sq-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.sq-page-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #00684a;
+    margin: 0;
+}
+
+.sq-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sq-icon-16 {
+    font-size: 16px;
+}
+
+.sq-toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sq-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 360px;
+}
+
+.sq-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 17px;
+}
+
+.sq-search-input {
+    padding-left: 40px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    height: 42px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sq-filter-select-wrap {
+    position: relative;
+    width: 160px;
+}
+
+.sq-filter-select {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    height: 42px;
+    width: 100%;
+    padding: 0 14px;
+    appearance: none;
+    background: #fff;
+    cursor: pointer;
+}
+
+.sq-select-caret {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+}
+
+.sq-table-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+/* Table columns */
+.sq-col-chevron { width: 44px; text-align: center; }
+.sq-col-code { width: 150px; font-weight: 600; color: #0f172a; }
+.sq-col-name { min-width: 280px; font-weight: 500; color: #1e293b; }
+.sq-col-type { width: 170px; }
+.sq-col-price { width: 160px; }
+.sq-col-quantity { width: 160px; }
+.sq-col-actions { width: 100px; text-align: right; padding-right: 24px; }
+.sq-empty-td { text-align: center; padding: 40px; color: #94a3b8; }
+
+/* Pagination */
+.sq-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.sq-pagination-info {
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+.sq-pagination-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sq-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sq-page-size-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sq-page-size-select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    color: #334155;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+/* Modal helpers */
+.req-star { color: #ef4444; }
+
+.sq-field-hint {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+    display: block;
+}
+
+.sq-shifts-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.sq-clock-icon {
+    margin-right: 4px;
+    color: #00684a;
+}
+
+.sq-shifts-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 18px 10px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.sq-calendar-icon {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.sq-date-arrow {
+    color: #64748b;
+    font-weight: 700;
+}
+
+.sq-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.sq-toggle-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.modal-box-sm {
+    max-width: 440px;
+    text-align: center;
+    padding: 28px 24px;
+}
+
+.modal-danger-icon-circle {
+    width: 52px;
+    height: 52px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #ef4444;
+    font-size: 26px;
+}
+
+.modal-confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.modal-confirm-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.modal-confirm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-danger-confirm {
+    background: #ef4444;
+}
+
+.btn-danger-confirm:hover {
+    background: #dc2626;
+}
+
+.toast-container-fixed {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

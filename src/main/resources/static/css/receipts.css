@@ -1,0 +1,699 @@
+/**
+ * receipts.css - Bảng phong cách cho màn hình Danh sách phiếu thu
+ * PhongKham Healthcare Management System
+ */
+
+/* ==============================================================
+   1. BỘ LỌC & THANH CÔNG CỤ (FILTERS & TOOLBAR)
+   ============================================================== */
+.filter-toolbar-receipts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-wrap-w200 {
+    flex: 0 0 200px;
+}
+
+.filter-wrap-w190 {
+    flex: 0 0 190px;
+}
+
+.filter-wrap-w180 {
+    flex: 0 0 180px;
+}
+
+.filter-wrap-w150 {
+    flex: 0 0 150px;
+}
+
+.th-stt {
+    width: 45px;
+    text-align: center;
+}
+
+.th-receipt-code {
+    width: 130px;
+}
+
+.th-patient-code {
+    width: 115px;
+}
+
+.th-record-code {
+    width: 115px;
+}
+
+.th-patient-name {
+    min-width: 160px;
+}
+
+.th-gender {
+    width: 75px;
+    text-align: center;
+}
+
+.th-birth-year {
+    width: 75px;
+    text-align: center;
+}
+
+.th-company {
+    min-width: 180px;
+}
+
+.th-service-count {
+    width: 130px;
+    text-align: center;
+}
+
+.th-final-amount {
+    width: 120px;
+    text-align: right;
+}
+
+.th-cashier {
+    width: 140px;
+}
+
+.th-time {
+    width: 140px;
+}
+
+.th-actions {
+    width: 70px;
+    text-align: center;
+}
+
+.td-placeholder {
+    text-align: center;
+    padding: 40px;
+    color: #94a3b8;
+}
+
+.req-star {
+    color: #dc2626;
+}
+
+.receipt-search-box {
+    flex: 1 1 280px;
+    min-width: 240px;
+}
+
+.receipt-date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.receipt-date-box {
+    width: 140px;
+    padding: 0 10px;
+}
+
+.receipt-date-input {
+    padding-left: 30px !important;
+    font-size: 13px !important;
+}
+
+.btn-clear-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.btn-clear-filter:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* ==============================================================
+   2. NÚT HÀNH ĐỘNG & BADGES
+   ============================================================== */
+.btn-export-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid #00684a;
+    color: #00684a;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-export-excel:hover {
+    background: #00684a;
+    color: #ffffff;
+}
+
+.btn-export-excel i {
+    font-size: 18px;
+}
+
+.receipt-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.receipt-status-badge.da_in {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.receipt-status-badge.luu_nhap {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.receipt-status-badge.loi_in {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.sync-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sync-badge.da_dong_bo {
+    background-color: #ecfdf5;
+    color: #047857;
+}
+
+.sync-badge.chua_dong_bo {
+    background-color: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.sync-badge.loi_dong_bo {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+/* ==============================================================
+   3. BẢNG DỮ LIỆU PHIẾU THU (DATA TABLE)
+   ============================================================== */
+.table-container-receipts {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    overflow-x: auto;
+}
+
+.data-table-receipts {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.data-table-receipts th {
+    white-space: nowrap;
+    background-color: #f8fafc;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #475569;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table-receipts td {
+    font-size: 13.5px;
+    padding: 12px 14px;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.data-table-receipts tr:hover td {
+    background-color: #f8fafc;
+}
+
+.btn-receipt-view {
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    color: #0284c7;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.btn-receipt-view:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+}
+
+/* ==============================================================
+   4. PHÂN TRANG (PAGINATION)
+   ============================================================== */
+.table-pagination-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding: 4px 8px;
+}
+
+.receipt-pagination-info {
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+.receipt-pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.receipt-page-size-wrap {
+    width: 110px;
+}
+
+.receipt-page-size-select {
+    padding: 6px 12px;
+    height: 36px;
+    font-size: 13px;
+}
+
+/* ==============================================================
+   5. MODAL THÔNG TIN THANH TOÁN (CHI TIẾT PHIẾU THU)
+   ============================================================== */
+#receiptDetailModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(4px);
+    z-index: 9999 !important;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#receiptDetailModal.show,
+#receiptDetailModal.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#receiptDetailModal .modal-dialog-receipt {
+    max-width: 1100px !important;
+    width: 95% !important;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: translateY(0) scale(1) !important;
+}
+
+.receipt-header-card {
+    background: #ffffff;
+    padding: 20px 28px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.receipt-patient-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.receipt-patient-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.receipt-record-code-badge {
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+.receipt-patient-meta {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.receipt-package-name-meta {
+    color: #475569;
+    font-weight: 500;
+}
+
+.btn-receipt-modal-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-receipt-modal-close:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.receipt-modal-body {
+    padding: 24px 28px;
+    background: #f8fafc;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.receipt-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.receipt-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.receipt-card-payment {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.receipt-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 16px;
+}
+
+.detail-services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.detail-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.detail-service-info {
+    flex: 1;
+    padding-right: 12px;
+}
+
+.detail-service-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.detail-service-meta {
+    font-size: 12px;
+    color: #0284c7;
+    margin-top: 3px;
+    font-weight: 500;
+}
+
+.detail-service-price {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 14.5px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.detail-calc-box {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.detail-calc-label {
+    color: #64748b;
+}
+
+.detail-calc-value {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.detail-discount-label-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-discount-text {
+    color: #ea580c;
+    font-weight: 500;
+}
+
+.badge-discount-policy {
+    background: #e0f2fe;
+    color: #0284c7;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.detail-discount-value {
+    font-weight: 700;
+    color: #ea580c;
+}
+
+.detail-final-banner {
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.detail-final-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+
+.detail-final-amount {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1d4ed8;
+}
+
+.receipt-form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.receipt-form-label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.receipt-form-label-muted {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.receipt-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.receipt-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.receipt-radio-label input[type="radio"] {
+    accent-color: #00684a;
+    width: 16px;
+    height: 16px;
+}
+
+.receipt-input-highlight {
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: right;
+    background: #ffffff;
+}
+
+.receipt-input-readonly {
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #64748b;
+    text-align: right;
+    background: #f8fafc;
+}
+
+.receipt-input-cashier {
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 13.5px;
+    color: #334155;
+    text-align: right;
+    background: #f8fafc;
+}
+
+.receipt-input-note {
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 13.5px;
+    color: #0f172a;
+    text-align: right;
+    background: #ffffff;
+}
+
+.receipt-modal-footer {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-receipt-modal-confirm {
+    background: #00684a;
+    color: #ffffff;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-receipt-modal-confirm:hover {
+    background: #004d36;
+}

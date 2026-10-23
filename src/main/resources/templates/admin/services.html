@@ -77,20 +77,20 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; white-space: nowrap;">STT</th>
-                                <th style="width: 130px; white-space: nowrap;">Mã dịch vụ</th>
-                                <th style="width: 260px; white-space: nowrap;">Tên dịch vụ</th>
-                                <th style="width: 170px; white-space: nowrap;">Loại dịch vụ</th>
-                                <th style="width: 140px; text-align: right; white-space: nowrap;">Đơn giá</th>
-                                <th style="min-width: 200px; white-space: nowrap;">Mô tả</th>
-                                <th style="width: 160px; white-space: nowrap;">Người cập nhật</th>
-                                <th style="width: 130px; white-space: nowrap;">Trạng thái</th>
-                                <th style="width: 140px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                                <th class="th-w-50-nowrap">STT</th>
+                                <th class="th-w-130-nowrap">Mã dịch vụ</th>
+                                <th class="th-w-260-nowrap">Tên dịch vụ</th>
+                                <th class="th-w-170-nowrap">Loại dịch vụ</th>
+                                <th class="th-w-140-right-nowrap">Đơn giá</th>
+                                <th class="th-min-w-200-nowrap">Mô tả</th>
+                                <th class="th-w-160-nowrap">Người cập nhật</th>
+                                <th class="th-w-130-nowrap">Trạng thái</th>
+                                <th class="th-w-140-action-nowrap">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="serviceTableBody">
                             <tr>
-                                <td colspan="9" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                <td colspan="9" class="td-empty-center">
                                     Đang tải dữ liệu dịch vụ...
                                 </td>
                             </tr>
@@ -147,8 +147,8 @@
                     <div class="form-row-2col">
                         <div class="form-group">
                             <label class="form-label" for="serviceCode">Mã dịch vụ <span class="required-star">*</span></label>
-                            <input type="text" id="serviceCode" class="form-control" placeholder="XN_001, CDHA_001..." required style="font-family: monospace; text-transform: uppercase;">
-                            <small id="serviceCodeHelp" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 3px;">
+                            <input type="text" id="serviceCode" class="form-control input-mono-upper" placeholder="XN_001, CDHA_001..." required>
+                            <small id="serviceCodeHelp" class="field-help-text">
                                 Mã dịch vụ cố định và không thể thay đổi sau khi tạo.
                             </small>
                         </div>
@@ -169,7 +169,7 @@
                         <div class="form-group">
                             <label class="form-label" for="servicePrice">Đơn giá (VNĐ) <span class="required-star">*</span></label>
                             <input type="number" id="servicePrice" class="form-control" placeholder="150000" min="0" step="1000" required>
-                            <small id="pricePreviewText" style="color: var(--primary-green); font-size: 12px; font-weight: 600; margin-top: 3px; display: block;">
+                            <small id="pricePreviewText" class="price-preview-highlight">
                                 0 đ
                             </small>
                         </div>
@@ -182,7 +182,7 @@
                     </div>
 
                     <!-- Switch Trạng thái Áp dụng -->
-                    <div class="form-group" style="margin-top: 10px; margin-bottom: 6px;">
+                    <div class="form-group form-group-status-wrap">
                         <label class="switch-label-wrap">
                             <input type="checkbox" id="serviceActive" class="switch-input" checked>
                             <span class="switch-slider"></span>
@@ -204,22 +204,28 @@
          MODAL: XÁC NHẬN XÓA MỀM DỊCH VỤ
          ============================================================== -->
     <div class="modal-backdrop" id="deleteConfirmModal">
-        <div class="modal-dialog" style="max-width: 450px;">
+        <div class="modal-dialog modal-dialog-w450">
             <div class="modal-header">
-                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa dịch vụ</h3>
+                <h3 class="modal-title modal-title-danger">Xác nhận xóa dịch vụ</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 13.5px; color: var(--slate-700); line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa dịch vụ <strong id="deleteServiceName" style="color: var(--slate-900);"></strong> (Mã: <code id="deleteServiceCode" style="color: var(--primary-green); font-weight: 700;"></code>) không?
+                <p class="modal-desc-slate700">
+                    Bạn có chắc chắn muốn xóa dịch vụ <strong id="deleteServiceName" class="text-slate-900"></strong> (Mã: <code id="deleteServiceCode" class="code-green-bold"></code>) không?
                 </p>
-                <div style="margin-top: 12px; padding: 10px 14px; background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 12.5px; color: #b91c1c;">
-                    <i class="ph ph-info" style="font-size: 16px; vertical-align: -2px; margin-right: 4px;"></i>
+                <div class="danger-alert-box">
+                    <i class="ph ph-info danger-alert-icon"></i>
                     Dịch vụ sẽ được chuyển sang trạng thái <strong>xóa mềm</strong> và ngừng xuất hiện trong danh mục chỉ định khám mới. Lịch sử khám cũ của bệnh nhân vẫn được bảo toàn.
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
             <div class="modal-footer">
                 <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
                 <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xác nhận xóa</button>

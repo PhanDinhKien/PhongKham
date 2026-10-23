@@ -74,18 +74,18 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; white-space: nowrap;">STT</th>
-                                <th style="width: 140px; white-space: nowrap;">Mã nhân viên</th>
-                                <th style="white-space: nowrap;">Tên nhân viên</th>
-                                <th style="white-space: nowrap;">Tên đăng nhập</th>
-                                <th style="white-space: nowrap;">Vai trò</th>
-                                <th style="width: 140px; white-space: nowrap;">Trạng thái</th>
-                                <th style="width: 160px; text-align: right; padding-right: 20px; white-space: nowrap;">Tác vụ</th>
+                                <th class="th-w-50-nowrap">STT</th>
+                                <th class="th-w-140-nowrap">Mã nhân viên</th>
+                                <th class="th-nowrap">Tên nhân viên</th>
+                                <th class="th-nowrap">Tên đăng nhập</th>
+                                <th class="th-nowrap">Vai trò</th>
+                                <th class="th-w-140-nowrap">Trạng thái</th>
+                                <th class="th-w-160-right-nowrap">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="userTableBody">
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 40px; color: var(--slate-400);">
+                                <td colspan="7" class="td-empty-center">
                                     Đang tải dữ liệu...
                                 </td>
                             </tr>
@@ -172,7 +172,7 @@
                                 <i class="ph ph-eye" id="eyeIcon"></i>
                             </button>
                         </div>
-                        <small id="passwordHelpText" style="display: none; color: var(--slate-500); font-size: 11.5px; margin-top: 4px;">
+                        <small id="passwordHelpText" class="field-help-text-mt4">
                             Để trống nếu muốn giữ nguyên mật khẩu hiện tại.
                         </small>
                     </div>
@@ -208,19 +208,25 @@
          MODAL: XÁC NHẬN XÓA TÀI KHOẢN
          ============================================================== -->
     <div class="modal-backdrop" id="deleteConfirmModal">
-        <div class="modal-dialog" style="max-width: 420px;">
+        <div class="modal-dialog modal-dialog-w420">
             <div class="modal-header">
-                <h3 class="modal-title" style="color: #dc2626;">Xác nhận xóa tài khoản</h3>
+                <h3 class="modal-title modal-title-danger">Xác nhận xóa tài khoản</h3>
                 <button type="button" class="btn-modal-close" id="btnCloseDeleteModal">
                     <i class="ph ph-x"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 13.5px; color: var(--slate-600); line-height: 1.5;">
-                    Bạn có chắc chắn muốn xóa tài khoản <strong id="deleteUserName" style="color: var(--slate-900);"></strong> không?
+                <p class="modal-desc-slate600">
+                    Bạn có chắc chắn muốn xóa tài khoản <strong id="deleteUserName" class="text-slate-900"></strong> không?
                     Hành động này sẽ xóa vĩnh viễn tài khoản và các liên kết vai trò của người dùng.
                 </p>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
+                <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xóa tài khoản</button>
+            </div>
+        </div>
+    </div>
             <div class="modal-footer">
                 <button type="button" class="btn-modal-cancel" id="btnCancelDeleteModal">Hủy</button>
                 <button type="button" class="btn-modal-danger" id="btnConfirmDelete">Xóa tài khoản</button>

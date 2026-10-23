@@ -27,7 +27,7 @@
             </div>
 
             <!-- Tiêu đề trang -->
-            <div class="page-header-row" style="margin-bottom: 24px;">
+            <div class="page-header-row df-header-row">
                 <div>
                     <h1 class="page-title" id="pageMainHeading">Thêm chính sách giảm giá</h1>
                     <span class="page-subtitle">Thiết lập các điều kiện chiết khấu dịch vụ theo bậc số lượng áp dụng cho một hoặc nhiều hợp đồng</span>
@@ -39,7 +39,7 @@
                 <!-- CARD 1: THÔNG TIN CHUNG -->
                 <div class="form-section-card">
                     <div class="section-header-title">
-                        <i class="ph-bold ph-info" style="color: #059669; font-size: 16px;"></i>
+                        <i class="ph-bold ph-info df-card-icon"></i>
                         <span>Thông tin chung</span>
                     </div>
 
@@ -48,7 +48,7 @@
                         <div class="form-group">
                             <label class="form-label" for="policyCode">Mã chính sách giảm giá</label>
                             <input type="text" id="policyCode" class="form-input" placeholder="Tự sinh — CK-023">
-                            <span style="font-size: 12px; color: #64748b;">Hệ thống sẽ tự sinh nếu để trống</span>
+                            <span class="df-hint-text">Hệ thống sẽ tự sinh nếu để trống</span>
                         </div>
 
                         <!-- Tên chính sách giảm giá -->
@@ -62,7 +62,7 @@
                 <!-- CARD 2: PHẠM VI ÁP DỤNG -->
                 <div class="form-section-card">
                     <div class="section-header-title">
-                        <i class="ph-bold ph-crosshair" style="color: #059669; font-size: 16px;"></i>
+                        <i class="ph-bold ph-crosshair df-card-icon"></i>
                         <span>Phạm vi áp dụng</span>
                     </div>
 
@@ -82,12 +82,12 @@
                         <div class="form-group">
                             <label class="form-label">
                                 Hợp đồng áp dụng <span class="required">*</span>
-                                <span style="font-size: 12px; font-weight: normal; color: #64748b;">(Một chính sách có thể gán 1 hoặc nhiều HĐ)</span>
+                                <span class="df-hint-normal">(Một chính sách có thể gán 1 hoặc nhiều HĐ)</span>
                             </label>
                             
                             <div class="multi-contract-box" id="contractPickerBox" onclick="openContractModal()">
-                                <div id="selectedContractChips" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
-                                <span id="contractPickerPlaceholder" style="color: #94a3b8; font-size: 13.5px; padding-left: 4px;">Chưa chọn hợp đồng nào. Nhấn để chọn...</span>
+                                <div id="selectedContractChips" class="df-chips-container"></div>
+                                <span id="contractPickerPlaceholder" class="df-chips-placeholder">Chưa chọn hợp đồng nào. Nhấn để chọn...</span>
                                 <button type="button" class="btn-trigger-picker" onclick="event.stopPropagation(); openContractModal();">
                                     <i class="ph-bold ph-plus"></i>
                                     <span>Chọn hợp đồng</span>
@@ -100,18 +100,18 @@
                 <!-- CARD 3: MỨC CHIẾT KHẤU & HIỆU LỰC -->
                 <div class="form-section-card">
                     <div class="section-header-title">
-                        <i class="ph-bold ph-percent" style="color: #059669; font-size: 16px;"></i>
+                        <i class="ph-bold ph-percent df-card-icon"></i>
                         <span>Mức chiết khấu & Hiệu lực</span>
                     </div>
 
-                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                    <div class="form-grid-2 df-grid-2-mb">
                         <!-- Cách xác định mức chiết khấu (Bỏ mức cố định, chỉ dùng theo bậc số lượng) -->
                         <div class="form-group">
                             <label class="form-label">Cách xác định mức chiết khấu <span class="required">*</span></label>
                             <div class="radio-pills-row">
                                 <label class="radio-item">
                                     <input type="radio" name="calcMethod" value="TIER" checked disabled>
-                                    <span style="font-weight: 600; color: #047857;">Theo bậc số lượng dịch vụ</span>
+                                    <span class="df-badge-tier">Theo bậc số lượng dịch vụ</span>
                                 </label>
                             </div>
                         </div>
@@ -127,17 +127,17 @@
                     </div>
 
                     <!-- Bảng bậc chiết khấu -->
-                    <div class="form-group" style="margin-bottom: 24px;">
+                    <div class="form-group df-group-mb">
                         <label class="form-label">Bảng bậc chiết khấu <span class="required">*</span></label>
                         
                         <table class="tier-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 70px; text-align: center;">Bậc</th>
-                                    <th style="width: 250px;">Từ số lượng</th>
-                                    <th style="width: 250px;">Đến số lượng</th>
+                                    <th class="tier-col-num">Bậc</th>
+                                    <th class="tier-col-from">Từ số lượng</th>
+                                    <th class="tier-col-to">Đến số lượng</th>
                                     <th>Mức chiết khấu</th>
-                                    <th style="width: 60px; text-align: center;"></th>
+                                    <th class="tier-col-action"></th>
                                 </tr>
                             </thead>
                             <tbody id="tierTableBody">
@@ -154,7 +154,7 @@
                         </div>
                     </div>
 
-                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                    <div class="form-grid-2 df-grid-2-mb">
                         <!-- Phạm vi áp dụng mức bậc -->
                         <div class="form-group">
                             <label class="form-label" for="tierScope">Phạm vi áp dụng mức bậc <span class="required">*</span></label>
@@ -171,7 +171,7 @@
                         </div>
                     </div>
 
-                    <div class="form-grid-2" style="margin-bottom: 20px;">
+                    <div class="form-grid-2 df-grid-2-mb">
                         <!-- Từ ngày -->
                         <div class="form-group">
                             <label class="form-label" for="startDate">Từ ngày <span class="required">*</span></label>
@@ -186,14 +186,14 @@
                     </div>
 
                     <!-- Bỏ phần độ ưu tiên theo yêu cầu người dùng, chỉ còn Áp dụng -->
-                    <div class="form-group" style="margin-top: 10px;">
+                    <div class="form-group df-group-mt">
                         <label class="form-label">Áp dụng</label>
-                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                        <div class="df-toggle-row">
                             <label class="switch-toggle-lg">
                                 <input type="checkbox" id="policyActive" checked onchange="updateActiveLabel(this.checked)">
                                 <span class="slider-round-lg"></span>
                             </label>
-                            <span id="activeStatusText" style="font-weight: 600; color: #059669; font-size: 14px;">Bật</span>
+                            <span id="activeStatusText" class="df-status-text">Bật</span>
                         </div>
                     </div>
 
@@ -221,8 +221,8 @@
         <div class="contract-modal-card">
             <div class="contract-modal-header">
                 <div>
-                    <h3 style="font-size: 17.5px; font-weight: 700; color: #0f172a; margin: 0;">Chọn hợp đồng áp dụng</h3>
-                    <div style="font-size: 13px; color: #64748b; margin-top: 2px;">Tích chọn một hoặc nhiều hợp đồng sẽ được hưởng chính sách này</div>
+                    <h3 class="df-modal-title">Chọn hợp đồng áp dụng</h3>
+                    <div class="df-modal-sub">Tích chọn một hoặc nhiều hợp đồng sẽ được hưởng chính sách này</div>
                 </div>
                 <button type="button" class="tier-delete-btn" onclick="closeContractModal()">
                     <i class="ph-bold ph-x"></i>
@@ -230,11 +230,10 @@
             </div>
 
             <!-- Toolbar trong modal: Search & Buttons đồng đều -->
-            <div style="padding: 14px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center; background: #f8fafc;">
-                <div style="position: relative; flex: 1; display: flex; align-items: center;">
-                    <i class="ph ph-magnifying-glass" style="position: absolute; left: 12px; color: #94a3b8; font-size: 16px;"></i>
-                    <input type="text" id="contractSearchInput" placeholder="Tìm theo mã HĐ, tên công ty hoặc tên hợp đồng..." 
-                        style="width: 100%; height: 40px; padding: 0 14px 0 36px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background: #fff;">
+            <div class="df-modal-filter-bar">
+                <div class="df-modal-search-box">
+                    <i class="ph ph-magnifying-glass df-modal-search-icon"></i>
+                    <input type="text" id="contractSearchInput" class="df-modal-search-input" placeholder="Tìm theo mã HĐ, tên công ty hoặc tên hợp đồng...">
                 </div>
                 <button type="button" class="btn-action-md btn-action-outline" onclick="selectAllContracts(true)">
                     <i class="ph-bold ph-check-square"></i>
@@ -248,18 +247,18 @@
 
             <!-- List contracts -->
             <div class="contract-modal-body" id="contractListContainer">
-                <div style="text-align: center; padding: 40px; color: #64748b;">
-                    <i class="ph ph-spinner ph-spin" style="font-size: 26px; margin-bottom: 8px; display: inline-block;"></i>
+                <div class="df-modal-loading">
+                    <i class="ph ph-spinner ph-spin df-modal-spinner"></i>
                     <div>Đang tải danh sách hợp đồng...</div>
                 </div>
             </div>
 
             <div class="contract-modal-footer">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 13.5px; color: #475569;">Trạng thái lựa chọn:</span>
-                    <span id="modalSelectedCount" style="font-size: 13.5px; font-weight: 700; color: #059669;">Đã chọn 0 hợp đồng</span>
+                <div class="df-modal-footer-info">
+                    <span class="df-modal-footer-label">Trạng thái lựa chọn:</span>
+                    <span id="modalSelectedCount" class="df-modal-selected-count">Đã chọn 0 hợp đồng</span>
                 </div>
-                <div style="display: flex; gap: 12px;">
+                <div class="df-modal-footer-btns">
                     <button type="button" class="btn-action-md btn-action-secondary" onclick="closeContractModal()">
                         <i class="ph ph-x"></i>
                         <span>Đóng</span>
@@ -274,7 +273,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+    <div id="toastContainer" class="toast-container-fixed"></div>
 
     <!-- Discount Form JS -->
     <script th:src="@{/js/discount-form.js}" src="/js/discount-form.js"></script>

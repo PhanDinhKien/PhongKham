@@ -35,3 +35,5 @@ databaseChangeLog:
       file: db/changelog/changes/017-add-contract-and-shift-details-to-service-quotas.yaml
   - include:
       file: db/changelog/changes/018-fix-null-active-in-contract-locations.yaml
+  - include:
+      file: db/changelog/changes/019-create-receipts.yaml

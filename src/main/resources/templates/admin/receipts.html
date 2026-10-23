@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/admin-layout :: common-head('Danh sách phiếu thu')}"></th:block>
+    <!-- File CSS riêng biệt cho màn hình Quản lý phiếu thu -->
+    <link rel="stylesheet" th:href="@{/css/receipts.css(v='1.0')}" href="/css/receipts.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- Sidebar dùng chung (Fragment) -->
+        <div th:replace="~{layout/admin-layout :: sidebar('kinh-doanh', 'phieu-thu')}"></div>
+
+        <!-- Phân vùng nội dung chính -->
+        <main class="admin-main">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-bar mb-3">
+                <a th:href="@{/admin/dashboard}" class="breadcrumb-link">Trang chủ</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Danh sách phiếu thu</span>
+            </div>
+
+            <!-- Tiêu đề trang & Nút xuất Excel -->
+            <div class="page-header-row mb-4">
+                <div>
+                    <h1 class="page-title">Danh sách phiếu thu</h1>
+                </div>
+                
+                <div class="page-header-actions">
+                    <button type="button" class="btn-export-excel" id="btnExportExcel" onclick="exportExcel()">
+                        <i class="ph ph-file-arrow-down"></i>
+                        <span>Xuất Excel</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thanh công cụ tìm kiếm & Bộ lọc (Khớp ảnh mockup) -->
+            <div class="filter-toolbar-receipts">
+                <!-- Hàng 1 -->
+                <div class="filter-row">
+                    <!-- Ô tìm kiếm mã NB, mã hồ sơ, tên NB, mã phiếu thu -->
+                    <div class="search-box receipt-search-box">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="receiptSearchInput" class="search-input" placeholder="Tìm mã NB, mã hồ sơ, tên NB...">
+                    </div>
+
+                    <!-- Dropdown: Tất cả công ty -->
+                    <div class="filter-select-wrap filter-wrap-w200">
+                        <select id="companyFilter" class="filter-select">
+                            <option value="">Tất cả công ty</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Dropdown: Tất cả người thu -->
+                    <div class="filter-select-wrap filter-wrap-w200">
+                        <select id="cashierFilter" class="filter-select">
+                            <option value="">Tất cả người thu</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Dropdown: Hình thức thanh toán -->
+                    <div class="filter-select-wrap filter-wrap-w190">
+                        <select id="paymentMethodFilter" class="filter-select">
+                            <option value="">Hình thức thanh toán</option>
+                            <option value="CHUYEN_KHOAN">Chuyển khoản</option>
+                            <option value="TIEN_MAT">Tiền mặt</option>
+                            <option value="QUET_THE">Quẹt thẻ</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                </div>
+
+                <!-- Hàng 2 -->
+                <div class="filter-row">
+                    <!-- Dropdown: Khoảng thời gian nhanh -->
+                    <div class="filter-select-wrap filter-wrap-w150">
+                        <select id="quickDateFilter" class="filter-select">
+                            <option value="month" selected>Tháng này</option>
+                            <option value="today">Hôm nay</option>
+                            <option value="week">Tuần này</option>
+                            <option value="year">Năm nay</option>
+                            <option value="all">Tất cả thời gian</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Date range inputs -->
+                    <div class="receipt-date-range">
+                        <div class="search-box receipt-date-box">
+                            <i class="ph ph-calendar"></i>
+                            <input type="date" id="fromDateFilter" class="search-input receipt-date-input">
+                        </div>
+                        <span class="text-muted">-</span>
+                        <div class="search-box receipt-date-box">
+                            <i class="ph ph-calendar"></i>
+                            <input type="date" id="toDateFilter" class="search-input receipt-date-input">
+                        </div>
+                    </div>
+
+                    <!-- Dropdown: Trạng thái đồng bộ -->
+                    <div class="filter-select-wrap filter-wrap-w180">
+                        <select id="syncStatusFilter" class="filter-select">
+                            <option value="">Trạng thái đồng bộ</option>
+                            <option value="DA_DONG_BO">Đã đồng bộ</option>
+                            <option value="CHUA_DONG_BO">Chưa đồng bộ</option>
+                            <option value="LOI_DONG_BO">Lỗi đồng bộ</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+
+                    <!-- Nút Xóa bộ lọc -->
+                    <button type="button" id="btnClearReceiptFilter" class="btn-clear-filter" onclick="clearReceiptFilters()">
+                        <i class="ph ph-x"></i>
+                        <span>Xóa bộ lọc</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bảng dữ liệu danh sách phiếu thu -->
+            <div class="table-container-receipts">
+                <table class="data-table-receipts">
+                    <thead>
+                        <tr>
+                            <th class="th-stt">STT</th>
+                            <th class="th-receipt-code">Mã phiếu thu</th>
+                            <th class="th-patient-code">Mã NB</th>
+                            <th class="th-record-code">Mã hồ sơ</th>
+                            <th class="th-patient-name">Tên người bệnh</th>
+                            <th class="th-gender">Giới tính</th>
+                            <th class="th-birth-year">Năm sinh</th>
+                            <th class="th-company">Công ty</th>
+                            <th class="th-service-count">Tổng SL dịch vụ</th>
+                            <th class="th-final-amount">Tiền đã thu</th>
+                            <th class="th-cashier">Người thu</th>
+                            <th class="th-time">Thời gian</th>
+                            <th class="th-actions">Tác vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receiptTableBody">
+                        <tr>
+                            <td colspan="13" class="td-placeholder">
+                                Đang tải danh sách phiếu thu...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang (Pagination) -->
+            <div class="table-pagination-footer">
+                <div id="receiptPaginationInfo" class="receipt-pagination-info">
+                    Đang xem 0 - 0 trong 0
+                </div>
+
+                <div class="receipt-pagination-actions">
+                    <div id="receiptPaginationControls" class="pagination-controls"></div>
+
+                    <div class="filter-select-wrap receipt-page-size-wrap">
+                        <select id="pageSizeSelect" class="filter-select receipt-page-size-select" onchange="changeReceiptPageSize(this.value)">
+                            <option value="10">10 / trang</option>
+                            <option value="20" selected>20 / trang</option>
+                            <option value="50">50 / trang</option>
+                            <option value="100">100 / trang</option>
+                        </select>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==============================================================
+         MODAL: XEM THÔNG TIN THANH TOÁN (KHỚP MÀN HÌNH THANH TOÁN KHI CHỌN DỊCH VỤ)
+         ============================================================== -->
+    <div class="modal-backdrop" id="receiptDetailModal">
+        <div class="modal-dialog modal-dialog-receipt">
+            
+            <!-- Header Card (Khớp màn hình thanh toán) -->
+            <div class="receipt-header-card">
+                <div>
+                    <div class="receipt-patient-title-wrap">
+                        <h2 class="receipt-patient-name" id="detailPatientName">Lê Thị Ngọc A</h2>
+                        <span class="sales-record-code-badge receipt-record-code-badge" id="detailRecordCodeBadge">HS-2026.08.0001</span>
+                    </div>
+                    <div class="receipt-patient-meta" id="detailPatientMeta">
+                        <span id="detailGender">Nữ</span> • 
+                        <span id="detailDob">01/10/1990</span> • 
+                        <span id="detailCompanyName">Công ty TNHH Edufit</span> (<span id="detailContractCode">HĐ00005</span>) • 
+                        <span id="detailPackageName" class="receipt-package-name-meta">Gói khám</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-receipt-modal-close" onclick="closeReceiptDetailModal()">
+                    <i class="ph ph-x"></i>
+                    <span>Đóng</span>
+                </button>
+            </div>
+
+            <!-- Body Modal (2 Cột khớp màn hình thanh toán) -->
+            <div class="receipt-modal-body">
+                <div class="receipt-modal-grid">
+                    
+                    <!-- CỘT TRÁI: THÀNH TIỀN -->
+                    <div class="receipt-card">
+                        <div class="receipt-card-title">
+                            THÀNH TIỀN
+                        </div>
+
+                        <!-- Danh sách dịch vụ -->
+                        <div id="detailServicesList" class="detail-services-list">
+                            <!-- Render bằng JS -->
+                        </div>
+
+                        <!-- Phần tính toán chiết khấu & tổng tiền -->
+                        <div class="detail-calc-box">
+                            <div class="detail-calc-row">
+                                <span class="detail-calc-label" id="detailSubtotalLabel">Tạm tính (0 dịch vụ)</span>
+                                <span class="detail-calc-value" id="detailSubtotalValue">0 đ</span>
+                            </div>
+
+                            <div id="detailDiscountRow" class="detail-calc-row">
+                                <div class="detail-discount-label-wrap">
+                                    <span class="detail-discount-text">Chiết khấu</span>
+                                    <span class="badge-discount-policy" id="detailDiscountBadge">CK • 0%</span>
+                                </div>
+                                <span class="detail-discount-value" id="detailDiscountValue">- 0 đ</span>
+                            </div>
+
+                            <!-- Banner: Số tiền thực thu -->
+                            <div class="detail-final-banner">
+                                <span class="detail-final-label">Số tiền thực thu</span>
+                                <span class="detail-final-amount" id="detailFinalAmount">0 đ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT PHẢI: FORM THANH TOÁN -->
+                    <div class="receipt-card receipt-card-payment">
+                        <div class="receipt-form-stack">
+                            <!-- Hình thức thanh toán -->
+                            <div>
+                                <label class="receipt-form-label">
+                                    Hình thức thanh toán <span class="req-star">*</span>
+                                </label>
+                                <div class="receipt-radio-group">
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="detailPaymentMethodRadio" value="CHUYEN_KHOAN" disabled>
+                                        <span>Chuyển khoản</span>
+                                    </label>
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="detailPaymentMethodRadio" value="TIEN_MAT" disabled>
+                                        <span>Tiền mặt</span>
+                                    </label>
+                                    <label class="receipt-radio-label">
+                                        <input type="radio" name="detailPaymentMethodRadio" value="QUET_THE" disabled>
+                                        <span>Quẹt thẻ</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Khách thanh toán -->
+                            <div>
+                                <label class="receipt-form-label-muted">Khách thanh toán</label>
+                                <input type="text" id="detailCustomerPaidInput" class="receipt-input-highlight" readonly>
+                            </div>
+
+                            <!-- Tiền thừa hoàn lại -->
+                            <div>
+                                <label class="receipt-form-label-muted">Tiền thừa hoàn lại</label>
+                                <input type="text" id="detailChangeAmountInput" class="receipt-input-readonly" readonly>
+                            </div>
+
+                            <!-- Thu ngân -->
+                            <div>
+                                <label class="receipt-form-label-muted">Thu ngân</label>
+                                <input type="text" id="detailCashierInput" class="receipt-input-cashier" readonly>
+                            </div>
+
+                            <!-- Ghi chú -->
+                            <div>
+                                <label class="receipt-form-label-muted">Ghi chú</label>
+                                <input type="text" id="detailNoteInput" class="receipt-input-note" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Trạng thái xác nhận -->
+                        <div class="receipt-modal-footer">
+                            <span class="sync-badge da_dong_bo">Đã thanh toán thành công</span>
+                            <button type="button" class="btn-receipt-modal-confirm" onclick="closeReceiptDetailModal()">
+                                <span>Đóng</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Script JS -->
+    <script th:src="@{/js/receipts.js(v='2.1')}" src="/js/receipts.js?v=2.1"></script>
+</body>
+</html>

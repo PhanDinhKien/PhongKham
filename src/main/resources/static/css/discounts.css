@@ -675,3 +675,118 @@ input:checked + .slider-round-lg:before {
     border-color: #059669;
     box-shadow: 0 1px 2px rgba(5, 150, 105, 0.1);
 }
+
+/* discounts.html styles */
+.filter-box-keyword { flex: 1 1 240px; min-width: 200px; }
+.filter-box-company { flex: 1 1 200px; min-width: 180px; }
+.filter-box-type { min-width: 160px; }
+.filter-box-status { min-width: 150px; }
+.filter-input-full { width: 100%; }
+.date-range-sep { color: #94a3b8; }
+
+.disc-col-stt { width: 50px; text-align: center; }
+.disc-col-code { width: 140px; }
+.disc-col-name { min-width: 220px; }
+.disc-col-apply-type { width: 150px; }
+.disc-col-type { width: 140px; }
+.disc-col-value { width: 130px; }
+.disc-col-time { width: 190px; }
+.disc-col-status { width: 130px; text-align: center; }
+.disc-col-actions { width: 100px; text-align: right; padding-right: 20px; }
+
+.disc-empty-td { text-align: center; padding: 40px; color: #64748b; }
+.disc-spinner-icon { font-size: 28px; margin-bottom: 8px; display: inline-block; }
+
+.disc-danger-icon-circle {
+    width: 54px;
+    height: 54px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #ef4444;
+    font-size: 26px;
+}
+.disc-modal-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+.disc-modal-desc { font-size: 14px; color: #64748b; margin-bottom: 24px; }
+.disc-modal-actions { display: flex; gap: 12px; justify-content: center; }
+.btn-modal-cancel-gray {
+    padding: 10px 20px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+}
+.btn-modal-delete-red {
+    padding: 10px 22px;
+    border: none;
+    background: #ef4444;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+}
+
+/* discount-form.html styles */
+.df-header-row { margin-bottom: 24px; }
+.df-card-icon { color: #059669; font-size: 16px; }
+.df-hint-text { font-size: 12px; color: #64748b; }
+.df-hint-normal { font-size: 12px; font-weight: normal; color: #64748b; }
+.df-chips-container { display: flex; flex-wrap: wrap; gap: 6px; }
+.df-chips-placeholder { color: #94a3b8; font-size: 13.5px; padding-left: 4px; }
+.df-grid-2-mb { margin-bottom: 20px; }
+.df-badge-tier { font-weight: 600; color: #047857; }
+.df-group-mb { margin-bottom: 24px; }
+
+.tier-col-num { width: 70px; text-align: center; }
+.tier-col-from { width: 250px; }
+.tier-col-to { width: 250px; }
+.tier-col-action { width: 60px; text-align: center; }
+
+.df-group-mt { margin-top: 10px; }
+.df-toggle-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.df-status-text { font-weight: 600; color: #059669; font-size: 14px; }
+
+.df-modal-title { font-size: 17.5px; font-weight: 700; color: #0f172a; margin: 0; }
+.df-modal-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+.df-modal-filter-bar {
+    padding: 14px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #f8fafc;
+}
+.df-modal-search-box { position: relative; flex: 1; display: flex; align-items: center; }
+.df-modal-search-icon { position: absolute; left: 12px; color: #94a3b8; font-size: 16px; }
+.df-modal-search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13.5px;
+    outline: none;
+    background: #fff;
+}
+.df-modal-loading { text-align: center; padding: 40px; color: #64748b; }
+.df-modal-spinner { font-size: 26px; margin-bottom: 8px; display: inline-block; }
+.df-modal-footer-info { display: flex; align-items: center; gap: 6px; }
+.df-modal-footer-label { font-size: 13.5px; color: #475569; }
+.df-modal-selected-count { font-size: 13.5px; font-weight: 700; color: #059669; }
+.df-modal-footer-btns { display: flex; gap: 12px; }
+
+.toast-container-fixed {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

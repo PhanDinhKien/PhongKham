@@ -43,20 +43,20 @@
             <div class="filter-toolbar-grid">
                 
                 <!-- Tìm mã hoặc tên chính sách -->
-                <div class="filter-box" style="flex: 1 1 240px; min-width: 200px;">
+                <div class="filter-box filter-box-keyword">
                     <i class="ph ph-magnifying-glass prefix-icon"></i>
-                    <input type="text" id="keywordFilter" placeholder="Tìm mã hoặc tên combo dịch vụ" style="width: 100%;">
+                    <input type="text" id="keywordFilter" class="filter-input-full" placeholder="Tìm mã hoặc tên combo dịch vụ">
                 </div>
 
                 <!-- Tìm tên công ty / hợp đồng -->
-                <div class="filter-box" style="flex: 1 1 200px; min-width: 180px;">
+                <div class="filter-box filter-box-company">
                     <i class="ph ph-buildings prefix-icon"></i>
-                    <input type="text" id="companyFilter" placeholder="Tìm tên công ty / HĐ" style="width: 100%;">
+                    <input type="text" id="companyFilter" class="filter-input-full" placeholder="Tìm tên công ty / HĐ">
                 </div>
 
                 <!-- Dropdown Hình thức giảm giá -->
-                <div class="filter-box" style="min-width: 160px;">
-                    <select id="discountTypeFilter" style="width: 100%;">
+                <div class="filter-box filter-box-type">
+                    <select id="discountTypeFilter" class="filter-input-full">
                         <option value="">Hình thức giảm giá</option>
                         <option value="PERCENT">Phần trăm</option>
                         <option value="AMOUNT">Số tiền</option>
@@ -65,8 +65,8 @@
                 </div>
 
                 <!-- Dropdown Trạng thái -->
-                <div class="filter-box" style="min-width: 150px;">
-                    <select id="activeFilter" style="width: 100%;">
+                <div class="filter-box filter-box-status">
+                    <select id="activeFilter" class="filter-input-full">
                         <option value="">Tất cả trạng thái</option>
                         <option value="true">Đang áp dụng</option>
                         <option value="false">Ngừng áp dụng</option>
@@ -78,7 +78,7 @@
                 <div class="date-range-box">
                     <i class="ph ph-calendar"></i>
                     <input type="date" id="fromDateFilter" title="Từ ngày">
-                    <span style="color: #94a3b8;">-</span>
+                    <span class="date-range-sep">-</span>
                     <input type="date" id="toDateFilter" title="Đến ngày">
                 </div>
 
@@ -95,22 +95,21 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; text-align: center;">STT</th>
-                                <th style="width: 140px;">Mã chính sách</th>
-                                <th style="min-width: 220px;">Tên chính sách</th>
-                                <th style="width: 150px;">Loại áp dụng</th>
-                                <th style="width: 140px;">Hình thức giảm giá</th>
-                                <th style="width: 130px;">Giá trị CK</th>
-                                <th style="width: 190px;">Thời gian áp dụng</th>
-                                <th style="width: 130px; text-align: center;">Trạng thái áp dụng</th>
-                                <!-- Cột Ưu tiên đã được loại bỏ theo yêu cầu của người dùng -->
-                                <th style="width: 100px; text-align: right; padding-right: 20px;">Tác vụ</th>
+                                <th class="disc-col-stt">STT</th>
+                                <th class="disc-col-code">Mã chính sách</th>
+                                <th class="disc-col-name">Tên chính sách</th>
+                                <th class="disc-col-apply-type">Loại áp dụng</th>
+                                <th class="disc-col-type">Hình thức giảm giá</th>
+                                <th class="disc-col-value">Giá trị CK</th>
+                                <th class="disc-col-time">Thời gian áp dụng</th>
+                                <th class="disc-col-status">Trạng thái áp dụng</th>
+                                <th class="disc-col-actions">Tác vụ</th>
                             </tr>
                         </thead>
                         <tbody id="discountTableBody">
                             <tr>
-                                <td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">
-                                    <i class="ph ph-spinner ph-spin" style="font-size: 28px; margin-bottom: 8px; display: inline-block;"></i>
+                                <td colspan="9" class="disc-empty-td">
+                                    <i class="ph ph-spinner ph-spin disc-spinner-icon"></i>
                                     <div>Đang tải danh sách chính sách giảm giá...</div>
                                 </td>
                             </tr>
@@ -145,20 +144,20 @@
     <!-- Modal Xác nhận Xóa chính sách -->
     <div id="deleteModal" class="custom-modal-backdrop">
         <div class="confirm-card">
-            <div style="width: 54px; height: 54px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444; font-size: 26px;">
+            <div class="disc-danger-icon-circle">
                 <i class="ph ph-trash"></i>
             </div>
-            <h3 style="font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Xác nhận xóa chính sách?</h3>
-            <p id="deleteModalMsg" style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Bạn có chắc chắn muốn xóa chính sách giảm giá này không? Thao tác này không thể hoàn tác.</p>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button type="button" id="btnCancelDelete" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; color: #475569; cursor: pointer;">Hủy</button>
-                <button type="button" id="btnConfirmDelete" style="padding: 10px 22px; border: none; background: #ef4444; border-radius: 8px; font-weight: 600; color: white; cursor: pointer;">Xóa chính sách</button>
+            <h3 class="disc-modal-title">Xác nhận xóa chính sách?</h3>
+            <p id="deleteModalMsg" class="disc-modal-desc">Bạn có chắc chắn muốn xóa chính sách giảm giá này không? Thao tác này không thể hoàn tác.</p>
+            <div class="disc-modal-actions">
+                <button type="button" id="btnCancelDelete" class="btn-modal-cancel-gray">Hủy</button>
+                <button type="button" id="btnConfirmDelete" class="btn-modal-delete-red">Xóa chính sách</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+    <div id="toastContainer" class="toast-container-fixed"></div>
 
     <!-- Discounts Module JS -->
     <script th:src="@{/js/discounts.js}" src="/js/discounts.js"></script>
